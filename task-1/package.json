@@ -14,5 +14,8 @@
     "nodejs"
   ],
   "author": "Aliaksandr Varachai",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
 }
