@@ -1,0 +1,18 @@
+{
+  "name": "task-1",
+  "version": "0.0.1",
+  "description": "Basics. Node.js fundamental theory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:Aliaksandr_Varachai/nodejs-mentoring-program.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Aliaksandr Varachai",
+  "license": "ISC"
+}
