@@ -2,10 +2,10 @@
   "name": "task-1",
   "version": "0.0.1",
   "description": "Basics. Node.js fundamental theory",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
-    "start": "node --experimental-modules main.js",
-    "dev": "nodemon --experimental-modules main.js",
+    "start": "node --experimental-modules src/main.js",
+    "dev": "nodemon --experimental-modules src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
