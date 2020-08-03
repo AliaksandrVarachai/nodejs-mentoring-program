@@ -6,7 +6,7 @@ export default class Reverser extends Duplex {
   }
 
   _read(size) {
-    console.log('Enter a new string (empty string to exit, multiline ends with "\\"):')
+    console.log('Enter a new string (empty string to exit, multiline string ends with "\\"):')
   }
 
   _write(chunk, encoding, next) {
