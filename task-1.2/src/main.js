@@ -43,13 +43,13 @@ async function main() {
   const writeTxtStream = fs.createWriteStream(txtPath, { flags: 'w' });
 
   readCsvStream
-    .on('error', error => { printErrorMessage(error, txtPath); })
+    .on('error', error => { errorHandler(error, txtPath); })
     .pipe(parser)
-    .on('error', error => { printErrorMessage(error, txtPath); })
+    .on('error', error => { errorHandler(error, txtPath); })
     .pipe(transform)
-    .on('error', error => { printErrorMessage(error, txtPath); })
+    .on('error', error => { errorHandler(error, txtPath); })
     .pipe(writeTxtStream)
-    .on('error', error => { printErrorMessage(error, txtPath); })
+    .on('error', error => { errorHandler(error, txtPath); })
     .on('finish', () => {
       console.log(`File ${txtFilename} has been written successfully.`);
     })
@@ -65,7 +65,7 @@ function getJsonTypeValue(strValue) {
   return strValue;
 }
 
-function printErrorMessage(error, txtPath) {
+function errorHandler(error, txtPath) {
   fs.unlink(txtPath, (err) => {
     if (err) {
       console.log(`Failed to remove ${txtPath} file. Remove it manually.`);
