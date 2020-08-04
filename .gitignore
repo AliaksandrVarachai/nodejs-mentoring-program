@@ -1,1 +1,5 @@
 */node_modules/
+
+# generated CSV files for test purpose
+task-1.2/test/fixtures/*
+!task-1.2/test/fixtures/nodejs-hw1-ex1.csv
