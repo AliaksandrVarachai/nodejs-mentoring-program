@@ -2,4 +2,4 @@
 
 # generated CSV files for test purpose
 task-1.2/csv/*
-!task-1.2/csv/nodejs-hw1-ex1.csv
+!task-1.2/csv/nodejs-hw*
