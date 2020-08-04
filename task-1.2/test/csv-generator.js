@@ -14,7 +14,7 @@ rl.question[promisify.custom] = text => new Promise(resolve => {
 
 const questionAsync = promisify(rl.question);
 
-const dirPath = 'test/fixtures';
+const dirPath = 'csv';
 const startCode = 'a'.charCodeAt();
 const endCode = 'z'.charCodeAt();
 let filename = 'test.csv';
