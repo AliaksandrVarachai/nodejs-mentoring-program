@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --experimental-modules src/main.js",
     "dev": "nodemon --experimental-modules src/main.js",
-    "generate-csv": "node --experimental-modules test/csv-generator.js",
+    "generate-csv": "node --experimental-modules src/utils/csv-generator.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
