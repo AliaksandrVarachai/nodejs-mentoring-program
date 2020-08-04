@@ -9,22 +9,22 @@ const ask = (question) => new Promise((resolve) => {
   rl.question(question, answer => resolve(answer));
 });
 
-const dirPath = 'csv';
+const dirname = 'csv';
 let csvFilename = 'nodejs-hw1-ex2.csv';
 let txtFilename = null;
 
 main();
 
 async function main() {
-  const filename = await ask(`Enter file name from "task-1.2/csv" folder (${csvFilename}): `);
+  const filename = await ask(`Enter file name from "${dirname}" folder (${csvFilename}): `);
   rl.close();
   csvFilename = filename.trim() || csvFilename;
   if (!path.extname(csvFilename)) {
     csvFilename += '.csv';
   }
   txtFilename = path.basename(csvFilename).split(/\.[^.]*$/)[0] + '.txt';
-  const csvPath = path.resolve(path.dirname('.'), dirPath, csvFilename);
-  const txtPath = path.resolve(path.dirname('.'), dirPath, txtFilename);
+  const csvPath = path.resolve(path.dirname('.'), dirname, csvFilename);
+  const txtPath = path.resolve(path.dirname('.'), dirname, txtFilename);
 
   const parser = csvToJson().fromFile(csvPath);
   const output = fs.createWriteStream(txtPath, { flags: 'w' });
