@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
+import { Transform } from 'stream';
 import csvToJson from 'csvtojson';
 
 const rl = readline.createInterface(process.stdin, process.stdout);
@@ -26,36 +27,32 @@ async function main() {
   const csvPath = path.resolve(path.dirname('.'), dirname, csvFilename);
   const txtPath = path.resolve(path.dirname('.'), dirname, txtFilename);
 
-  const parser = csvToJson().fromFile(csvPath);
-  const output = fs.createWriteStream(txtPath, { flags: 'w' });
-
-  parser.on('data', (buf) => {
-    const source = JSON.parse(buf.toString());
-    const target = Object.keys(source).reduce((acc, key) => {
-      acc[key.toLowerCase()] = getJsonTypeValue(source[key]);
-      return acc;
-    }, {});
-    output.write(JSON.stringify(target) + '\n');
-  });
-
-  parser.on('done', (error) => {
-    if (error) {
-      console.log(error.message);
-      console.log('Execution is interrupted.');
-      return;
-    }
-    if (output.writable) {
-      console.log(`Text file is successfully created: ${txtPath}`);
-      output.end();
+  const readCsvStream = fs.createReadStream(csvPath);
+  const parser = csvToJson();
+  const transform = new Transform({
+    transform(buf, encoding, next) {
+      const source = JSON.parse(buf.toString());
+      const target = Object.keys(source).reduce((acc, key) => {
+        acc[key.toLowerCase()] = getJsonTypeValue(source[key]);
+        return acc;
+      }, {});
+      this.push(JSON.stringify(target) + '\n');
+      next();
     }
   });
+  const writeTxtStream = fs.createWriteStream(txtPath, { flags: 'w' });
 
-  output.on('error', (error) => {
-    console.log(error.message);
-    console.log('Execution is interrupted.');
-    parser.end();
-    output.end();
-  });
+  readCsvStream
+    .on('error', error => { printErrorMessage(error, txtPath); })
+    .pipe(parser)
+    .on('error', error => { printErrorMessage(error, txtPath); })
+    .pipe(transform)
+    .on('error', error => { printErrorMessage(error, txtPath); })
+    .pipe(writeTxtStream)
+    .on('error', error => { printErrorMessage(error, txtPath); })
+    .on('finish', () => {
+      console.log(`File ${txtFilename} has been written successfully.`);
+    })
 }
 
 function getJsonTypeValue(strValue) {
@@ -66,4 +63,13 @@ function getJsonTypeValue(strValue) {
     return +strValue;
   }
   return strValue;
+}
+
+function printErrorMessage(error, txtPath) {
+  fs.unlink(txtPath, (err) => {
+    if (err) {
+      console.log(`Failed to remove ${txtPath} file. Remove it manually.`);
+    }
+  });
+  console.log(`Error ${error.message}.\nExecution is interrupted.`);
 }
