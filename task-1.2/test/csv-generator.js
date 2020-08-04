@@ -68,7 +68,7 @@ questionAsync(`Enter file name (${filename}): `)
     console.log(error.message);
   })
   .finally(() => {
-    if (fileWriter) { fileWriter.close(); }
+    fileWriter.close();
     rl.close();
   });
 
