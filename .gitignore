@@ -3,4 +3,4 @@
 
 # generated csv files are ignored except of examples
 */csv/
-!*/nodejs-hw*
+!*/csv/nodejs-hw*

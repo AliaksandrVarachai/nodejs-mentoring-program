@@ -1,8 +1,9 @@
-# Task 1.1 with Babel
+# Task 1.2 with Babel
 
 ## Requirements
 
-Transpile task 1.1 with Babel.
+Transpile task 1.2 with Babel.
+
 
 ## Implementation
 
@@ -15,3 +16,7 @@ Transpile task 1.1 with Babel.
 ### Run script in dev mode
 
 `npm run dev`
+
+### Generate a test CSV file
+
+`npm run generate-csv`

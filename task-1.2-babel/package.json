@@ -1,12 +1,13 @@
 {
-  "name": "task-1.2",
+  "name": "task-1.2-babel",
   "version": "0.0.1",
   "description": "Basics. Node.js fundamental theory",
   "main": "src/main.js",
   "scripts": {
-    "start": "node --experimental-modules src/main.js",
-    "dev": "nodemon --experimental-modules src/main.js",
-    "generate-csv": "node --experimental-modules src/utils/csv-generator.js"
+    "build": "babel src -d dist",
+    "start": "node dist/main.js",
+    "dev": "npm run build && nodemon dist/main.js",
+    "generate-csv": "node dist/utils/csv-generator.js"
   },
   "repository": {
     "type": "git",
@@ -19,12 +20,15 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": ">=12.18"
+    "node": ">=8.17"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
   },
   "dependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
     "csvtojson": "^2.0.10"
   }
 }
