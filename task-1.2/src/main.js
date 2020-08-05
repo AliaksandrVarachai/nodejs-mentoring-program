@@ -27,7 +27,7 @@ async function main() {
   const csvPath = path.resolve(path.dirname('.'), dirname, csvFilename);
   const txtPath = path.resolve(path.dirname('.'), dirname, txtFilename);
 
-  const readCsvStream = fs.createReadStream(csvPath);
+  const readCsvStream = fs.createReadStream(csvPath, { highWaterMark: 64 });
   const parser = csvToJson();
   const transform = new Transform({
     transform(buf, encoding, next) {
