@@ -2,5 +2,5 @@
 */dist/
 
 # generated csv files are ignored except of examples
-*/csv/
+*/csv/*
 !*/csv/nodejs-hw*
