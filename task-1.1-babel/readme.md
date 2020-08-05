@@ -9,6 +9,7 @@ Transpile task 1.1 with Babel.
 ### Run script
 
 `npm run build`
+
 `npm start`
 
 ### Run script in dev mode
