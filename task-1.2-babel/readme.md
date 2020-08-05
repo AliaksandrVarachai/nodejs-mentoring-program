@@ -7,6 +7,8 @@ Transpile task 1.2 with Babel.
 
 ## Implementation
 
+Tested on `Node v10.16`.
+
 ### Run script
 
 `npm run build`

@@ -10,6 +10,8 @@ reverses it and then writes it to the standard output `stdout`.
 
 ## Implementation
 
+Tested on `Node v12.18`.
+
 ### Run script
 
 `npm start`

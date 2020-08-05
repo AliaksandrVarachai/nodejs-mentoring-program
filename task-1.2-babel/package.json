@@ -18,9 +18,8 @@
   ],
   "author": "Aliaksandr Varachai",
   "license": "ISC",
-  "type": "module",
   "engines": {
-    "node": ">=8.17"
+    "node": ">=10.16"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

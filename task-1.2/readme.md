@@ -13,6 +13,8 @@ Write a program which should do the following:
 
 ## Implementation
 
+Tested on `Node v12.18`.
+
 ### Run script
 
 `npm start`
