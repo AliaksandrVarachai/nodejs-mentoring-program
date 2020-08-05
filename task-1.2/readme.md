@@ -20,3 +20,7 @@ Write a program which should do the following:
 ### Run script in dev mode
 
 `npm run dev`
+
+### Generate a test CSV file
+
+`npm run generate-csv`
