@@ -1,0 +1,27 @@
+{
+  "name": "task-1.1",
+  "version": "0.0.1",
+  "description": "Basics. Node.js fundamental theory",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node --experimental-modules src/main.js",
+    "dev": "nodemon --experimental-modules src/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:Aliaksandr_Varachai/nodejs-mentoring-program.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Aliaksandr Varachai",
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=12.18"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
