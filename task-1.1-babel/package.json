@@ -1,12 +1,12 @@
 {
-  "name": "task-1.1",
+  "name": "task-1.1-babel",
   "version": "0.0.1",
   "description": "Basics. Node.js fundamental theory",
   "main": "src/main.js",
   "scripts": {
-    "start": "node --experimental-modules src/main.js",
-    "dev": "nodemon --experimental-modules src/main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src -d dist",
+    "start": "node dist/main.js",
+    "dev": "npm run build && nodemon dist/main.js"
   },
   "repository": {
     "type": "git",
@@ -17,11 +17,15 @@
   ],
   "author": "Aliaksandr Varachai",
   "license": "ISC",
-  "type": "module",
   "engines": {
-    "node": ">=12.18"
+    "node": ">=8.17"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0"
   }
 }
