@@ -1,5 +1,6 @@
 */node_modules/
+*/dist/
 
-# generated CSV files for test purpose
-task-1.2/csv/*
-!task-1.2/csv/nodejs-hw*
+# generated csv files are ignored except of examples
+*/csv/
+!*/nodejs-hw*
