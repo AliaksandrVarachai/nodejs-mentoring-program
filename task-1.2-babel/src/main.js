@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import { Transform } from 'stream';
+import { Transform, pipeline } from 'stream';
 import csvToJson from 'csvtojson';
 
 const rl = readline.createInterface(process.stdin, process.stdout);
@@ -32,8 +32,11 @@ async function main() {
   const transform = new Transform({
     transform(buf, encoding, next) {
       const source = JSON.parse(buf.toString());
+      const ignoredKeys = new Set(['Amount']);
       const target = Object.keys(source).reduce((acc, key) => {
-        acc[key.toLowerCase()] = getJsonTypeValue(source[key]);
+        if (!ignoredKeys.has(key)) {
+          acc[key.toLowerCase()] = getJsonTypeValue(source[key]);
+        }
         return acc;
       }, {});
       this.push(JSON.stringify(target) + '\n');
@@ -42,17 +45,18 @@ async function main() {
   });
   const writeTxtStream = fs.createWriteStream(txtPath, { flags: 'w' });
 
-  readCsvStream
-    .on('error', error => { errorHandler(error, txtPath); })
-    .pipe(parser)
-    .on('error', error => { errorHandler(error, txtPath); })
-    .pipe(transform)
-    .on('error', error => { errorHandler(error, txtPath); })
-    .pipe(writeTxtStream)
-    .on('error', error => { errorHandler(error, txtPath); })
-    .on('finish', () => {
-      console.log(`File ${txtFilename} has been written successfully.`);
-    })
+  pipeline(
+    readCsvStream,
+    parser,
+    transform,
+    writeTxtStream,
+    (error) => {
+      if (error) {
+        return errorHandler(error, txtPath);
+      }
+      console.log(`File ${txtFilename} has been written successfully.`)
+    }
+  );
 }
 
 function getJsonTypeValue(strValue) {
