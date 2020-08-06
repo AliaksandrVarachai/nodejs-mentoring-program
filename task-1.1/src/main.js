@@ -42,6 +42,8 @@ const lineFormatter = new Transform({
   }
 });
 
+process.stdin.setEncoding('utf8');
+
 process.stdin
   .pipe(lineTrimmer)
   .pipe(reverser)
