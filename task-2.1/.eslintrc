@@ -1,33 +1,14 @@
 {
     "parser": "@babel/eslint-parser",
-    "plugins": [
-    ],
+    "plugins": [],
     "env": {
-        "browser": true,
         "node": true,
-        "jasmine": true,
         "es6": true,
-        "jest": true
     },
     "parserOptions": {
-        "ecmaFeatures": {
-            "arrowFunctions": true,
-            "blockBindings": true,
-            "classes": true,
-            "defaultParams": true,
-            "destructuring": true,
-            "forOf": true,
-            "generators": false,
-            "modules": true,
-            "objectLiteralComputedProperties": true,
-            "objectLiteralDuplicateProperties": false,
-            "objectLiteralShorthandMethods": true,
-            "objectLiteralShorthandProperties": true,
-            "restParams": true,
-            "spread": true,
-            "superInFunctions": true,
-            "templateStrings": true,
-        }
+        "ecmaVersion": 11,
+        "sourceType": "module",
+        "ecmaFeatures": {}
     },
     "rules": {
         "no-debugger": 1,
@@ -224,8 +205,7 @@
             4,
             {
                 "ignoreUrls": true,
-                "ignoreComments": false,
-                "ignorePattern": "^\\s*(const|let|var)\\s+\\w+\\s+\\=\\s+\\/.*\\/(|i|g|m|ig|im|gm|igm);?$"
+                "ignoreComments": false
             }
         ],
         "max-nested-callbacks": [
@@ -323,11 +303,5 @@
         ],
         "no-bitwise": 2
     },
-    "globals": {
-        "$": true,
-        "ga": true,
-        "__ENV__": true,
-        "__DEVTOOLS__": true,
-        "PUBLIC_URL": true
-    }
+    "globals": {}
 }

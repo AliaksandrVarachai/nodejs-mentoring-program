@@ -8,5 +8,6 @@
         }
       }
     ]
-  ]
+  ],
+  "auxiliaryCommentBefore": "\n Generated with Babel. Please DO NOT edit the content.\n"
 }
