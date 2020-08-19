@@ -1,3 +1,7 @@
+// import fs from 'fs';
+
 console.log('hello');
 
-var x = 42;
+const x = 42;
+
+console.log(x);
