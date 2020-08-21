@@ -113,7 +113,7 @@ function _createUser() {
       res.status(201).json((0, _users2.getSuccessView)(newUser));
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users2.getErrorView)(error.message));
+      res.status(400).json((0, _users2.getErrorView)(error.message));
     }
   });
   return _createUser.apply(this, arguments);
@@ -148,7 +148,7 @@ function _updateUser() {
         age,
         isDeleted
       });
-      res.status(201).json((0, _users2.getSuccessView)(newUser));
+      res.status(200).json((0, _users2.getSuccessView)(newUser));
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));

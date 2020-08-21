@@ -58,7 +58,7 @@ export async function updateUser(req, res) {
   }
   try {
     const newUser = await usersService.updateUser({ id, password, age, isDeleted });
-    res.status(201).json(getSuccessView(newUser));
+    res.status(200).json(getSuccessView(newUser));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
     res.status(404).json(getErrorView(error.message));

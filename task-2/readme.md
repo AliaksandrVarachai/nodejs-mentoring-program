@@ -191,7 +191,7 @@ Body:
 
 **Response example:**
 ```
-Status: 201
+Status: 200
 Body:
     {
         "data": {

@@ -10,6 +10,8 @@ exports.validateUpdateUser = exports.validateCreateUser = exports.default = void
 
 var _ajv = _interopRequireDefault(require("ajv"));
 
+var _ajvErrors = _interopRequireDefault(require("ajv-errors"));
+
 var _userDefsSchema = _interopRequireDefault(require("./user-defs-schema"));
 
 var _createUserSchema = _interopRequireDefault(require("./create-user-schema"));
@@ -21,6 +23,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var ajv = new _ajv.default({
   allErrors: true
 });
+(0, _ajvErrors.default)(ajv);
 ajv.addFormat('password', password => /^[-a-z0-9]{3,20}$/i.test(password) && /[a-z]/i.test(password) && /\d/.test(password));
 var defsSchema = ajv.addSchema(_userDefsSchema.default);
 var _default = ajv;
