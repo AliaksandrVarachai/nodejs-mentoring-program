@@ -149,9 +149,9 @@ Status: 201
 Body:
     {
         "data": {
-            "id": "4cd8b149-4dc9-4b3a-8af3-e71afd25bed5",
-            "login": "admin-1",
-            "password": "admin-1",
+            "id": "a89bbb06-3afd-4ec8-98df-bf0495430c2a",
+            "login": "new-user-1",
+            "password": "new-user-1",
             "age": 30,
             "isDeleted": false
         }
