@@ -4,7 +4,7 @@
   "description": "Simple REST service with CRUD operations",
   "main": "lib/server.js",
   "scripts": {
-    "build": "babel src --out-dir lib",
+    "build": "rimraf lib/* && babel src --out-dir lib",
     "start": "node lib/server.js",
     "dev": "nodemon --exec babel-node src/server.js",
     "lint": "eslint .",
@@ -30,7 +30,8 @@
     "eslint": "^7.7.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2"
   },
   "husky": {
     "hooks": {
