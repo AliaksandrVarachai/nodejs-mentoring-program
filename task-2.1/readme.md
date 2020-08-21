@@ -50,7 +50,9 @@ Server settings can be found and changed in `config.js` file.
 #### Get all users
 
 **Request example:**
-```GET http://localhost:3000/users/all```
+```
+GET http://localhost:3000/users/all
+```
 
 **Response example:**
 ```
