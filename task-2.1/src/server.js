@@ -1,7 +1,7 @@
 import express from 'express';
+import { API_PORT } from '../config';
 import usersRouter from './routes/users';
 
-const apiPort = 3000;
 const app = express();
 
 app.use(express.json());
@@ -11,6 +11,6 @@ app.use('*', (req, res, next) => {
   next();
 });
 
-app.listen(apiPort, () => {
-  console.log(`Express.js server is listening on http://localhost:${apiPort}`);
+app.listen(API_PORT, () => {
+  console.log(`Express.js server is listening on http://localhost:${API_PORT}`);
 });

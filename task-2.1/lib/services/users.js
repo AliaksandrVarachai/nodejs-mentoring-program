@@ -93,7 +93,7 @@ function _getAutoSuggestUsers() {
       ++userIndex;
     }
 
-    suggestedUsers.sort((user1, user2) => user1.login < user2.login ? 1 : -1);
+    suggestedUsers.sort((user1, user2) => user1.login.localeCompare(user2.login));
     return suggestedUsers;
   });
   return _getAutoSuggestUsers.apply(this, arguments);

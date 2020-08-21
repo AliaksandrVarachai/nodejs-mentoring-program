@@ -40,3 +40,10 @@ Tested on `Node v12`.
 ### Run script in dev mode
 
 `npm run dev`
+
+### Server config
+
+Server settings can be found and changed in `config.js` file.
+
+### CRUD 
+

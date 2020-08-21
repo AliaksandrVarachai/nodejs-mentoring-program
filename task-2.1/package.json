@@ -2,11 +2,11 @@
   "name": "task-2.1",
   "version": "1.0.0",
   "description": "Simple REST service with CRUD operations",
-  "main": "lib/index.js",
+  "main": "lib/server.js",
   "scripts": {
     "build": "babel src --out-dir lib",
-    "start": "node lib/index.js",
-    "dev": "nodemon --exec babel-node src/index.js",
+    "start": "node lib/server.js",
+    "dev": "nodemon --exec babel-node src/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
