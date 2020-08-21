@@ -1,9 +1,11 @@
 import Ajv from 'ajv';
+import ajvErrors from 'ajv-errors';
 import userDefsSchema from './user-defs-schema';
 import createUserSchema from './create-user-schema';
 import updateUserSchema from './update-user-schema';
 
 const ajv = new Ajv({ allErrors: true });
+ajvErrors(ajv);
 
 ajv.addFormat('password', (password) =>
   (/^[-a-z0-9]{3,20}$/i).test(password) && (/[a-z]/i).test(password) && /\d/.test(password)

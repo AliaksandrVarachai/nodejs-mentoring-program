@@ -7,11 +7,14 @@ export default {
     },
     login: {
       type: 'string',
-      pattern: '[-a-z\\d]{3,20}'
+      pattern: '^[-a-z\\d]{3,20}$',
+      errorMessage: 'must contain 3-20 chars. Allowed chars: a-z, 0-9, -'
     },
     password: {
       type: 'string',
-      format: 'password'
+      format: 'password',
+      errorMessage:
+        'must contain 3-20 chars. Allowed chars: a-z, 0-9, -. At least one letter and number must be provided'
     },
     age: {
       type: 'integer',
