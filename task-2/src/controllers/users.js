@@ -46,7 +46,7 @@ export async function createUser(req, res) {
     res.status(201).json(getSuccessView(newUser));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
-    res.status(404).json(getErrorView(error.message));
+    res.status(400).json(getErrorView(error.message));
   }
 }
 
