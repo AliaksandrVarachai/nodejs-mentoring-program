@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import usersDb from '../db/memory/users';
-import ajv, { validateCreateUser, validateUpdateUser } from '../validators';
 
 /**
  * Gets full list of users (for test purpose).
@@ -49,9 +48,6 @@ export async function getAutoSuggestUsers(loginSubstring = '', limit = 10) {
  * @returns {Promise<object>}
  */
 export async function createUser({ login, password, age }) {
-  if (!validateCreateUser({ login, password, age })) {
-    throw Error(ajv.errorsText(validateCreateUser.errors));
-  }
   if (_findUserByLogin(login)) {
     throw Error(`User "${login}" already exists.`);
   }
@@ -74,9 +70,6 @@ export async function createUser({ login, password, age }) {
  * @returns {Promise<object|error>}
  */
 export async function updateUser({ id, password, age }) {
-  if (!validateUpdateUser({ id, password, age })) {
-    throw Error(ajv.errorsText(validateUpdateUser.errors));
-  }
   const user = _findUserById(id);
   if (!user) throw Error(`User with id="${id}" is not found.`);
   if (password) user.password = password;
