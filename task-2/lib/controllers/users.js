@@ -13,6 +13,8 @@ exports.createUser = createUser;
 exports.updateUser = updateUser;
 exports.removeUser = removeUser;
 
+var _config = require("../../config");
+
 var usersService = _interopRequireWildcard(require("../services/users"));
 
 var _users2 = require("../views/users");
@@ -35,7 +37,7 @@ function _getAllUsers() {
       var users = yield usersService.getAllUsers();
       res.status(200).json((0, _users2.getSuccessView)(users));
     } catch (error) {
-      console.log(error);
+      if (_config.LOG_ERRORS) console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -52,7 +54,7 @@ function _getUserById() {
       var user = yield usersService.getUserById(req.params.id);
       res.status(200).json((0, _users2.getSuccessView)(user));
     } catch (error) {
-      console.log(error);
+      if (_config.LOG_ERRORS) console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -72,7 +74,7 @@ function _getAutoSuggestUsers() {
       var users = yield usersService.getAutoSuggestUsers(loginSubstring, limit);
       res.status(200).json((0, _users2.getSuccessView)(users));
     } catch (error) {
-      console.log(error);
+      if (_config.LOG_ERRORS) console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -99,7 +101,7 @@ function _createUser() {
       });
       res.status(201).json((0, _users2.getSuccessView)(newUser));
     } catch (error) {
-      console.log(error);
+      if (_config.LOG_ERRORS) console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -128,7 +130,7 @@ function _updateUser() {
       });
       res.status(201).json((0, _users2.getSuccessView)(newUser));
     } catch (error) {
-      console.log(error);
+      if (_config.LOG_ERRORS) console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -145,7 +147,7 @@ function _removeUser() {
       yield usersService.removeUser(req.params.id);
       res.sendStatus(204);
     } catch (error) {
-      console.log(error);
+      if (_config.LOG_ERRORS) console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
