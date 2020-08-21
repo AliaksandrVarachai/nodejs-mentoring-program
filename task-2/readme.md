@@ -1,6 +1,8 @@
-# Task 2.1
+# Task 2
 
 ## Requirements
+
+### Task 2.1
 
 Write a simple REST service with CRUD operations for User entity.
 
@@ -25,6 +27,20 @@ Write a simple REST service with CRUD operations for User entity.
   * Store user’s collection in the service memory (while the service is running).
   
 * To test the service CRUD methods, you can use **Postman** (https://www.getpostman.com).
+
+### Task 2.2
+
+Add server-side validation for `create/update` operations of `User` entity:
+* all fields are required;
+* `login` validation is required;
+* `password` must contain letters and numbers;
+* user’s `age` must be between 4 and 130.
+
+In case of any property does not meet the validation requirements or the field is absent, return 400 (Bad Request)
+and detailed error message.
+
+For requests validation use special packages like **joi** 
+(https://github.com/hapijs/joi,https://www.npmjs.com/package/express-joi-validation).
 
 
 ## Implementation
@@ -201,3 +217,173 @@ Status: 204
 ```
 
 
+#### Create user validation
+
+##### User name validation #1
+
+**Request example:**
+```
+PUT http://localhost:3000/users/create
+Body:
+    {
+       "login": "$user$",
+       "password": "abc123",
+       "age": 30
+    }
+```
+
+**Response example:**
+```
+Status: 400
+Body:
+    {
+        "error": {
+            "message": "data/login must contain 3-20 chars. Allowed chars: a-z, 0-9, -"
+        }
+    }
+```
+
+##### User name validation #2
+
+**Request example:**
+```
+PUT http://localhost:3000/users/create
+Body:
+    {
+       "login": "user-1",
+       "password": "abc123",
+       "age": 30
+    }
+```
+
+**Response example:**
+```
+Status: 400
+Body:
+    {
+        "error": {
+            "message": "User \"user-1\" already exists."
+        }
+    }
+```
+
+##### Password validation
+
+**Request example:**
+```
+PUT http://localhost:3000/users/create
+Body:
+    {
+       "login": "new-user",
+       "password": "abc___123",
+       "age": 30
+    }
+```
+
+**Response example:**
+```
+Status: 400
+Body:
+    {
+        "error": {
+            "message": "data/password must contain 3-20 chars. Allowed chars: a-z, 0-9, -. At least one letter and number must be provided"
+        }
+    }
+```
+
+##### Age validation
+
+**Request example:**
+```
+PUT http://localhost:3000/users/create
+Body:
+    {
+        "login": "new-user",
+        "password": "abc123",
+        "age": 999
+    }
+```
+
+**Response example:**
+```
+Status: 400
+Body:
+    {
+        "error": {
+            "message": "data/age should be <= 130"
+        }
+    }
+```
+
+
+#### Update user validation
+
+##### ID validation
+
+**Request example:**
+```
+PUT http://localhost:3000/users/create
+Body:
+    {
+        "id": "___",
+        "password": "abc123",
+        "age": 30
+    }
+```
+
+**Response example:**
+```
+Status: 400
+Body:
+    {
+        "error": {
+            "message": "data/id should match format \"uuid\""
+        }
+    }
+```
+
+##### Password validation
+
+**Request example:**
+```
+PUT http://localhost:3000/users/create
+Body:
+    {
+        "id": "a4d46aa5-6070-4352-919e-34ddaa9f993f",
+        "password": "1",
+    }
+```
+
+**Response example:**
+```
+Status: 400
+Body:
+    {
+        "error": {
+            "message": "data/password must contain 3-20 chars. Allowed chars: a-z, 0-9, -. At least one letter and number must be provided"
+        }
+    }
+```
+
+##### Age validation
+
+**Request example:**
+```
+PUT http://localhost:3000/users/create
+Body:
+    {
+        "id": "a4d46aa5-6070-4352-919e-34ddaa9f993f",
+        "age": -123
+    }
+```
+
+**Response example:**
+```
+Status: 400
+Body:
+    {
+        "error": {
+            "message": "data/age should be >= 4"
+        }
+    }
+```
