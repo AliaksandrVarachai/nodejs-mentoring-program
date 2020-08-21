@@ -121,7 +121,7 @@ function _createUser() {
     } = _ref;
     if (_findUserByLogin(login)) throw Error("User \"".concat(login, "\" already exists."));
     var user = {
-      id: (0, _uuid.vs)(),
+      id: (0, _uuid.v4)(),
       login,
       password,
       age,
@@ -174,7 +174,7 @@ function _removeUser() {
     var user = _findUserById(id);
 
     if (!user) throw Error("User with id=\"".concat(id, "\" is not found."));
-    user.isDeleted = false;
+    user.isDeleted = true;
   });
   return _removeUser.apply(this, arguments);
 }

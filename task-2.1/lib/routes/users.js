@@ -22,6 +22,6 @@ router.get('/users/auto-suggest', usersController.getAutoSuggestUsers);
 router.get('/users/:id', usersController.getUserById);
 router.put('/users/create', usersController.createUser);
 router.patch('/users/update', usersController.updateUser);
-router.delete('/users/delete', usersController.removeUser);
+router.delete('/users/remove/:id', usersController.removeUser);
 var _default = router;
 exports.default = _default;

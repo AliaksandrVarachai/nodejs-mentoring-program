@@ -35,6 +35,7 @@ function _getAllUsers() {
       var users = yield usersService.getAllUsers();
       res.status(200).json((0, _users2.getSuccessView)(users));
     } catch (error) {
+      console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -51,6 +52,7 @@ function _getUserById() {
       var user = yield usersService.getUserById(req.params.id);
       res.status(200).json((0, _users2.getSuccessView)(user));
     } catch (error) {
+      console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -63,15 +65,14 @@ function getAutoSuggestUsers(_x5, _x6) {
 
 function _getAutoSuggestUsers() {
   _getAutoSuggestUsers = _asyncToGenerator(function* (req, res) {
-    var {
-      'login-substring': loginSubstring,
-      limit
-    } = req.query;
+    var loginSubstring = req.query['login-substring'];
+    var limit = Number(req.query.limit);
 
     try {
       var users = yield usersService.getAutoSuggestUsers(loginSubstring, limit);
       res.status(200).json((0, _users2.getSuccessView)(users));
     } catch (error) {
+      console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -98,6 +99,7 @@ function _createUser() {
       });
       res.status(201).json((0, _users2.getSuccessView)(newUser));
     } catch (error) {
+      console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -126,6 +128,7 @@ function _updateUser() {
       });
       res.status(201).json((0, _users2.getSuccessView)(newUser));
     } catch (error) {
+      console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });
@@ -142,6 +145,7 @@ function _removeUser() {
       yield usersService.removeUser(req.params.id);
       res.sendStatus(204);
     } catch (error) {
+      console.log(error);
       res.status(404).json((0, _users2.getErrorView)(error.message));
     }
   });

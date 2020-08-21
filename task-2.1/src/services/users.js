@@ -1,4 +1,4 @@
-import { vs as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import usersDb from '../db/memory/users';
 
 /**
@@ -85,7 +85,7 @@ export async function updateUser({ id, password, age, isDeleted }) {
 export async function removeUser(id) {
   const user = _findUserById(id);
   if (!user) throw Error(`User with id="${id}" is not found.`);
-  user.isDeleted = false;
+  user.isDeleted = true;
 }
 
 
