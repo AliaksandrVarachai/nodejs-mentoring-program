@@ -4,16 +4,20 @@
   "description": "Simple REST service with CRUD operations",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src/index.js -d lib",
+    "build": "babel src --out-dir lib",
     "start": "node lib/index.js",
-    "dev": "nodemon @babel/node src/index.js",
+    "dev": "nodemon --exec babel-node src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:Aliaksandr_Varachai/nodejs-mentoring-program.git"
   },
   "keywords": [],
   "author": "Aliaksandr Varachai",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "license": "ISC",
   "devDependencies": {
@@ -22,6 +26,7 @@
     "@babel/eslint-parser": "^7.11.3",
     "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.11.0",
+    "babel-plugin-add-header-comment": "^1.0.3",
     "eslint": "^7.7.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
@@ -37,5 +42,8 @@
       "eslint"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.17.1",
+    "uuid": "^8.3.0"
+  }
 }

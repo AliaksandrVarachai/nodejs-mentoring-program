@@ -1,7 +1,16 @@
-// import fs from 'fs';
+import express from 'express';
+import usersRouter from './routes/users';
 
-console.log('hello');
+const apiPort = 3000;
+const app = express();
 
-const x = 42;
+app.use(express.json());
+app.use('/api', usersRouter);
+app.use('*', (req, res, next) => {
+  res.status(404).send('Sorry, the path is not found.');
+  next();
+});
 
-console.log(x);
+app.listen(apiPort, () => {
+  console.log(`Express.js server is listening on http://localhost:${apiPort}`);
+});

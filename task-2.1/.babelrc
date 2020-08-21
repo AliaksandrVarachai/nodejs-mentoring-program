@@ -9,5 +9,12 @@
       }
     ]
   ],
-  "auxiliaryCommentBefore": "\n Generated with Babel. Please DO NOT edit the content.\n"
+  "plugins": [
+    [
+      "add-header-comment",
+      {
+        "header": ["Generated with Babel. Please DO NOT EDIT."]
+      }
+    ]
+  ]
 }

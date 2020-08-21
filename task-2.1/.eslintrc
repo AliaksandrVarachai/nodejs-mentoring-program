@@ -193,9 +193,9 @@
         ],
         "indent": [
             2,
-            4,
+            2,
             {
-                "SwitchCase": 1
+                "MemberExpression": 2
             }
         ],
         "linebreak-style": 0,
