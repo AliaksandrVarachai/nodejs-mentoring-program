@@ -1,39 +1,25 @@
 -- psql -U postgres -f initialize-db.sql -v userName=task3_user -v dbName=task3_db userPassword=\'111\'
 
--- Settings variables
-\set userName :userName
-\set dbName :dbName
+-- DROP DATABASE :dbName
+CREATE DATABASE :dbName;
 
 -- DROP ROLE :userName;
+CREATE ROLE task3_readwrite;
 
-CREATE ROLE :userName
-WITH
-    LOGIN
-    PASSWORD :userPassword
-;
+-- REVOKE CONNECT
+-- ON DATABASE :dbName
+-- FROM task3_readwrite;
+GRANT CONNECT
+ON DATABASE :dbName
+TO task3_readwrite;
 
-
--- DROP DATABASE :dbName
-
-CREATE DATABASE :dbName
-WITH
-    OWNER :userName
-;
-
--- Connection to the created DB
-\c :dbName;
-
--- Installation UUID generator
+-- Connection to the created DB as a superuser
+\c :dbName
 
 -- DROP EXTENSION IF EXISTS "uuid-ossp";
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-
--- DB Initialization
-
 -- DROP TABLE public.users
-
 CREATE TABLE public.users (
     id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,                     -- PRIMARY KEY
     external_id uuid DEFAULT uuid_generate_v4(),                       -- Key for external communication
@@ -47,10 +33,11 @@ CREATE TABLE public.users (
     CONSTRAINT password_check CHECK (
         password ~ '^[-a-z\d]+$'
         AND password ~ '\d'
-        AND password ~ '[a-z]
+        AND password ~ '[a-z]'
     )
 );
 
+-- DROP FUNCTION IF EXISTS public.trigger_set_timestamp
 CREATE OR REPLACE FUNCTION public.trigger_set_timestamp() RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -61,23 +48,30 @@ AS $function$
 $function$;
 
 -- DROP TRIGGER set_timestamp_permissions ON public.users;
-
 CREATE trigger set_timestamp_permissions
 BEFORE UPDATE ON public.users
 FOR EACH ROW
 EXECUTE function trigger_set_timestamp();
 
--- Granting permissions
-GRANT CONNECT
-ON DATABASE :dbName
-TO :userName;
-
+-- REVOKE GRANT SELECT, INSERT, UPDATE, DELETE
+-- ON ALL TABLES IN SCHEMA public
+-- FROM task3_readwrite;
 GRANT SELECT, INSERT, UPDATE, DELETE
 ON ALL TABLES IN SCHEMA public
-TO :userName;
+TO task3_readwrite;
+
+-- DROP ROLE :userName;
+CREATE ROLE :userName
+WITH
+    LOGIN
+    PASSWORD :userPassword
+;
+
+-- REVOKE task3_readwrite FROM :userName;
+GRANT task3_readwrite TO :userName;
 
 
--- Filling the DB with data
+-- TRUNCATE TABLE public.users;
 INSERT INTO public.users (login, password, age, is_deleted)
 VALUES
     ('user-1',  'user-1',  20, false),
