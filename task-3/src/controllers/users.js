@@ -1,7 +1,19 @@
-import { LOG_ERRORS } from '../../config';
-import * as usersService from '../services/users';
+import { LOG_ERRORS, DATA_SOURCE, AVAILABLE_DATA_SOURCES } from '../../config';
 import { getSuccessView, getErrorView } from '../views/users';
-import ajv, {validateCreateUser, validateUpdateUser} from "../validators";
+
+// TODO: use dynamic import
+function importService(dataSource) {
+  switch (dataSource) {
+    case AVAILABLE_DATA_SOURCES.MEMORY:
+      return require('../services/memory/users');
+    case AVAILABLE_DATA_SOURCES.POSTGRES:
+      return require('../services/pg/users');
+    default:
+      throw Error(`Data source "${dataSource}" is unknown.`);
+  }
+}
+
+const usersService = importService(DATA_SOURCE);
 
 export async function getAllUsers(req, res) {
   try {
@@ -37,10 +49,6 @@ export async function getAutoSuggestUsers(req, res) {
 
 export async function createUser(req, res) {
   const { login, password, age } = req.body;
-  if (!validateCreateUser({ login, password, age })) {
-    if (LOG_ERRORS) console.log(error);
-    return res.status(400).json(getErrorView(ajv.errorsText(validateCreateUser.errors)));
-  }
   try {
     const newUser = await usersService.createUser({ login, password, age });
     res.status(201).json(getSuccessView(newUser));
@@ -52,10 +60,6 @@ export async function createUser(req, res) {
 
 export async function updateUser(req, res) {
   const { id, password, age, isDeleted } = req.body;
-  if (!validateUpdateUser({ id, password, age })) {
-    if (LOG_ERRORS) console.log(error);
-    return res.status(400).json(getErrorView(ajv.errorsText(validateUpdateUser.errors)));
-  }
   try {
     const newUser = await usersService.updateUser({ id, password, age, isDeleted });
     res.status(200).json(getSuccessView(newUser));

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import usersDb from '../db/memory/users';
+import usersDb from '../../db/memory/users';
 
 /**
  * Gets full list of users (for test purpose).
