@@ -1,7 +1,7 @@
 // List of available data sources
 const AVAILABLE_DATA_SOURCES = {
   POSTGRES: 'postgres',
-  MEMORY: 'memory',
+  MEMORY: 'memory'
 };
 
 module.exports = {
@@ -13,5 +13,5 @@ module.exports = {
   DB_PORT: 5432,
   DB_USER: 'task3_user',
   DB_NAME: 'task3_db',
-  DB_PASSWORD: '111',
+  DB_PASSWORD: '111'
 };

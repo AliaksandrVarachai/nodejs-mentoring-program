@@ -39,5 +39,3 @@ export function validateUpdateUser(req, res, next) {
   }
   return next();
 }
-
-

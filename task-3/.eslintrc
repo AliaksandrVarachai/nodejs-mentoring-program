@@ -195,7 +195,8 @@
             2,
             2,
             {
-                "MemberExpression": 2
+                "MemberExpression": 2,
+                "SwitchCase": 1
             }
         ],
         "linebreak-style": 0,
