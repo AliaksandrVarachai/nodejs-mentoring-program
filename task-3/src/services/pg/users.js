@@ -1,11 +1,8 @@
-import * as dataProvider from '../../data-access/memory';
+import * as dataProvider from '../../data-access/pg';
 
-/**
- * Gets full list of users (for test purpose).
- * @returns {Promise<Array>}
- */
 export async function getAllUsers() {
-  return await dataProvider.getAllUsers();
+  const rows = await dataProvider.getAllUsers();
+  return rows.map(row => toUser(row));
 }
 
 /**
@@ -14,7 +11,9 @@ export async function getAllUsers() {
  * @returns {Promise<object>}
  */
 export async function getUserById(id) {
-  return await dataProvider.getUserById(id);
+  const row = await dataProvider.getUserById(id);
+  if (!row) throw Error(`User with id="${id}" is not found.`);
+  return toUser(row);
 }
 
 /**
@@ -24,7 +23,8 @@ export async function getUserById(id) {
  * @returns {Promise<array>} - array of users which match provided conditions.
  */
 export async function getAutoSuggestUsers(loginSubstring = '', limit = 10) {
-  return await dataProvider.getAutoSuggestUsers(loginSubstring, limit);
+  const rows = await dataProvider.getAutoSuggestUsers(loginSubstring, limit);
+  return rows.map(row => toUser(row));
 }
 
 /**
@@ -35,7 +35,8 @@ export async function getAutoSuggestUsers(loginSubstring = '', limit = 10) {
  * @returns {Promise<object>}
  */
 export async function createUser({ login, password, age }) {
-  return await dataProvider.createUser({ login, password, age });
+  const row = await dataProvider.createUser({ login, password, age });
+  return toUser(row);
 }
 
 /**
@@ -46,14 +47,32 @@ export async function createUser({ login, password, age }) {
  * @returns {Promise<object|error>}
  */
 export async function updateUser({ id, password, age }) {
-  return await dataProvider.updateUser({ id, password, age });
+  const row = await dataProvider.updateUser({ id, password, age });
+  if (!row) throw Error(`User with id="${id}" is not found.`);
+  return toUser(row);
 }
 
 /**
  * Marks a user as deleted (soft deletion).
  * @param {string} id - user ID.
- * @returns {Promise<void|Error>}
+ * @returns {Promise<undefined>}
  */
 export async function removeUser(id) {
-  await dataProvider.removeUser(id);
+  const isDeleted = await dataProvider.removeUserSoft(id);
+  if (!isDeleted) throw Error(`User with id="${id}" is not found.`);
+}
+
+/**
+ * Transforms a row to a user.
+ * @param {string} external_id
+ * @param {boolean} is_deleted
+ * @param {object} rest
+ * @returns {object}
+ */
+function toUser({ external_id, is_deleted, ...rest }) {
+  return {
+    id: external_id,
+    isDeleted: is_deleted,
+    ...rest
+  };
 }
