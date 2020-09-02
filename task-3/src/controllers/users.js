@@ -6,8 +6,10 @@ function importService(dataSource) {
   switch (dataSource) {
     case AVAILABLE_DATA_SOURCES.MEMORY:
       return require('../services/memory/users');
-    case AVAILABLE_DATA_SOURCES.POSTGRES:
+    case AVAILABLE_DATA_SOURCES.PG:
       return require('../services/pg/users');
+    case AVAILABLE_DATA_SOURCES.KNEX:
+      return require('../services/knex/users');
     default:
       throw Error(`Data source "${dataSource}" is unknown.`);
   }

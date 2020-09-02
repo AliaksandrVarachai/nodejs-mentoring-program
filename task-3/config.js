@@ -1,14 +1,15 @@
 // List of available data sources
 const AVAILABLE_DATA_SOURCES = {
-  POSTGRES: 'postgres',
-  MEMORY: 'memory'
+  MEMORY: 'memory',
+  PG: 'pg',
+  KNEX: 'knex'
 };
 
 module.exports = {
   API_PORT: 3000,
   LOG_ERRORS: false,
   AVAILABLE_DATA_SOURCES,
-  DATA_SOURCE: AVAILABLE_DATA_SOURCES.POSTGRES,
+  DATA_SOURCE: AVAILABLE_DATA_SOURCES.KNEX,
   DB_HOST: 'localhost',
   DB_PORT: 5432,
   DB_USER: 'task3_user',
