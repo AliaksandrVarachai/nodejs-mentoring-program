@@ -76,7 +76,7 @@ function validateUpdateUser(req, res, next) {
     age,
     isDeleted
   })) {
-    var message = ajv.errorsText(_validateCreateUser.errors);
+    var message = ajv.errorsText(_validateUpdateUser.errors);
     if (_config.LOG_ERRORS) console.log(message);
     return res.status(400).json((0, _users.getErrorView)(message));
   }

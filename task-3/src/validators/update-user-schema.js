@@ -2,6 +2,7 @@ export default {
   $id: 'user-schema/update-user.json',
   type: 'object',
   required: ['id'],
+  additionalProperties: false,
   properties: {
     id: { $ref: 'defs.json#/definitions/id' },
     password: { $ref: 'defs.json#/definitions/password' },

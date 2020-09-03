@@ -33,7 +33,7 @@ export function validateCreateUser(req, res, next) {
 export function validateUpdateUser(req, res, next) {
   const { id, password, age, isDeleted } = req.body;
   if (!_validateUpdateUser({ id, password, age, isDeleted })) {
-    const message = ajv.errorsText(_validateCreateUser.errors);
+    const message = ajv.errorsText(_validateUpdateUser.errors);
     if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
