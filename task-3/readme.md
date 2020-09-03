@@ -43,7 +43,7 @@ npm start
 
 ### Run script in dev mode
 
-#### PostgreSQL DB is remote on elephantSQL (configured by default)
+#### Remote PostgreSQL on elephantSQL (configured by default)
 
 ```
 cd task-3
@@ -52,7 +52,7 @@ npm run dev
 ```
 See https://www.elephantsql.com for details 
 
-#### PostgreSQL is running on the local machine
+#### Running PostgreSQL on a local machine
 
 To work with local PostgreSQL database it needed to be installed from https://www.postgresql.org/download and run 
 
