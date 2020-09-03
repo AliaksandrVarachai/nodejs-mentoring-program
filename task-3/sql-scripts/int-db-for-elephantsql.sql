@@ -1,25 +1,8 @@
--- psql -U postgres -f init-db.sql -v userName=task3_user -v dbName=task3_db userPassword=\'111\'
+-- It's impossible to create via script a database or user/role.
+-- Everything else is similar to psql initialize script.
 
--- DROP DATABASE :dbName
-CREATE DATABASE :dbName;
-
--- DROP ROLE :userName;
-CREATE ROLE task3_readwrite;
-
--- REVOKE CONNECT
--- ON DATABASE :dbName
--- FROM task3_readwrite;
-GRANT CONNECT
-ON DATABASE :dbName
-TO task3_readwrite;
-
--- Connection to the created DB as a superuser
-\c :dbName
-
--- DROP EXTENSION IF EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- DROP TABLE public.users
 CREATE TABLE public.users (
     id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,                     -- PRIMARY KEY
     external_id uuid DEFAULT uuid_generate_v4(),                       -- Key for external communication
@@ -37,7 +20,7 @@ CREATE TABLE public.users (
     )
 );
 
--- DROP FUNCTION IF EXISTS public.trigger_set_timestamp
+
 CREATE OR REPLACE FUNCTION public.trigger_set_timestamp() RETURNS trigger
 LANGUAGE plpgsql
 AS $function$
@@ -47,31 +30,13 @@ AS $function$
     end;
 $function$;
 
--- DROP TRIGGER set_timestamp_permissions ON public.users;
+
 CREATE trigger set_timestamp_permissions
 BEFORE UPDATE ON public.users
 FOR EACH ROW
 EXECUTE function trigger_set_timestamp();
 
--- REVOKE GRANT SELECT, INSERT, UPDATE, DELETE
--- ON ALL TABLES IN SCHEMA public
--- FROM task3_readwrite;
-GRANT SELECT, INSERT, UPDATE, DELETE
-ON ALL TABLES IN SCHEMA public
-TO task3_readwrite;
 
--- DROP ROLE :userName;
-CREATE ROLE :userName
-WITH
-    LOGIN
-    PASSWORD :userPassword
-;
-
--- REVOKE task3_readwrite FROM :userName;
-GRANT task3_readwrite TO :userName;
-
-
--- TRUNCATE TABLE public.users;
 INSERT INTO public.users (login, password, age, is_deleted)
 VALUES
     ('user-1',  'user-1',  20, false),

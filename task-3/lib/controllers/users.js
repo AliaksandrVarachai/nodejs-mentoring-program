@@ -15,19 +15,30 @@ exports.removeUser = removeUser;
 
 var _config = require("../../config");
 
-var usersService = _interopRequireWildcard(require("../services/users"));
-
-var _users2 = require("../views/users");
-
-var _validators = _interopRequireWildcard(require("../validators"));
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+var _users = require("../views/users");
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+// TODO: use dynamic import
+function importService(dataSource) {
+  switch (dataSource) {
+    case _config.AVAILABLE_DATA_SOURCES.MEMORY:
+      return require('../services/memory/users');
+
+    case _config.AVAILABLE_DATA_SOURCES.PG:
+      return require('../services/pg/users');
+
+    case _config.AVAILABLE_DATA_SOURCES.KNEX:
+      return require('../services/knex/users');
+
+    default:
+      throw Error("Data source \"".concat(dataSource, "\" is unknown."));
+  }
+}
+
+var usersService = importService(_config.DATA_SOURCE);
 
 function getAllUsers(_x, _x2) {
   return _getAllUsers.apply(this, arguments);
@@ -37,10 +48,10 @@ function _getAllUsers() {
   _getAllUsers = _asyncToGenerator(function* (req, res) {
     try {
       var users = yield usersService.getAllUsers();
-      res.status(200).json((0, _users2.getSuccessView)(users));
+      res.status(200).json((0, _users.getSuccessView)(users));
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users2.getErrorView)(error.message));
+      res.status(404).json((0, _users.getErrorView)(error.message));
     }
   });
   return _getAllUsers.apply(this, arguments);
@@ -54,10 +65,10 @@ function _getUserById() {
   _getUserById = _asyncToGenerator(function* (req, res) {
     try {
       var user = yield usersService.getUserById(req.params.id);
-      res.status(200).json((0, _users2.getSuccessView)(user));
+      res.status(200).json((0, _users.getSuccessView)(user));
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users2.getErrorView)(error.message));
+      res.status(404).json((0, _users.getErrorView)(error.message));
     }
   });
   return _getUserById.apply(this, arguments);
@@ -74,10 +85,10 @@ function _getAutoSuggestUsers() {
 
     try {
       var users = yield usersService.getAutoSuggestUsers(loginSubstring, limit);
-      res.status(200).json((0, _users2.getSuccessView)(users));
+      res.status(200).json((0, _users.getSuccessView)(users));
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users2.getErrorView)(error.message));
+      res.status(404).json((0, _users.getErrorView)(error.message));
     }
   });
   return _getAutoSuggestUsers.apply(this, arguments);
@@ -95,25 +106,16 @@ function _createUser() {
       age
     } = req.body;
 
-    if (!(0, _validators.validateCreateUser)({
-      login,
-      password,
-      age
-    })) {
-      if (_config.LOG_ERRORS) console.log(error);
-      return res.status(400).json((0, _users2.getErrorView)(_validators.default.errorsText(_validators.validateCreateUser.errors)));
-    }
-
     try {
       var newUser = yield usersService.createUser({
         login,
         password,
         age
       });
-      res.status(201).json((0, _users2.getSuccessView)(newUser));
+      res.status(201).json((0, _users.getSuccessView)(newUser));
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
-      res.status(400).json((0, _users2.getErrorView)(error.message));
+      res.status(400).json((0, _users.getErrorView)(error.message));
     }
   });
   return _createUser.apply(this, arguments);
@@ -132,15 +134,6 @@ function _updateUser() {
       isDeleted
     } = req.body;
 
-    if (!(0, _validators.validateUpdateUser)({
-      id,
-      password,
-      age
-    })) {
-      if (_config.LOG_ERRORS) console.log(error);
-      return res.status(400).json((0, _users2.getErrorView)(_validators.default.errorsText(_validators.validateUpdateUser.errors)));
-    }
-
     try {
       var newUser = yield usersService.updateUser({
         id,
@@ -148,10 +141,10 @@ function _updateUser() {
         age,
         isDeleted
       });
-      res.status(200).json((0, _users2.getSuccessView)(newUser));
+      res.status(200).json((0, _users.getSuccessView)(newUser));
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users2.getErrorView)(error.message));
+      res.status(404).json((0, _users.getErrorView)(error.message));
     }
   });
   return _updateUser.apply(this, arguments);
@@ -168,7 +161,7 @@ function _removeUser() {
       res.sendStatus(204);
     } catch (error) {
       if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users2.getErrorView)(error.message));
+      res.status(404).json((0, _users.getErrorView)(error.message));
     }
   });
   return _removeUser.apply(this, arguments);
