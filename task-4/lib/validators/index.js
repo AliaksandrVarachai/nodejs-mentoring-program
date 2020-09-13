@@ -8,7 +8,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.validateCreateUser = validateCreateUser;
 exports.validateUpdateUser = validateUpdateUser;
-exports._validateUpdateUser = exports._validateCreateUser = void 0;
+exports.validateCreateGroup = validateCreateGroup;
+exports.validateCreatePermission = validateCreatePermission;
+exports.validateAddUsersToGroup = validateAddUsersToGroup;
+exports.validateDeleteUsersFromGroup = validateDeleteUsersFromGroup;
+exports.validateAddPermissionsToGroup = validateAddPermissionsToGroup;
+exports.validateDeletePermissionsFromGroup = validateDeletePermissionsFromGroup;
 
 var _ajv = _interopRequireDefault(require("ajv"));
 
@@ -18,11 +23,27 @@ var _config = require("../../config");
 
 var _users = require("../views/users");
 
-var _userDefsSchema = _interopRequireDefault(require("./user-defs-schema"));
+var _user = _interopRequireDefault(require("./schema-definitions/user"));
 
-var _createUserSchema = _interopRequireDefault(require("./create-user-schema"));
+var _group = _interopRequireDefault(require("./schema-definitions/group"));
 
-var _updateUserSchema = _interopRequireDefault(require("./update-user-schema"));
+var _permission = _interopRequireDefault(require("./schema-definitions/permission"));
+
+var _createUser = _interopRequireDefault(require("./schemas/create-user"));
+
+var _updateUser = _interopRequireDefault(require("./schemas/update-user"));
+
+var _createGroup = _interopRequireDefault(require("./schemas/create-group"));
+
+var _createPermission = _interopRequireDefault(require("./schemas/create-permission"));
+
+var _addUsersToGroup = _interopRequireDefault(require("./schemas/add-users-to-group"));
+
+var _deleteUsersFromGroup = _interopRequireDefault(require("./schemas/delete-users-from-group"));
+
+var _addPermissionsToGroup = _interopRequireDefault(require("./schemas/add-permissions-to-group"));
+
+var _deletePermissionsFromGroup = _interopRequireDefault(require("./schemas/delete-permissions-from-group"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,16 +52,29 @@ var ajv = new _ajv.default({
 });
 (0, _ajvErrors.default)(ajv);
 ajv.addFormat('password', password => /^[-a-z0-9]{3,20}$/i.test(password) && /[a-z]/i.test(password) && /\d/.test(password));
-var defsSchema = ajv.addSchema(_userDefsSchema.default);
 
-var _validateCreateUser = defsSchema.compile(_createUserSchema.default);
+var _userDefinition = ajv.addSchema(_user.default);
 
-exports._validateCreateUser = _validateCreateUser;
+var _groupDefinition = ajv.addSchema(_group.default);
 
-var _validateUpdateUser = defsSchema.compile(_updateUserSchema.default); // TODO: validate the rest of params
+var _permissionDefinition = ajv.addSchema(_permission.default);
 
+var _validateCreateUser = _userDefinition.compile(_createUser.default);
 
-exports._validateUpdateUser = _validateUpdateUser;
+var _validateUpdateUser = _userDefinition.compile(_updateUser.default);
+
+var _validateCreateGroup = _groupDefinition.compile(_createGroup.default);
+
+var _validateCreatePermission = _permissionDefinition.compile(_createPermission.default);
+
+var _validateAddUsersToGroup = ajv.compile(_addUsersToGroup.default);
+
+var _validateDeleteUsersFromGroup = ajv.compile(_deleteUsersFromGroup.default);
+
+var _validateAddPermissionsToGroup = ajv.compile(_addPermissionsToGroup.default);
+
+var _validateDeletePermissionsFromGroup = ajv.compile(_deletePermissionsFromGroup.default); // TODO: validate the rest of params
+
 
 function validateCreateUser(req, res, next) {
   var {
@@ -77,6 +111,110 @@ function validateUpdateUser(req, res, next) {
     isDeleted
   })) {
     var message = ajv.errorsText(_validateUpdateUser.errors);
+    if (_config.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _users.getErrorView)(message));
+  }
+
+  return next();
+}
+
+function validateCreateGroup(req, res, next) {
+  var {
+    name
+  } = req.body;
+
+  if (!_validateCreateGroup({
+    name
+  })) {
+    var message = ajv.errorsText(_validateCreateGroup.errors);
+    if (_config.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _users.getErrorView)(message));
+  }
+
+  return next();
+}
+
+function validateCreatePermission(req, res, next) {
+  var {
+    name
+  } = req.body;
+
+  if (!_validateCreatePermission({
+    name
+  })) {
+    var message = ajv.errorsText(_validateCreatePermission.errors);
+    if (_config.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _users.getErrorView)(message));
+  }
+
+  return next();
+}
+
+function validateAddUsersToGroup(req, res, next) {
+  var {
+    groupId,
+    userIds
+  } = req.body;
+
+  if (!_validateAddUsersToGroup({
+    groupId,
+    userIds
+  })) {
+    var message = ajv.errorsText(_validateAddUsersToGroup.errors);
+    if (_config.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _users.getErrorView)(message));
+  }
+
+  return next();
+}
+
+function validateDeleteUsersFromGroup(req, res, next) {
+  var {
+    groupId,
+    userIds
+  } = req.body;
+
+  if (!_validateDeleteUsersFromGroup({
+    groupId,
+    userIds
+  })) {
+    var message = ajv.errorText(_validateDeleteUsersFromGroup.errors);
+    if (_config.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _users.getErrorView)(message));
+  }
+
+  return next();
+}
+
+function validateAddPermissionsToGroup(req, res, next) {
+  var {
+    groupId,
+    permissionIds
+  } = req.body;
+
+  if (!_validateAddPermissionsToGroup({
+    groupId,
+    permissionIds
+  })) {
+    var message = ajv.errorsText(_validateAddPermissionsToGroup.errors);
+    if (_config.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _users.getErrorView)(message));
+  }
+
+  return next();
+}
+
+function validateDeletePermissionsFromGroup(req, res, next) {
+  var {
+    groupId,
+    permissionIds
+  } = req.body;
+
+  if (!_validateDeletePermissionsFromGroup({
+    groupId,
+    permissionIds
+  })) {
+    var message = ajv.errorsText(_validateDeletePermissionsFromGroup.errors);
     if (_config.LOG_ERRORS) console.log(message);
     return res.status(400).json((0, _users.getErrorView)(message));
   }

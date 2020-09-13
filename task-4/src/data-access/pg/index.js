@@ -9,7 +9,7 @@ export async function getAllUsers() {
   const result = await client.query(
     `
       SELECT 
-        external_id, 
+        user_id, 
         login, 
         password, 
         age, 
@@ -33,13 +33,13 @@ export async function getUserById(id) {
   const result = await client.query(
     `
       SELECT
-        external_id,
+        user_id,
         login,
         password,
         age,
         is_deleted
       FROM public.users
-      WHERE external_id=$1;
+      WHERE user_id=$1;
     `,
     [id]
   );
@@ -58,7 +58,7 @@ export async function getAutoSuggestUsers(loginSubstring, limit) {
   const result = await client.query(
     `
       SELECT 
-        external_id, 
+        user_id, 
         login, 
         password, 
         age, 
@@ -93,7 +93,7 @@ export async function createUser({ login, password, age }) {
       INSERT INTO public.users (login, password, age, is_deleted)
       VALUES ($1, $2, $3, $4)
       RETURNING 
-        external_id,
+        user_id,
         login, password,
         age,
         is_deleted
@@ -120,9 +120,9 @@ export async function updateUser({ id, password, age }) {
       SET
         password=$2,
         age=$3
-      WHERE external_id=$1 
+      WHERE user_id=$1 
       RETURNING 
-        external_id,
+        user_id,
         login, password,
         age,
         is_deleted
@@ -145,7 +145,7 @@ export async function removeUserSoft(id) {
     `
       UPDATE public.users
       SET is_deleted=true
-      WHERE external_id=$1;
+      WHERE user_id=$1;
     `,
     [id]
   );
@@ -159,14 +159,262 @@ export async function removeUserSoft(id) {
  * @returns {Promise<boolean>}
  */
 export async function removeUserHard(id) {
-  const client = pool.connect();
+  const client = await pool.connect();
   const result = await client.query(
     `
       DELETE FROM public.users
-      WHERE external_id=$1;
+      WHERE user_id=$1;
     `,
     [id]
   );
   client.release();
   return result.rowCount === 1;
+}
+
+/**
+ * Creates a new user.
+ * @param {string} name
+ * @returns {Promise<{group_id: string, name: string}>}
+ */
+export async function createGroup(name) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      INSERT INTO public.groups (name) 
+      VALUES ($1)
+      RETURNING group_id, name;
+    `,
+    [name]
+  );
+  client.release();
+  return result.rows[0];
+}
+
+/**
+ * Deletes a user.
+ * @param {string} groupId
+ * @returns {Promise<boolean>}
+ */
+export async function deleteGroup(groupId) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      DELETE FROM public.groups
+      WHERE group_id = $1;
+    `,
+    [groupId]
+  );
+  client.release();
+  return result.rowCount === 1;
+}
+
+/**
+ * Gets a group.
+ * @param groupId
+ * @returns {Promise<{group_id: string, name: string, permission_ids: string[]}>}
+ */
+export async function getGroupById(groupId) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      SELECT
+        g.group_id,
+        g.name,
+        ARRAY (
+            SELECT gp.permission_id FROM public.groups_permissions AS gp
+            WHERE gp.group_id = $1
+        ) AS permission_ids
+      FROM public.groups as g
+      WHERE g.group_id = $1;
+    `,
+    [groupId]
+  );
+  client.release();
+  return result.rows[0] || null;
+}
+
+/**
+ * Gets a list of available groups.
+ * @returns {Promise<{group_id: string}[]>}
+ */
+export async function getAllGroups() {
+  const client = await pool.connect();
+  const result = await client.query(
+    'SELECT group_id, name FROM public.groups;'
+  );
+  client.release();
+  return result.rows;
+}
+
+/**
+ * Creates a new permission.
+ * @param {string} name
+ * @returns {Promise<{permission_id: string, name: string}>}
+ */
+export async function createPermission(name) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      INSERT INTO public.permissions (name)
+      VALUES ($1)
+      RETURNING permission_id, name;
+    `,
+    [name]
+  );
+  client.release();
+  return result.rows[0];
+}
+
+/**
+ * Deletes a permission.
+ * @param {string} permissionId
+ * @returns {Promise<boolean>}
+ */
+export async function deletePermission(permissionId) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      DELETE FROM public.permissions
+      WHERE permission_id = $1;
+    `,
+    [permissionId]
+  );
+  client.release();
+  return result.rowCount === 1;
+}
+
+/**
+ * Gets permission by ID.
+ * @param {string} permissionId
+ * @returns {Promise<{permission_id: string, name: string}>}
+ */
+export async function getPermissionById(permissionId) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      SELECT permission_id, name FROM public.permissions
+      WHERE permission_id = $1;
+    `,
+    [permissionId]
+  );
+  client.release();
+  return result.rows[0];
+}
+
+/**
+ * Gets all available permissions.
+ * @returns {Promise<{permission_id: string, name: string}[]>}
+ */
+export async function getAllPermissions() {
+  const client = await pool.connect();
+  const result = await client.query(
+    'SELECT permission_id, name FROM public.permissions;'
+  );
+  client.release();
+  return result.rows;
+}
+
+/**
+ * Adds list of user to a group.
+ * @param {string} groupId
+ * @param {string[]} userIds
+ * @returns {Promise<{user_id: string}[]>}
+ */
+export async function addUsersToGroup(groupId, userIds) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      INSERT INTO public.users_groups (group_id, user_id)
+      SELECT $1 AS group_id, t.user_id
+      FROM unnest(cast ($2 AS uuid[])) AS t(user_id)
+      ON CONFLICT DO nothing
+      RETURNING user_id;
+    `,
+    [groupId, userIds]
+  );
+  client.release();
+  return result.rows;
+}
+
+/**
+ * Deletes users from a group.
+ * @param {string} groupId
+ * @param {string[]} userIds
+ * @returns {Promise<{user_id: string}[]>}
+ */
+export async function deleteUsersFromGroup(groupId, userIds) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      DELETE FROM public.users_groups AS ug
+      WHERE ug.group_id = $1 AND ug.user_id = ANY(cast ($2 as uuid[]))
+      RETURNING user_id;
+    `,
+    [groupId, userIds]
+  );
+  client.release();
+  return result.rows;
+}
+
+/**
+ * Adds list of permissions into a group (if a permission exists, it is ignored).
+ * @param {string} groupId
+ * @param {string[]} permissionIds
+ * @returns {Promise<{permission_id: string}[]>} - list of added permissions (without ignored existing ones).
+ */
+export async function addPermissionsToGroup(groupId, permissionIds) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      INSERT INTO public.groups_permissions (group_id, permission_id)
+      SELECT $1 AS group_id, t.permission_id
+      FROM unnest(cast ($2 as uuid[])) AS t(permission_id)
+      ON CONFLICT DO nothing
+      RETURNING permission_id;
+    `,
+    [groupId, permissionIds]
+  );
+  client.release();
+  return result.rows;
+}
+
+/**
+ * Deletes list of permissions from a group.
+ * @param groupId
+ * @param permissionIds
+ * @returns {Promise<{permission_id: string}[]>} - list of deleted permissions.
+ */
+export async function deletePermissionsFromGroup(groupId, permissionIds) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      DELETE FROM public.groups_permissions AS gp
+      WHERE gp.group_id = $1 AND gp.permission_id = ANY(cast ($2 as uuid[]))
+      RETURNING permission_id;
+    `,
+    [groupId, permissionIds]
+  );
+  client.release();
+  return result.rows;
+}
+
+/**
+ * Gets a permission list for the user.
+ * @returns {Promise<{permission_id: string}[]>}
+ */
+export async function getUserPermissions(userId) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      WITH found_groups AS (
+        SELECT ug.group_id FROM public.users_groups AS ug
+        WHERE ug.user_id = $1
+      )
+      SELECT DISTINCT permission_id FROM public.groups_permissions AS gp
+      WHERE gp.group_id IN (SELECT group_id FROM found_groups);
+    `,
+    [userId]
+  );
+  client.release();
+  return result.rows;
 }

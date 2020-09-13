@@ -1,6 +1,5 @@
 // List of available data sources
 const AVAILABLE_DATA_SOURCES = {
-  MEMORY: 'memory',
   PG: 'pg',
   KNEX: 'knex'
 };
@@ -12,11 +11,11 @@ const AVAILABLE_DB_CONNECTIONS = {
 
 const config = {
   API_PORT: 3000,
-  LOG_ERRORS: false,
+  LOG_ERRORS: true,
   AVAILABLE_DATA_SOURCES,
   AVAILABLE_DB_CONNECTIONS,
-  DATA_SOURCE: AVAILABLE_DATA_SOURCES.KNEX,
-  DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL
+  DATA_SOURCE: AVAILABLE_DATA_SOURCES.PG,
+  DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.LOCALHOST
 };
 
 let dbConnectionConfig;
@@ -25,8 +24,8 @@ switch (config.DB_CONNECTION) {
     dbConnectionConfig = {
       DB_HOST: 'localhost',
       DB_PORT: 5432,
-      DB_USER: 'task3_user',
-      DB_NAME: 'task3_db',
+      DB_USER: 'task4_user',
+      DB_NAME: 'task4_db',
       DB_PASSWORD: '111'
     };
     break;

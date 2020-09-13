@@ -48,8 +48,8 @@ CREATE TABLE public.groups (
 
 -- DROP TABLE public.users_groups
 CREATE TABLE public.users_groups (
-    user_id uuid REFERENCES public.users (user_id),
-    group_id uuid REFERENCES public.groups (group_id),
+    user_id uuid REFERENCES public.users (user_id) ON DELETE CASCADE,
+    group_id uuid REFERENCES public.groups (group_id) ON DELETE CASCADE,
     created_at timestamp NOT NULL default now(),
     updated_at timestamp NOT NULL default now(),
     PRIMARY KEY (user_id, group_id)
@@ -58,15 +58,15 @@ CREATE TABLE public.users_groups (
 -- DROP TABLE public.permissions
 CREATE TABLE public.permissions (
     permission_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name varchar(40) UNIQUE NOT NULL CHECK (name ~ '^[A-Z_]+$'),
+    name varchar(40) UNIQUE NOT NULL CHECK (name ~ '^[A-Z_][A-Z_0-9]*$'),
     created_at timestamp NOT NULL DEFAULT now(),
     updated_at timestamp NOT NULL DEFAULT now()
 );
 
 -- DROP TABLE public.groups_permissions
 CREATE TABLE public.groups_permissions (
-    group_id uuid REFERENCES public.groups (group_id),
-    permission_id uuid REFERENCES public.permissions (permission_id),
+    group_id uuid REFERENCES public.groups (group_id) ON DELETE CASCADE,
+    permission_id uuid REFERENCES public.permissions (permission_id) ON DELETE CASCADE,
     created_at timestamp NOT NULL default now(),
     updated_at timestamp NOT NULL default now(),
     PRIMARY KEY (group_id, permission_id)
@@ -110,7 +110,7 @@ FOR EACH ROW EXECUTE function trigger_set_timestamp();
 -- REVOKE GRANT SELECT, INSERT, UPDATE, DELETE
 -- ON ALL TABLES IN SCHEMA public
 -- FROM :readWriteRole;
-GRANT SELECT, INSERT, UPDATE, DELETE
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE
 ON ALL TABLES IN SCHEMA public
 TO :readWriteRole;
 

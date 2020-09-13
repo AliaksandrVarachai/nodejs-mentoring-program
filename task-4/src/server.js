@@ -1,6 +1,6 @@
 import express from 'express';
 import { API_PORT } from '../config';
-import usersRouter from './routes/users';
+import usersRouter from './routes';
 
 const app = express();
 
