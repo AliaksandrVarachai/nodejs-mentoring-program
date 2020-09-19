@@ -31,11 +31,11 @@ switch (config.DB_CONNECTION) {
     break;
   case AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL:
     dbConnectionConfig = {
-      DB_HOST: 'balarama.db.elephantsql.com',
+      DB_HOST: 'lallah.db.elephantsql.com',
       DB_PORT: 5432,
-      DB_USER: 'ukjjejmp',
-      DB_NAME: 'ukjjejmp',
-      DB_PASSWORD: 'lNKRvy0_uhOe4JwCCsyfLtZ23-H8hlTL'
+      DB_USER: 'eyitbcuz',
+      DB_NAME: 'eyitbcuz',
+      DB_PASSWORD: 'l0s94pXG_P63mKfrIWwfLMApeSt3eoq8'
     };
     break;
   default:
