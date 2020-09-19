@@ -95,16 +95,6 @@ CREATE trigger set_timestamp_permissions
 BEFORE UPDATE ON public.permissions
 FOR EACH ROW EXECUTE function trigger_set_timestamp();
 
--- DROP TRIGGER set_timestamp_users_groups ON public.users_groups;
-CREATE trigger set_timestamp_users_groups
-BEFORE UPDATE ON public.users_groups
-FOR EACH ROW EXECUTE function trigger_set_timestamp();
-
--- DROP TRIGGER set_timestamp_groups_permissions ON public.groups_permissions;
-CREATE trigger set_timestamp_groups_permissions
-BEFORE UPDATE ON public.groups_permissions
-FOR EACH ROW EXECUTE function trigger_set_timestamp();
-
 -- REVOKE GRANT SELECT, INSERT, UPDATE, DELETE
 -- ON ALL TABLES IN SCHEMA public
 -- FROM :readWriteRole;
