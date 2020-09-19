@@ -51,7 +51,6 @@ CREATE TABLE public.users_groups (
     user_id uuid REFERENCES public.users (user_id) ON DELETE CASCADE,
     group_id uuid REFERENCES public.groups (group_id) ON DELETE CASCADE,
     created_at timestamp NOT NULL default now(),
-    updated_at timestamp NOT NULL default now(),
     PRIMARY KEY (user_id, group_id)
 );
 
@@ -68,7 +67,6 @@ CREATE TABLE public.groups_permissions (
     group_id uuid REFERENCES public.groups (group_id) ON DELETE CASCADE,
     permission_id uuid REFERENCES public.permissions (permission_id) ON DELETE CASCADE,
     created_at timestamp NOT NULL default now(),
-    updated_at timestamp NOT NULL default now(),
     PRIMARY KEY (group_id, permission_id)
 );
 

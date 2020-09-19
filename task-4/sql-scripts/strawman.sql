@@ -1,46 +1,3 @@
--- TRUNCATE TABLE public.users CASCADE;
-INSERT INTO public.users (login, password, age, is_deleted)
-VALUES
-    ('user-1',  'user-1',  20, false),
-    ('user-2',  'user-2',  22, false),
-    ('user-3',  'user-3',  26, false),
-    ('user-4',  'user-4',  25, false),
-    ('user-5',  'user-5',  30, false),
-    ('user-6',  'user-6',  25, false),
-    ('user-7',  'user-7',  20, false),
-    ('user-8',  'user-8',  21, false),
-    ('user-9',  'user-9',  22, false),
-    ('user-10', 'user-10', 23, false),
-    ('user-11', 'user-11', 24, false),
-    ('user-12', 'user-12', 25, false),
-    ('bot-1',   'bo1-1',   99, false),
-    ('bot-2',   'bo1-2',   99, false),
-    ('bot-3',   'bo1-3',   99, false),
-    ('bot-4',   'bo1-4',   99, false),
-    ('bot-5',   'bo1-5',   99, false),
-    ('admin-1', 'admin-1', 30, false),
-    ('admin-2', 'admin-2', 35, false)
-;
-
--- TRUNCATE TABLE public.permissions CASCADE;
-INSERT INTO public.permissions (name)
-VALUES
-    ('READ'),
-    ('WRITE'),
-    ('DELETE'),
-    ('SHARE'),
-    ('UPLOAD_FILES')
-;
-
--- TRUNCATE TABLE public.groups CASCADE;
-INSERT INTO public.groups (name) (
-VALUES
-    ('admins'),
-    ('subscribers'),
-    ('guests'),
-    ('writers')
-);
-
 -- getAllGroups() : [{group_id, name}]
 SELECT group_id, name FROM public.groups;
 
@@ -78,12 +35,12 @@ SELECT
 /******* groups *******/
 
 -- createGroup(name) : {id, name}
-INSERT INTO public.groups (name) VALUES ($name)
+INSERT INTO public.groups (name) VALUES ('$name')
 RETURNING group_id, name;
 
 -- deleteGroup(groupId) : number of deleted records
 DELETE FROM public.groups
-WHERE group_id = $groupId;
+WHERE group_id = '$groupId';
 
 -- getGroupById(uuid) : {groupId, name, permissionIds[]}
 SELECT
@@ -91,10 +48,10 @@ SELECT
     g.name,
     ARRAY (
         SELECT gp.permission_id FROM public.groups_permissions AS gp
-        WHERE gp.group_id = $groupId
+        WHERE gp.group_id = '$groupId'
     ) AS permission_ids
 FROM public.groups as g
-WHERE g.group_id = $groupId;
+WHERE g.group_id = '$groupId';
 
 -- getAllGroups() : [{group_id, name}]
 SELECT group_id, name FROM public.groups;
@@ -104,16 +61,16 @@ SELECT group_id, name FROM public.groups;
 
 -- createPermission(name) : {id, name}
 INSERT INTO public.permissions (name)
-VALUES ($name)
+VALUES ('$name')
 RETURNING permission_id, name;
 
 -- deletePermission(permissionId) : number of deleted records
 DELETE FROM public.permissions
-WHERE permission_id = $permissionId;
+WHERE permission_id = '$permissionId';
 
 -- getPermissionById(uuid) : {permissionId, name}
 SELECT permission_id, name FROM public.permissions
-WHERE permission_id = $permissionId;
+WHERE permission_id = '$permissionId';
 
 -- getAllPermissions() : [{permission_id, name}]
 SELECT permission_id, name FROM public.permissions;
@@ -124,8 +81,8 @@ SELECT permission_id, name FROM public.permissions;
 -- TODO: transaction??
 -- addUsersToGroup(groupId, userIds[]) : userIds[]
 INSERT INTO public.users_groups (group_id, user_id)
-SELECT $groupId AS group_id, t.user_id
-FROM unnest($userIds) AS t(user_id)
+SELECT '$groupId' AS group_id, t.user_id
+FROM unnest('$userIds') AS t(user_id)
 ON CONFLICT DO nothing
 RETURNING user_id;
 --group: '0fcbf6ed-cfe7-4dc0-8de3-9dfc922ff96b'
@@ -134,7 +91,7 @@ RETURNING user_id;
 -- TODO: transaction??
 -- deleteUsersFromGroup(groupId, userIds[]) : userIds[]
 DELETE FROM public.users_groups AS ug
-WHERE ug.group_id = $groupId AND ug.user_id = ANY($userIds)
+WHERE ug.group_id = '$groupId' AND ug.user_id = ANY('$userIds')
 RETURNING user_id;
 
 
@@ -143,8 +100,8 @@ RETURNING user_id;
 -- TODO: transaction??
 -- addGroupPermissions(groupId, permissionIds[]) : permissionIds[]
 INSERT INTO public.groups_permissions (group_id, permission_id)
-SELECT $groupId AS group_id, t.permission_id
-FROM unnest($permissionIds) AS t(permission_id)
+SELECT '$groupId' AS group_id, t.permission_id
+FROM unnest('$permissionIds') AS t(permission_id)
 ON CONFLICT DO nothing
 RETURNING permission_id;
 --group: '0fcbf6ed-cfe7-4dc0-8de3-9dfc922ff96b'
@@ -153,7 +110,7 @@ RETURNING permission_id;
 -- TODO: transaction??
 -- deleteGroupPermissions(groupId, permissionIds[]) : permissionIds[]
 DELETE FROM public.groups_permissions AS gp
-WHERE gp.group_id = $groupId AND gp.group_id = ANY($permissionIds)
+WHERE gp.group_id = '$groupId' AND gp.group_id = ANY('$permissionIds')
 RETURNING permission_id;
 
 
@@ -161,7 +118,7 @@ RETURNING permission_id;
 -- getUserPermissions(userId) : permissionIds[]
 WITH found_groups AS (
     SELECT ug.group_id FROM public.users_groups AS ug
-    WHERE ug.user_id = $userId
+    WHERE ug.user_id = '$userId'
 )
 SELECT DISTINCT permission_id FROM public.groups_permissions AS gp
 WHERE gp.group_id IN (SELECT group_id FROM found_groups);
@@ -204,9 +161,3 @@ $$;
 INSERT INTO public.groups_permissions (group_id, permission_id)
 SELECT
     ;
-
-
-
-
-
-
