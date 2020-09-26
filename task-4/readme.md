@@ -295,6 +295,88 @@ DELETE http://localhost:3000/users/remove/ebc02386-35a2-425f-84a2-c8ed70bc0d7d
 Status: 204
 ```
 
+#### Get all groups
+
+**Request example:**
+```
+GET http://localhost:3000/groups/all
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "00000000-0000-4000-0002-000000000000",
+            "00000000-0000-4000-0002-000000000001",
+            "00000000-0000-4000-0002-000000000002",
+            "00000000-0000-4000-0002-000000000003"
+        ]
+    }
+```
+
+#### Get group by ID
+
+**Request example:**
+```
+GET http://localhost:3000/groups/00000000-0000-4000-0002-000000000000
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": {
+            "groupId": "00000000-0000-4000-0002-000000000000",
+            "name": "admins",
+            "permissionIds": [
+                "00000000-0000-4000-0001-000000000000",
+                "00000000-0000-4000-0001-000000000001",
+                "00000000-0000-4000-0001-000000000002",
+                "00000000-0000-4000-0001-000000000003",
+                "00000000-0000-4000-0001-000000000004"
+            ]
+        }
+    }
+```
+
+#### Create a new group
+
+**Request example:**
+```
+PUT http://localhost:3000/groups/create
+Body:
+    {
+        "name": "test_group"    
+    }
+```
+
+**Response example:**
+```
+Status: 201
+Body:
+    {
+        "data": {
+            "id": "a5f0d492-e0c7-4e11-991d-910973cb27e1",
+            "name": "test_group"
+        }
+    }
+```
+
+#### Delete group
+
+**Request example:**
+```
+DELETE http://localhost:3000/groups/delete/a5f0d492-e0c7-4e11-991d-910973cb27e1
+```
+
+**Response example:**
+```
+Status: 204
+```
+
 
 
 
