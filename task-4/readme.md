@@ -118,7 +118,7 @@ This option can be changed in `config.js` to the next ones:
 
 ### REST API description 
 
-| Method  | Path                            | Description      |
+| Method  | Path                            | Description*      |
 | ------- | ------------------------------- | ---------------- |
 | GET     | /users/all                      | Provides list of all users |
 | GET     | /users/auto-suggest             | Provides list of users by part of their name |
@@ -141,6 +141,8 @@ This option can be changed in `config.js` to the next ones:
 | GET     | /user-permissions/:id           | Provides list of permissions for the user |
 | GET     | /user-groups/:id                | Provides list of groups for the user |
 | GET     | /group-users/:id                | Provides list of users for the group |
+
+\*See the detailed description below.
 
 #### Get all users
 
@@ -470,6 +472,194 @@ DELETE http://localhost:3000/permissions/delete/e6c37a96-cba7-4fbb-ada2-7c94722d
 Status: 204
 ```
 
+#### Adds list of users to the group
 
+**Request example:**
+```
+POST http://localhost:3000/add-users-to-group
+Body:
+    {
+        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
+        "userIds": ["ebc02386-35a2-425f-84a2-c8ed70bc0d7d", "4d5615d8-3454-487a-97e1-b3e114293dba"]
+    }
+```
 
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
+            "4d5615d8-3454-487a-97e1-b3e114293dba"
+        ]
+    }
+```
+**Important:** If a user is already in the group they are omitted in the returned array. 
+For example, sending the same request the second time will return an empty array:
+```
+Status: 200
+Body:
+    {
+        "data": []
+    }
+```
 
+#### Deletes list of users from the group
+
+**Request example:**
+```
+POST http://localhost:3000/delete-users-from-group
+Body:
+    {
+        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
+        "userIds": ["ebc02386-35a2-425f-84a2-c8ed70bc0d7d", "4d5615d8-3454-487a-97e1-b3e114293dba"]
+    }
+```
+
+**Response example:**
+
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "4d5615d8-3454-487a-97e1-b3e114293dba",
+            "ebc02386-35a2-425f-84a2-c8ed70bc0d7d"
+        ]
+    }
+```
+**Important:** If a user is NOT in the group they are omitted in the returned array. 
+For example, sending the same request the second time will return an empty array:
+```
+Status: 200
+Body:
+    {
+        "data": []
+    }
+```
+
+#### Adds list of permissions to the group
+
+**Request example:**
+```
+POST http://localhost:3000/add-permissions-to-group
+Body:
+    {
+        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
+        "permissionIds": ["00000000-0000-4000-0001-000000000000", "00000000-0000-4000-0001-000000000001", "00000000-0000-4000-0001-000000000002"]
+    }
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "00000000-0000-4000-0001-000000000000",
+            "00000000-0000-4000-0001-000000000001",
+            "00000000-0000-4000-0001-000000000002"
+        ]
+    }
+```
+**Important:** If permission already belongs to the group they are omitted in the returned array. 
+For example, sending the same request the second time will return an empty array:
+```
+Status: 200
+Body:
+    {
+        "data": []
+    }
+```
+
+#### Deletes the permission list from the group
+
+**Request example:**
+```
+POST http://localhost:3000/delete-permissions-from-group
+Body:
+    {
+        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
+        "permissionIds": ["00000000-0000-4000-0001-000000000000", "00000000-0000-4000-0001-000000000001", "00000000-0000-4000-0001-000000000002"]
+    }
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "00000000-0000-4000-0001-000000000000",
+            "00000000-0000-4000-0001-000000000001",
+            "00000000-0000-4000-0001-000000000002"
+        ]
+    }
+```
+**Important:** If permission DOES NOT belong to the group they are omitted in the returned array. 
+For example, sending the same request the second time will return an empty array:
+```
+Status: 200
+Body:
+    {
+        "data": []
+    }
+```
+
+#### Provides list of permissions for the user
+
+**Request example:**
+```
+GET http://localhost:3000/user-permissions/ebc02386-35a2-425f-84a2-c8ed70bc0d7d
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "00000000-0000-4000-0001-000000000002",
+            "00000000-0000-4000-0001-000000000000",
+            "00000000-0000-4000-0001-000000000001"
+        ]
+    }
+```
+
+#### Provides list of groups for the user
+
+**Request example:**
+```
+GET http://localhost:3000/user-groups/ebc02386-35a2-425f-84a2-c8ed70bc0d7d
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "6e513a06-bf35-4e2b-9342-04667cf3f692"
+        ]
+    }
+```
+
+#### Provides list of users for the group
+
+**Request example:**
+```
+GET http://localhost:3000/group-users/6e513a06-bf35-4e2b-9342-04667cf3f692
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
+            "4d5615d8-3454-487a-97e1-b3e114293dba"
+        ]
+    }
+```
