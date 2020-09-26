@@ -5,7 +5,7 @@ import knex from './knex';
  * @returns {Promise<Array>}
  */
 export async function getAllUsers() {
-  return await knex
+  return knex
     .select('external_id', 'login', 'password', 'age', 'is_deleted')
     .from('users')
     .orderBy('login', 'asc');
@@ -17,7 +17,7 @@ export async function getAllUsers() {
  * @returns {Promise<Array>}
  */
 export async function getUserById(id) {
-  return await knex
+  return knex
     .select('external_id', 'login', 'password', 'age', 'is_deleted')
     .from('users')
     .where({ external_id: id });
@@ -30,7 +30,7 @@ export async function getUserById(id) {
  * @returns {Promise<array>} - array of users which match provided conditions.
  */
 export async function getAutoSuggestUsers(loginSubstring, limit) {
-  return await knex
+  return knex
     .select('external_id', 'login', 'password', 'age', 'is_deleted')
     .from('users')
     .where('login', 'like', `%${loginSubstring}%`)
@@ -46,7 +46,7 @@ export async function getAutoSuggestUsers(loginSubstring, limit) {
  * @returns {Promise<object>}
  */
 export async function createUser({ login, password, age }) {
-  return await knex('users')
+  return knex('users')
     .insert(
       { login, password, age, is_deleted: false },
       ['external_id', 'login', 'password', 'age', 'is_deleted']
@@ -61,7 +61,7 @@ export async function createUser({ login, password, age }) {
  * @returns {Promise<object|error>}
  */
 export async function updateUser({ id, password, age }) {
-  return await knex('users')
+  return knex('users')
     .update(
       { password, age },
       ['external_id', 'login', 'password', 'age', 'is_deleted']
@@ -75,7 +75,7 @@ export async function updateUser({ id, password, age }) {
  * @returns {Promise<boolean>}
  */
 export async function removeUserSoft(id) {
-  return await knex('users')
+  return knex('users')
     .update({ is_deleted: true }, true)
     .where('external_id', id);
 }
@@ -86,7 +86,106 @@ export async function removeUserSoft(id) {
  * @returns {Promise<boolean>}
  */
 export async function removeUserHard(id) {
-  return await knex('users')
+  return knex('users')
     .delete()
     .where({ external_id: id });
+}
+
+/**
+ * Creates a new group.
+ * @param {string} name
+ * @returns {Promise<{group_id: string, name: string}>[]}
+ */
+export async function createGroup(name) {
+  return knex('groups')
+    .insert(
+      { name },
+      ['group_id', 'name']
+    );
+}
+
+/**
+ * Deletes a group hardly.
+ * @param groupId
+ * @returns {Promise<number>} - number of deleted rows.
+ */
+export async function deleteGroup(groupId) {
+  return knex('groups')
+    .delete()
+    .where('group_id', groupId);
+}
+
+/**
+ * Gets list of available groups.
+ * @param {string} groupId
+ * @returns {Promise<{rows: {group_id: string, name: string, permission_ids: string[]}[]}>}
+ */
+export async function getGroupById(groupId) {
+  return knex.raw(
+    `
+      SELECT
+        g.group_id,
+        g.name,
+        ARRAY (
+            SELECT gp.permission_id FROM public.groups_permissions AS gp
+            WHERE gp.group_id = :groupId
+        ) AS permission_ids
+      FROM public.groups as g
+      WHERE g.group_id = :groupId;
+    `,
+    { groupId }
+  );
+}
+
+/**
+ * Gets list of available groups.
+ * @returns {Promise<{group_id: string, name: string}>}
+ */
+export async function getAllGroups() {
+  return knex
+    .select('group_id', 'name')
+    .from('groups');
+}
+
+/**
+ * Creates a new permission.
+ * @param {string} name
+ * @returns {Promise<{permission_id: string, name: string}>}
+ */
+export async function createPermission(name) {
+  return knex
+    .insert({ name })
+    .into('permissions')
+    .returning(['permission_id', 'name']);
+}
+
+/**
+ * Deletes a permission.
+ * @param {string} permissionId
+ * @returns {Promise<number>}
+ */
+export async function deletePermission(permissionId) {
+  return knex('permissions')
+    .delete()
+    .where('permission_id', permissionId);
+}
+
+/**
+ * Gets permission by ID.
+ * @param {string} permissionId
+ * @returns {Promise<{permission_id: string, name: string}[]>}
+ */
+export async function getPermissionById(permissionId) {
+  return knex('permissions')
+    .select('permission_id', 'name')
+    .where('permission_id', permissionId);
+}
+
+/**
+ * Gets all available permissions.
+ * @returns {Promise<{permission_id: string, name: string}[]>}
+ */
+export async function getAllPermissions() {
+  return knex('permissions')
+    .select('permission_id', 'name');
 }
