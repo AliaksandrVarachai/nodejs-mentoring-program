@@ -418,3 +418,39 @@ export async function getUserPermissions(userId) {
   client.release();
   return result.rows;
 }
+
+/**
+ * Gets user groups.
+ * @param {string} userId
+ * @returns {Promise<{group_id: string}[]>}
+ */
+export async function getUserGroups(userId) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      SELECT group_id FROM public.users_groups
+      WHERE user_id = $1;
+    `,
+    [userId]
+  );
+  client.release();
+  return result.rows;
+}
+
+/**
+ * Gets group users.
+ * @param {string} groupId
+ * @returns {Promise<{group_id: string}[]>}
+ */
+export async function getGroupUsers(groupId) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      SELECT user_id FROM public.users_groups
+      WHERE group_id = $1;
+    `,
+    [groupId]
+  );
+  client.release();
+  return result.rows;
+}

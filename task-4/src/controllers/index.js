@@ -201,3 +201,23 @@ export async function getUserPermissions(req, res) {
     res.status(404).json(getErrorView(error.message));
   }
 }
+
+export async function getUserGroups(req, res) {
+  try {
+    const groups = await serviceProvider.getUserGroups(req.params.id);
+    res.status(200).json(getSuccessView(groups));
+  } catch (error) {
+    if (LOG_ERRORS) console.log(error);
+    res.status(404).json(getErrorView(error.message));
+  }
+}
+
+export async function getGroupUsers(req, res) {
+  try {
+    const users = await serviceProvider.getGroupUsers(req.params.id);
+    res.status(200).json(getSuccessView(users));
+  } catch (error) {
+    if (LOG_ERRORS) console.log(error);
+    res.status(404).json(getErrorView(error.message));
+  }
+}

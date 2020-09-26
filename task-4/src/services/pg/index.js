@@ -226,3 +226,23 @@ export async function getUserPermissions(userId) {
   const rows = await dataProvider.getUserPermissions(userId);
   return rows.map(row => row.permission_id);
 }
+
+/**
+ * Get list of group IDs where the user belongs to.
+ * @param {string} userId
+ * @returns {Promise<string[]>}
+ */
+export async function getUserGroups(userId) {
+  const rows = await dataProvider.getUserGroups(userId);
+  return rows.map(row => row.group_id);
+}
+
+/**
+ * Get list of user IDs the group contains.
+ * @param {string} groupId
+ * @returns {Promise<strings[]>}
+ */
+export async function getGroupUsers(groupId) {
+  const rows = await dataProvider.getGroupUsers(groupId);
+  return rows.map(row => row.user_id);
+}

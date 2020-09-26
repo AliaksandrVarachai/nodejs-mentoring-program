@@ -1,5 +1,5 @@
 import * as dataProvider from '../../data-access/knex';
-import knex from "../../data-access/knex/knex";
+import knex from '../../data-access/knex/knex';
 
 export async function getAllUsers() {
   const rows = await dataProvider.getAllUsers();
@@ -65,14 +65,14 @@ export async function removeUser(id) {
 
 /**
  * Transforms a row to a user.
- * @param {string} external_id
+ * @param {string} user_id
  * @param {boolean} is_deleted
  * @param {object} rest
  * @returns {object}
  */
-function toUser({ external_id, is_deleted, ...rest }) {
+function toUser({ user_id, is_deleted, ...rest }) {
   return {
-    id: external_id,
+    userId: user_id,
     isDeleted: is_deleted,
     ...rest
   };
@@ -170,4 +170,77 @@ export async function getPermissionById(permissionId) {
 export async function getAllPermissions() {
   return knex('permissions')
     .select('permission_id', 'name');
+}
+
+/**
+ * Adds list of user to a group (if a user is already in the group, they are ignored).
+ * @param {string} groupId
+ * @param {string[]} userIds
+ * @returns {Promise<string[]>} - list added user IDs (without ignored existing ones).
+ */
+export async function addUsersToGroup(groupId, userIds) {
+  const rows = await dataProvider.addUsersToGroup(groupId, userIds);
+  return rows.map(row => row.user_id);
+}
+
+/**
+ * Deletes users from a group.
+ * @param {string} groupId
+ * @param {string[]} userIds
+ * @returns {Promise<string[]>} - list of deleted users.
+ */
+export async function deleteUsersFromGroup(groupId, userIds) {
+  const rows = await dataProvider.deleteUsersFromGroup(groupId, userIds);
+  return rows.map(row => row.user_id);
+}
+
+/**
+ * Adds list of permissions into a group (if a permission exists, it is ignored).
+ * @param {string} groupId
+ * @param {string[]} permissionIds
+ * @returns {Promise<string[]>} - list of added permissions (without ignored existing ones).
+ */
+export async function addPermissionsToGroup(groupId, permissionIds) {
+  const rows = await dataProvider.addPermissionsToGroup(groupId, permissionIds);
+  return rows.map(row => row.permission_id);
+}
+
+/**
+ * Deletes list of permissions from a group.
+ * @param groupId
+ * @param permissionIds
+ * @returns {Promise<string[]>} - list of deleted permissions.
+ */
+export async function deletePermissionsFromGroup(groupId, permissionIds) {
+  const rows = await dataProvider.deletePermissionsFromGroup(groupId, permissionIds);
+  return rows.map(row => row.permission_id);
+}
+
+/**
+ * Gets a permission list for the user.
+ * @returns {Promise<string[]>} - list of user permissions.
+ */
+export async function getUserPermissions(userId) {
+  const rows = await dataProvider.getUserPermissions(userId);
+  return rows.map(row => row.permission_id);
+}
+
+/**
+ * Gets user groups.
+ * @param {string} userId
+ * @returns {Promise<string[]>} - list of groups.
+ */
+export async function getUserGroups(userId) {
+  const rows = await dataProvider.getUserGroups(userId);
+  return rows.map(row => row.group_id);
+}
+
+/**
+ * Gets group users.
+ * @param {string} groupId
+ * @returns {Promise<string[]>} - list of users.
+ */
+export async function getGroupUsers(groupId) {
+  const rows = await dataProvider.getGroupUsers(groupId);
+  return rows.map(row => row.user_id);
 }

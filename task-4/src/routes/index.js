@@ -27,5 +27,7 @@ router.post('/add-permissions-to-group', validators.validateAddPermissionsToGrou
 router.delete('/delete-permissions-from-group', validators.validateDeletePermissionsFromGroup,
   controller.deletePermissionsFromGroup);
 router.get('/user-permissions/:id', controller.getUserPermissions);
+router.get('/user-groups/:id', controller.getUserGroups);
+router.get('/group-users/:id', controller.getGroupUsers);
 
 export default router;

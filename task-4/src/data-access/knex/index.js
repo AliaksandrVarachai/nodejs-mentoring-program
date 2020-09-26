@@ -6,7 +6,7 @@ import knex from './knex';
  */
 export async function getAllUsers() {
   return knex
-    .select('external_id', 'login', 'password', 'age', 'is_deleted')
+    .select('user_id', 'login', 'password', 'age', 'is_deleted')
     .from('users')
     .orderBy('login', 'asc');
 }
@@ -18,9 +18,9 @@ export async function getAllUsers() {
  */
 export async function getUserById(id) {
   return knex
-    .select('external_id', 'login', 'password', 'age', 'is_deleted')
+    .select('user_id', 'login', 'password', 'age', 'is_deleted')
     .from('users')
-    .where({ external_id: id });
+    .where({ user_id: id });
 }
 
 /**
@@ -31,7 +31,7 @@ export async function getUserById(id) {
  */
 export async function getAutoSuggestUsers(loginSubstring, limit) {
   return knex
-    .select('external_id', 'login', 'password', 'age', 'is_deleted')
+    .select('user_id', 'login', 'password', 'age', 'is_deleted')
     .from('users')
     .where('login', 'like', `%${loginSubstring}%`)
     .orderBy('login', 'asc')
@@ -49,7 +49,7 @@ export async function createUser({ login, password, age }) {
   return knex('users')
     .insert(
       { login, password, age, is_deleted: false },
-      ['external_id', 'login', 'password', 'age', 'is_deleted']
+      ['user_id', 'login', 'password', 'age', 'is_deleted']
     );
 }
 
@@ -64,9 +64,9 @@ export async function updateUser({ id, password, age }) {
   return knex('users')
     .update(
       { password, age },
-      ['external_id', 'login', 'password', 'age', 'is_deleted']
+      ['user_id', 'login', 'password', 'age', 'is_deleted']
     )
-    .where('external_id', id);
+    .where('user_id', id);
 }
 
 /**
@@ -77,7 +77,7 @@ export async function updateUser({ id, password, age }) {
 export async function removeUserSoft(id) {
   return knex('users')
     .update({ is_deleted: true }, true)
-    .where('external_id', id);
+    .where('user_id', id);
 }
 
 /**
@@ -88,7 +88,7 @@ export async function removeUserSoft(id) {
 export async function removeUserHard(id) {
   return knex('users')
     .delete()
-    .where({ external_id: id });
+    .where({ user_id: id });
 }
 
 /**
@@ -188,4 +188,133 @@ export async function getPermissionById(permissionId) {
 export async function getAllPermissions() {
   return knex('permissions')
     .select('permission_id', 'name');
+}
+
+/**
+ * Adds list of user to a group (if a user is already in the group, they are ignored).
+ * @param {string} groupId
+ * @param {string[]} userIds
+ * @returns {Promise<{user_id: string}[]>} - list of added users (without ignored existing ones).
+ */
+export async function addUsersToGroup(groupId, userIds) {
+  const result = await knex.raw(
+    `
+      INSERT INTO public.users_groups (group_id, user_id)
+      SELECT :groupId AS group_id, t.user_id
+      FROM unnest(cast (:userIds AS uuid[])) AS t(user_id)
+      ON CONFLICT DO nothing
+      RETURNING user_id;
+    `,
+    {
+      groupId,
+      userIds
+    }
+  );
+  return result.rows;
+}
+
+/**
+ * Deletes users from a group.
+ * @param {string} groupId
+ * @param {string[]} userIds
+ * @returns {Promise<{user_id: string}[]>} - list of deleted users.
+ */
+export async function deleteUsersFromGroup(groupId, userIds) {
+  const result = await knex.raw(
+    `
+      DELETE FROM public.users_groups AS ug
+      WHERE ug.group_id = :groupId AND ug.user_id = ANY(cast (:userIds as uuid[]))
+      RETURNING user_id;
+    `,
+    {
+      groupId,
+      userIds
+    }
+  );
+  return result.rows;
+}
+
+/**
+ * Adds list of permissions into a group (if a permission exists, it is ignored).
+ * @param {string} groupId
+ * @param {string[]} permissionIds
+ * @returns {Promise<{permission_id: string}[]>} - list of added permissions (without ignored existing ones).
+ */
+export async function addPermissionsToGroup(groupId, permissionIds) {
+  const result = await knex.raw(
+    `
+      INSERT INTO public.groups_permissions (group_id, permission_id)
+      SELECT :groupId AS group_id, t.permission_id
+      FROM unnest(cast (:permissionIds as uuid[])) AS t(permission_id)
+      ON CONFLICT DO nothing
+      RETURNING permission_id;
+    `,
+    {
+      groupId,
+      permissionIds
+    }
+  );
+  return result.rows;
+}
+
+/**
+ * Deletes list of permissions from a group.
+ * @param groupId
+ * @param permissionIds
+ * @returns {Promise<{permission_id: string}[]>} - list of deleted permissions.
+ */
+export async function deletePermissionsFromGroup(groupId, permissionIds) {
+  const result = await knex.raw(
+    `
+      DELETE FROM public.groups_permissions AS gp
+      WHERE gp.group_id = :groupId AND gp.permission_id = ANY(cast (:permissionIds as uuid[]))
+      RETURNING permission_id;
+    `,
+    {
+      groupId,
+      permissionIds
+    }
+  );
+  return result.rows;
+}
+
+/**
+ * Gets a permission list for the user.
+ * @returns {Promise<{permission_id: string}[]>} - list of user permissions.
+ */
+export async function getUserPermissions(userId) {
+  const result = await knex.raw(
+    `
+      WITH found_groups AS (
+        SELECT ug.group_id FROM public.users_groups AS ug
+        WHERE ug.user_id = :userId
+      )
+      SELECT DISTINCT permission_id FROM public.groups_permissions AS gp
+      WHERE gp.group_id IN (SELECT group_id FROM found_groups);
+    `,
+    { userId }
+  );
+  return result.rows;
+}
+
+/**
+ * Gets user groups.
+ * @param {string} userId
+ * @returns {Promise<{group_id: string}[]>}
+ */
+export async function getUserGroups(userId) {
+  return knex('users_groups')
+    .select('group_id')
+    .where('user_id', userId);
+}
+
+/**
+ * Gets group users.
+ * @param {string} groupId
+ * @returns {Promise<{group_id: string}[]>}
+ */
+export async function getGroupUsers(groupId) {
+  return knex('users_groups')
+    .select('user_id')
+    .where('group_id', groupId);
 }
