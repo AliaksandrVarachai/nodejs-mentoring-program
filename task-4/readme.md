@@ -1,28 +1,38 @@
-# Task 3
+# Task 4
 
 ## Requirements
 
-### Task 3.1
+### Task 4.1
 
-* Install DB PostgreSQL on your machine or use a free web hosting services for PostgreSQL (https://www.heroku.com/postgresor https://www.elephantsql.com/plans.html).
+Add Groupentity to already existing RESTservice with CRUDoperations.
+* TheGroup entity should have the following properties (you can use UUID as Group id):
+    ```
+    type Permissions = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_FILES';
+    type Group = {
+        id: string;
+        name: string;
+        permissions: Array<Permissions>
+    }
+    ```
+* The service should provide the following CRUD operations for Group:
+    - get group by id;
+    - get all groups;
+    − create and update a group;
+    − remove group (hard delete–group data is fully removed from the DB).
+* Storing of groups data should be done in PostgreSQL in Groups table.
+* The service should follow the principles of 3-layer architecture.
 
-* Write SQL script which will create **Users** table in the DB and fill it in with predefined users’collection.
+### Task 4.2
 
-* Configure your REST service to work with PostgreSQL.
-    * Use the **sequelize** package (http://docs.sequelizejs.com/) as ORM to work with PostgreSQL.
-    * As an alternative to **sequelize** you can use more low-level **query-builder** library (http://knexjs.org/).
+* Link User records in one table with Group records in another table.
+* Add a UserGroup table("many-to-many" relationship) which will store the data describing which users are assigned 
+to which group.
+* If any record gets removed from the DB, then all linked records should be removed from UserGroup as well.
 
-### Task 3.2
+### Task 4.3
 
-The service should adhere to 3-layer architecture principles (https://softwareontheroad.com/ideal-nodejs-project-structure/) 
-and contain the following set of directories:
-```
-|-routers / controllers
-|-services
-|-data-access
-|-models
-```
-
+Add `addUsersToGroup(groupId, userIds)` method which will allow adding users to a certain group.
+Use *transactions* to save records in DB.
 
 ## Implementation
 
@@ -36,7 +46,7 @@ For other available options see `config.js` file.
 ### Run script on prod
 
 ```
-cd task-3
+cd task-4
 npm install
 npm start
 ```
@@ -46,7 +56,7 @@ npm start
 #### Remote PostgreSQL on elephantSQL (configured by default)
 
 ```
-cd task-3
+cd task-4
 npm install
 npm run dev
 ```
@@ -68,16 +78,27 @@ const config = {
 
 Then run SQL script to initialize the local DB:
 ```
-cd task-3/sql-scripts
-psql -U postgres -f init-db.sql -v userName=task3_user -v dbName=task3_db userPassword=\'111\'
+cd task-4/sql-scripts
+psql -U postgres -f init-db.sql -v userName=task4_user -v dbName=task4_db -v userPassword=\'111\'
 ```
 where `userName`, `dbName`, and `userPassword` could be changed to any string values.
 
+Then fill the database with initial test data:
+```
+psql -d task4_db -U task4_user -f seeds.sql
+```
+
 Then run npm the Express server:
 ```
-cd task-3
+cd task-4
 npm install
 npm run dev
+```
+
+To revert the database changes you can run proper scripts:
+```
+psql -U postgres -f init-db-revert.sql -v userName=task4_user -v dbName=task4_db
+psql -d task4_db -U task4_user -f seeds-revert.sql
 ```
 
 #### Other options
@@ -94,16 +115,32 @@ This option can be changed in `config.js` to the next ones:
         ...
     };
     ```
-* to use `in memory` data (without the installation PostgreSQL):
-    ```
-    const config = {
-        ...
-        DATA_SOURCE: AVAILABLE_DATA_SOURCES.MEMORY
-        ...
-    };
-    ```
 
 ### REST API description 
+
+| Method  | Path                            | Description      |
+| ------- | ------------------------------- | ---------------- |
+| GET     | /users/all                      | Provides list of all users |
+| GET     | /users/auto-suggest             | Provides list of users by part of their name |
+| GET     | /users/:id                      | Provides user object |
+| PUT     | /users/create                   | Creates a new user |
+| PATCH   | /users/update                   | Updates the user |
+| DELETE  | /users/remove/:id               | Removes the user (soft) |
+| GET     | /groups/all                     | Provides list of all groups |
+| GET     | /groups/:id                     | Provides a group object |
+| PUT     | /groups/create                  | Creates a new group |
+| DELETE  | /groups/delete/:id              | Deletes the group (hard) |
+| GET     | /permissions/all                | Provides list of all permissions |
+| GET     | /permissions/:id                | Provides a permission object |
+| PUT     | /permissions/create             | Creates a new permission |
+| DELETE  | /permissions/delete/:id         | Deletes the permission (hard) |
+| POST    | /add-users-to-group             | Adds list of users to the group |
+| DELETE  | /delete-users-from-group        | Deletes list of users from the group |
+| POST    | /add-permissions-to-group       | Adds list of permissions to the group |
+| DELETE  | /delete-permissions-from-group  | Deletes the permission list from the group |
+| GET     | /user-permissions/:id           | Provides list of permissions for the user |
+| GET     | /user-groups/:id                | Provides list of groups for the user |
+| GET     | /group-users/:id                | Provides list of users for the group |
 
 #### Get all users
 
@@ -119,14 +156,14 @@ Body:
     {
         "data": [
             {
-                "id": "973ef0f5-4c21-4163-bb6c-8582b6cb8027",
+                "userId": "00000000-0000-4000-0000-000000000017",
                 "isDeleted": false,
                 "login": "admin-1",
                 "password": "admin-1",
                 "age": 30
             },
             {
-                "id": "a8244e31-14e1-4512-b8d0-4e65ab9d8bd3",
+                "userId": "00000000-0000-4000-0000-000000000018",
                 "isDeleted": false,
                 "login": "admin-2",
                 "password": "admin-2",
@@ -151,14 +188,14 @@ Body:
     {
         "data": [
             {
-                "id": "973ef0f5-4c21-4163-bb6c-8582b6cb8027",
+                "userId": "00000000-0000-4000-0000-000000000017",
                 "isDeleted": false,
                 "login": "admin-1",
                 "password": "admin-1",
                 "age": 30
             },
             {
-                "id": "a8244e31-14e1-4512-b8d0-4e65ab9d8bd3",
+                "userId": "00000000-0000-4000-0000-000000000018",
                 "isDeleted": false,
                 "login": "admin-2",
                 "password": "admin-2",
@@ -172,7 +209,7 @@ Body:
 
 **Request example:**
 ```
-GET http://localhost:3000/users/973ef0f5-4c21-4163-bb6c-8582b6cb8027
+GET http://localhost:3000/users/00000000-0000-4000-0000-000000000017
 ```
 
 **Response example:**
@@ -181,7 +218,7 @@ Status: 200
 Body:
     {
         "data": {
-            "id": "973ef0f5-4c21-4163-bb6c-8582b6cb8027",
+            "userId": "00000000-0000-4000-0000-000000000017",
             "isDeleted": false,
             "login": "admin-1",
             "password": "admin-1",
@@ -199,7 +236,7 @@ Body:
     {
        "login": "new-user-1",
        "password": "new-user-1",
-       "age": 30
+       "age": 44
     }
 ```
 
@@ -209,11 +246,11 @@ Status: 201
 Body:
     {
         "data": {
-            "id": "5ad427a3-9273-407d-9295-bc36ae1091a8",
+            "userId": "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
             "isDeleted": false,
-            "login": "new-user-1",
-            "password": "new-user-1",
-            "age": 30
+            "login": "test-user-1",
+            "password": "test-user-1",
+            "age": 44
         }
     }
 ```
@@ -225,7 +262,7 @@ Body:
 PATCH http://localhost:3000/users/update
 Body:
     {
-        "id": "5ad427a3-9273-407d-9295-bc36ae1091a8",
+        "id": "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
         "password": "changed-password-1",
         "age": 99
     }
@@ -237,9 +274,9 @@ Status: 200
 Body:
     {
         "data": {
-            "id": "5ad427a3-9273-407d-9295-bc36ae1091a8",
+            "userId": "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
             "isDeleted": false,
-            "login": "new-user-1",
+            "login": "test-user-1",
             "password": "changed-password-1",
             "age": 99
         }
@@ -250,7 +287,7 @@ Body:
 
 **Request example:**
 ```
-DELETE http://localhost:3000/users/remove/5ad427a3-9273-407d-9295-bc36ae1091a8
+DELETE http://localhost:3000/users/remove/ebc02386-35a2-425f-84a2-c8ed70bc0d7d
 ```
 
 **Response example:**
@@ -259,174 +296,5 @@ Status: 204
 ```
 
 
-#### Create user validation
-
-##### User name validation #1
-
-**Request example:**
-```
-PUT http://localhost:3000/users/create
-Body:
-    {
-       "login": "$user$",
-       "password": "abc123",
-       "age": 30
-    }
-```
-
-**Response example:**
-```
-Status: 400
-Body:
-    {
-        "error": {
-            "message": "data/login must contain 3-20 chars. Allowed chars: a-z, 0-9, -"
-        }
-    }
-```
-
-##### User name validation #2
-
-**Request example:**
-```
-PUT http://localhost:3000/users/create
-Body:
-    {
-       "login": "user-1",
-       "password": "abc123",
-       "age": 30
-    }
-```
-
-**Response example:**
-```
-Status: 400
-Body:
-    {
-        "error": {
-            "message": "User \"user-1\" already exists."
-        }
-    }
-```
-
-##### Password validation
-
-**Request example:**
-```
-PUT http://localhost:3000/users/create
-Body:
-    {
-       "login": "new-user",
-       "password": "abc___123",
-       "age": 30
-    }
-```
-
-**Response example:**
-```
-Status: 400
-Body:
-    {
-        "error": {
-            "message": "data/password must contain 3-20 chars. Allowed chars: a-z, 0-9, -. At least one letter and number must be provided"
-        }
-    }
-```
-
-##### Age validation
-
-**Request example:**
-```
-PUT http://localhost:3000/users/create
-Body:
-    {
-        "login": "new-user",
-        "password": "abc123",
-        "age": 999
-    }
-```
-
-**Response example:**
-```
-Status: 400
-Body:
-    {
-        "error": {
-            "message": "data/age should be <= 130"
-        }
-    }
-```
 
 
-#### Update user validation
-
-##### ID validation
-
-**Request example:**
-```
-PUT http://localhost:3000/users/create
-Body:
-    {
-        "id": "___",
-        "password": "abc123",
-        "age": 30
-    }
-```
-
-**Response example:**
-```
-Status: 400
-Body:
-    {
-        "error": {
-            "message": "data/id should match format \"uuid\""
-        }
-    }
-```
-
-##### Password validation
-
-**Request example:**
-```
-PUT http://localhost:3000/users/create
-Body:
-    {
-        "id": "a4d46aa5-6070-4352-919e-34ddaa9f993f",
-        "password": "1",
-    }
-```
-
-**Response example:**
-```
-Status: 400
-Body:
-    {
-        "error": {
-            "message": "data/password must contain 3-20 chars. Allowed chars: a-z, 0-9, -. At least one letter and number must be provided"
-        }
-    }
-```
-
-##### Age validation
-
-**Request example:**
-```
-PUT http://localhost:3000/users/create
-Body:
-    {
-        "login": "new-user-2",
-        "password": "new-user-2",
-        "age": -123
-    }
-```
-
-**Response example:**
-```
-Status: 400
-Body:
-    {
-        "error": {
-            "message": "data/age should be >= 4"
-        }
-    }
-```
