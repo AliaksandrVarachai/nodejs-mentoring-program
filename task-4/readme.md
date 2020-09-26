@@ -377,6 +377,99 @@ DELETE http://localhost:3000/groups/delete/a5f0d492-e0c7-4e11-991d-910973cb27e1
 Status: 204
 ```
 
+#### Get all permissions
+
+**Request example:**
+```
+GET http://localhost:3000/permissions/all
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            {
+                "permission_id": "00000000-0000-4000-0001-000000000000",
+                "name": "READ"
+            },
+            {
+                "permission_id": "00000000-0000-4000-0001-000000000001",
+                "name": "WRITE"
+            },
+            {
+                "permission_id": "00000000-0000-4000-0001-000000000002",
+                "name": "DELETE"
+            },
+            {
+                "permission_id": "00000000-0000-4000-0001-000000000003",
+                "name": "SHARE"
+            },
+            {
+                "permission_id": "00000000-0000-4000-0001-000000000004",
+                "name": "UPLOAD_FILES"
+            }
+        ]
+    }
+```
+
+#### Get permission by ID
+
+**Request example:**
+```
+GET http://localhost:3000/permissions/00000000-0000-4000-0001-000000000001
+```
+
+**Response example:**
+```
+Status: 200
+Body:
+    {
+        "data": [
+            {
+                "permissionId": "00000000-0000-4000-0001-000000000001",
+                "name": "WRITE"
+            }
+        ]
+    }
+```
+
+#### Create a new permission
+
+**Request example:**
+```
+PUT http://localhost:3000/permissions/create
+Body:
+    {
+        "name": "TEST_PERMISSION"
+    }
+```
+
+**Response example:**
+```
+Status: 201
+Body:
+    {
+        "data": {
+            "permissionId": "e6c37a96-cba7-4fbb-ada2-7c94722d2531",
+            "name": "TEST_PERMISSION"
+        }
+    }
+```
+
+#### Delete permission
+
+**Request example:**
+```
+DELETE http://localhost:3000/permissions/delete/e6c37a96-cba7-4fbb-ada2-7c94722d2531
+```
+
+**Response example:**
+```
+Status: 204
+```
+
 
 
 
