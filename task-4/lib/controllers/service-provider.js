@@ -12,7 +12,7 @@ var _config = require("../../config");
 
 var pgService = _interopRequireWildcard(require("../services/pg"));
 
-var knexService = _interopRequireWildcard(require("../services/knex/users"));
+var knexService = _interopRequireWildcard(require("../services/knex"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 

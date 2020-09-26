@@ -26,6 +26,8 @@ exports.deleteUsersFromGroup = deleteUsersFromGroup;
 exports.addPermissionsToGroup = addPermissionsToGroup;
 exports.deletePermissionsFromGroup = deletePermissionsFromGroup;
 exports.getUserPermissions = getUserPermissions;
+exports.getUserGroups = getUserGroups;
+exports.getGroupUsers = getGroupUsers;
 
 var _pool = _interopRequireDefault(require("./pool"));
 
@@ -438,6 +440,12 @@ function _deletePermissionsFromGroup() {
 function getUserPermissions(_x22) {
   return _getUserPermissions.apply(this, arguments);
 }
+/**
+ * Gets user groups.
+ * @param {string} userId
+ * @returns {Promise<{group_id: string}[]>}
+ */
+
 
 function _getUserPermissions() {
   _getUserPermissions = _asyncToGenerator(function* (userId) {
@@ -447,4 +455,38 @@ function _getUserPermissions() {
     return result.rows;
   });
   return _getUserPermissions.apply(this, arguments);
+}
+
+function getUserGroups(_x23) {
+  return _getUserGroups.apply(this, arguments);
+}
+/**
+ * Gets group users.
+ * @param {string} groupId
+ * @returns {Promise<{group_id: string}[]>}
+ */
+
+
+function _getUserGroups() {
+  _getUserGroups = _asyncToGenerator(function* (userId) {
+    var client = yield _pool.default.connect();
+    var result = yield client.query("\n      SELECT group_id FROM public.users_groups\n      WHERE user_id = $1;\n    ", [userId]);
+    client.release();
+    return result.rows;
+  });
+  return _getUserGroups.apply(this, arguments);
+}
+
+function getGroupUsers(_x24) {
+  return _getGroupUsers.apply(this, arguments);
+}
+
+function _getGroupUsers() {
+  _getGroupUsers = _asyncToGenerator(function* (groupId) {
+    var client = yield _pool.default.connect();
+    var result = yield client.query("\n      SELECT user_id FROM public.users_groups\n      WHERE group_id = $1;\n    ", [groupId]);
+    client.release();
+    return result.rows;
+  });
+  return _getGroupUsers.apply(this, arguments);
 }

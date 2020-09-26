@@ -25,6 +25,8 @@ exports.deleteUsersFromGroup = deleteUsersFromGroup;
 exports.addPermissionsToGroup = addPermissionsToGroup;
 exports.deletePermissionsFromGroup = deletePermissionsFromGroup;
 exports.getUserPermissions = getUserPermissions;
+exports.getUserGroups = getUserGroups;
+exports.getGroupUsers = getGroupUsers;
 
 var _config = require("../../config");
 
@@ -412,4 +414,38 @@ function _getUserPermissions() {
     }
   });
   return _getUserPermissions.apply(this, arguments);
+}
+
+function getUserGroups(_x39, _x40) {
+  return _getUserGroups.apply(this, arguments);
+}
+
+function _getUserGroups() {
+  _getUserGroups = _asyncToGenerator(function* (req, res) {
+    try {
+      var groups = yield _serviceProvider.default.getUserGroups(req.params.id);
+      res.status(200).json((0, _users.getSuccessView)(groups));
+    } catch (error) {
+      if (_config.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _users.getErrorView)(error.message));
+    }
+  });
+  return _getUserGroups.apply(this, arguments);
+}
+
+function getGroupUsers(_x41, _x42) {
+  return _getGroupUsers.apply(this, arguments);
+}
+
+function _getGroupUsers() {
+  _getGroupUsers = _asyncToGenerator(function* (req, res) {
+    try {
+      var users = yield _serviceProvider.default.getGroupUsers(req.params.id);
+      res.status(200).json((0, _users.getSuccessView)(users));
+    } catch (error) {
+      if (_config.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _users.getErrorView)(error.message));
+    }
+  });
+  return _getGroupUsers.apply(this, arguments);
 }

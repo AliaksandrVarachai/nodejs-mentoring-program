@@ -28,7 +28,11 @@ exports.getUserPermissions = getUserPermissions;
 exports.getUserGroups = getUserGroups;
 exports.getGroupUsers = getGroupUsers;
 
-var dataProvider = _interopRequireWildcard(require("../../data-access/pg"));
+var dataProvider = _interopRequireWildcard(require("../../data-access/knex"));
+
+var _knex2 = _interopRequireDefault(require("../../data-access/knex/knex"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
@@ -79,9 +83,9 @@ function getUserById(_x) {
 
 function _getUserById() {
   _getUserById = _asyncToGenerator(function* (id) {
-    var row = yield dataProvider.getUserById(id);
-    if (!row) throw Error("User with id=\"".concat(id, "\" is not found."));
-    return toUser(row);
+    var rows = yield dataProvider.getUserById(id);
+    if (rows.length === 0) throw Error("User with id=\"".concat(id, "\" is not found."));
+    return toUser(rows[0]);
   });
   return _getUserById.apply(this, arguments);
 }
@@ -127,12 +131,12 @@ function _createUser() {
       password,
       age
     } = _ref;
-    var row = yield dataProvider.createUser({
+    var rows = yield dataProvider.createUser({
       login,
       password,
       age
     });
-    return toUser(row);
+    return toUser(rows[0]);
   });
   return _createUser.apply(this, arguments);
 }
@@ -154,13 +158,13 @@ function _updateUser() {
       password,
       age
     } = _ref2;
-    var row = yield dataProvider.updateUser({
+    var rows = yield dataProvider.updateUser({
       id,
       password,
       age
     });
-    if (!row) throw Error("User with id=\"".concat(id, "\" is not found."));
-    return toUser(row);
+    if (rows.length === 0) throw Error("User with id=\"".concat(id, "\" is not found."));
+    return toUser(rows[0]);
   });
   return _updateUser.apply(this, arguments);
 }
@@ -193,7 +197,7 @@ function toUser(_ref3) {
       rest = _objectWithoutProperties(_ref3, ["user_id", "is_deleted"]);
 
   return _objectSpread({
-    id: user_id,
+    userId: user_id,
     isDeleted: is_deleted
   }, rest);
 }
@@ -210,13 +214,14 @@ function createGroup(_x5) {
 /**
  * Deletes a group.
  * @param {string} groupId
- * @returns {Promise<boolean>}
+ * @returns {Promise<undefined>}
+ * @throws when deleted group is not found
  */
 
 
 function _createGroup() {
   _createGroup = _asyncToGenerator(function* (name) {
-    var row = yield dataProvider.createGroup(name);
+    var [row] = yield dataProvider.createGroup(name);
     return {
       id: row.group_id,
       name: row.name
@@ -237,8 +242,8 @@ function deleteGroup(_x6) {
 
 function _deleteGroup() {
   _deleteGroup = _asyncToGenerator(function* (groupId) {
-    var isDeleted = yield dataProvider.deleteGroup(groupId);
-    if (!isDeleted) throw Error("Group with id=\"".concat(groupId, "\" is not found."));
+    var deletedRows = yield dataProvider.deleteGroup(groupId);
+    if (deletedRows === 0) throw Error("Group with id=\"".concat(groupId, "\" is not found."));
   });
   return _deleteGroup.apply(this, arguments);
 }
@@ -254,7 +259,9 @@ function getGroupById(_x7) {
 
 function _getGroupById() {
   _getGroupById = _asyncToGenerator(function* (groupId) {
-    var row = yield dataProvider.getGroupById(groupId);
+    var {
+      rows: [row]
+    } = yield dataProvider.getGroupById(groupId);
     if (!row) throw Error("Group with id=\"".concat(groupId, "\" is not found."));
     return {
       groupId: row.group_id,
@@ -271,7 +278,7 @@ function getAllGroups() {
 /**
  * Creates a new permission.
  * @param {string} name
- * @returns {Promise<{name: string, id: string}>}
+ * @returns {Promise<{permissionId: string, name: string}[]>}
  */
 
 
@@ -289,15 +296,16 @@ function createPermission(_x8) {
 /**
  * Deletes a permission.
  * @param {string} permissionId
- * @returns {Promise<boolean>}
+ * @returns {Promise<undefined>}
+ * @throws when the deleted permission is not found.
  */
 
 
 function _createPermission() {
   _createPermission = _asyncToGenerator(function* (name) {
-    var row = yield dataProvider.createPermission(name);
+    var [row] = yield dataProvider.createPermission(name);
     return {
-      id: row.permission_id,
+      permissionId: row.permission_id,
       name: row.name
     };
   });
@@ -308,16 +316,16 @@ function deletePermission(_x9) {
   return _deletePermission.apply(this, arguments);
 }
 /**
- * Gets permission info by its ID.
+ * Gets permission by ID.
  * @param {string} permissionId
- * @returns {Promise<{name: string, id: string}>}
+ * @returns {Promise<{permission_id: string, name: string}[]>}
  */
 
 
 function _deletePermission() {
   _deletePermission = _asyncToGenerator(function* (permissionId) {
-    var isDeleted = yield dataProvider.deletePermission(permissionId);
-    if (!isDeleted) throw Error("Permission with id=\"".concat(permissionId, "\" is not found."));
+    var deletedPermissions = yield dataProvider.deletePermission(permissionId);
+    if (deletedPermissions === 0) throw Error("Permission with id=\"".concat(permissionId, "\" is not found."));
   });
   return _deletePermission.apply(this, arguments);
 }
@@ -327,18 +335,17 @@ function getPermissionById(_x10) {
 }
 /**
  * Gets all available permissions.
- * @returns {Promise<{name: string, id: string}[]>}
+ * @returns {Promise<{permission_id: string, name: string}[]>}
  */
 
 
 function _getPermissionById() {
   _getPermissionById = _asyncToGenerator(function* (permissionId) {
-    var row = yield dataProvider.getPermissionById(permissionId);
-    if (!row) throw Error("Permission with id=\"".concat(permissionId, "\" is not found."));
-    return {
-      id: row.permission_id,
+    var rows = yield dataProvider.getPermissionById(permissionId);
+    return rows.map(row => ({
+      permissionId: row.permission_id,
       name: row.name
-    };
+    }));
   });
   return _getPermissionById.apply(this, arguments);
 }
@@ -347,20 +354,16 @@ function getAllPermissions() {
   return _getAllPermissions.apply(this, arguments);
 }
 /**
- * Deletes users from a group.
+ * Adds list of user to a group (if a user is already in the group, they are ignored).
  * @param {string} groupId
  * @param {string[]} userIds
- * @returns {Promise<string[]>} - list of added user IDs.
+ * @returns {Promise<string[]>} - list added user IDs (without ignored existing ones).
  */
 
 
 function _getAllPermissions() {
   _getAllPermissions = _asyncToGenerator(function* () {
-    var rows = yield dataProvider.getAllPermissions();
-    return rows.map(row => ({
-      id: row.permission_id,
-      name: row.name
-    }));
+    return (0, _knex2.default)('permissions').select('permission_id', 'name');
   });
   return _getAllPermissions.apply(this, arguments);
 }
@@ -372,7 +375,7 @@ function addUsersToGroup(_x11, _x12) {
  * Deletes users from a group.
  * @param {string} groupId
  * @param {string[]} userIds
- * @returns {Promise<string[]>} - list of deleted user IDs.
+ * @returns {Promise<string[]>} - list of deleted users.
  */
 
 
@@ -408,9 +411,9 @@ function addPermissionsToGroup(_x15, _x16) {
 }
 /**
  * Deletes list of permissions from a group.
- * @param {string} groupId
- * @param {string[]} permissionIds
- * @returns {Promise<string[]>}
+ * @param groupId
+ * @param permissionIds
+ * @returns {Promise<string[]>} - list of deleted permissions.
  */
 
 
@@ -427,8 +430,7 @@ function deletePermissionsFromGroup(_x17, _x18) {
 }
 /**
  * Gets a permission list for the user.
- * @param {string} userId
- * @returns {Promise<string[]>}
+ * @returns {Promise<string[]>} - list of user permissions.
  */
 
 
@@ -444,9 +446,9 @@ function getUserPermissions(_x19) {
   return _getUserPermissions.apply(this, arguments);
 }
 /**
- * Get list of group IDs where the user belongs to.
+ * Gets user groups.
  * @param {string} userId
- * @returns {Promise<string[]>}
+ * @returns {Promise<string[]>} - list of groups.
  */
 
 
@@ -462,9 +464,9 @@ function getUserGroups(_x20) {
   return _getUserGroups.apply(this, arguments);
 }
 /**
- * Get list of user IDs the group contains.
+ * Gets group users.
  * @param {string} groupId
- * @returns {Promise<strings[]>}
+ * @returns {Promise<string[]>} - list of users.
  */
 
 
