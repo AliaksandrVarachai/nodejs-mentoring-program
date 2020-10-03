@@ -1,9 +1,11 @@
 import express from 'express';
 import { API_PORT } from '../config';
 import usersRouter from './routes';
+import logger from './helpers/middleware-logger';
 
 const app = express();
 
+app.use(logger);
 app.use(express.json());
 app.use('/api', usersRouter);
 app.use('*', (req, res, next) => {
