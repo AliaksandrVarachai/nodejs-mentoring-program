@@ -1,0 +1,54 @@
+{
+  "name": "task-3",
+  "version": "1.0.0",
+  "description": "Simple REST service with CRUD operations",
+  "main": "lib/server.js",
+  "scripts": {
+    "build": "rimraf lib/* && babel src --out-dir lib",
+    "start": "node lib/server.js",
+    "dev": "nodemon --exec babel-node src/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:Aliaksandr_Varachai/nodejs-mentoring-program.git"
+  },
+  "keywords": [],
+  "author": "Aliaksandr Varachai",
+  "engines": {
+    "node": ">=12"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/eslint-parser": "^7.11.3",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.0",
+    "babel-plugin-add-header-comment": "^1.0.3",
+    "eslint": "^7.7.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint"
+    ]
+  },
+  "dependencies": {
+    "ajv": "^6.12.4",
+    "ajv-errors": "^1.0.1",
+    "express": "^4.17.1",
+    "knex": "^0.21.5",
+    "pg": "^8.3.3",
+    "uuid": "^8.3.0"
+  }
+}
