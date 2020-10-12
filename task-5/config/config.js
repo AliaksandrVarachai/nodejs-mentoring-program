@@ -1,3 +1,5 @@
+const path = require('path');
+
 // List of available data sources
 const AVAILABLE_DATA_SOURCES = {
   PG: 'pg',
@@ -15,7 +17,8 @@ const config = {
   AVAILABLE_DATA_SOURCES,
   AVAILABLE_DB_CONNECTIONS,
   DATA_SOURCE: AVAILABLE_DATA_SOURCES.KNEX,
-  DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL
+  DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL,
+  LOG_DIR_PATH: path.resolve(__dirname, '../logs')
 };
 
 let dbConnectionConfig;

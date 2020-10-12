@@ -1,10 +1,21 @@
-import { LOG_ERRORS } from '../../config';
-import { getSuccessView, getErrorView } from '../views/users';
+import { LOG_ERRORS } from '../../config/config';
+import { getSuccessView, getErrorView } from '../views';
 import serviceProvider from './service-provider';
+import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods';
+
+const loggedServiceProvider = wrapImportedMethods(
+  serviceProvider,
+  (req, res, methodName, args) => {
+    res.trackingInfo = { method: methodName, args, success: false };
+  },
+  (req, res) => {
+    res.trackingInfo.success = true;
+  }
+);
 
 export async function getAllUsers(req, res) {
   try {
-    const users = await serviceProvider.getAllUsers();
+    const users = await loggedServiceProvider.getAllUsers(req, res)();
     res.status(200).json(getSuccessView(users));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -14,7 +25,7 @@ export async function getAllUsers(req, res) {
 
 export async function getUserById(req, res) {
   try {
-    const user = await serviceProvider.getUserById(req.params.id);
+    const user = await loggedServiceProvider.getUserById(req, res)(req.params.id);
     res.status(200).json(getSuccessView(user));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -26,7 +37,7 @@ export async function getAutoSuggestUsers(req, res) {
   const loginSubstring = req.query['login-substring'];
   const limit = Number(req.query.limit);
   try {
-    const users = await serviceProvider.getAutoSuggestUsers(loginSubstring, limit);
+    const users = await loggedServiceProvider.getAutoSuggestUsers(req, res)(loginSubstring, limit);
     res.status(200).json(getSuccessView(users));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -37,7 +48,7 @@ export async function getAutoSuggestUsers(req, res) {
 export async function createUser(req, res) {
   const { login, password, age } = req.body;
   try {
-    const newUser = await serviceProvider.createUser({ login, password, age });
+    const newUser = await loggedServiceProvider.createUser(req, res)({ login, password, age });
     res.status(201).json(getSuccessView(newUser));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -48,7 +59,7 @@ export async function createUser(req, res) {
 export async function updateUser(req, res) {
   const { id, password, age, isDeleted } = req.body;
   try {
-    const newUser = await serviceProvider.updateUser({ id, password, age, isDeleted });
+    const newUser = await loggedServiceProvider.updateUser(req, res)({ id, password, age, isDeleted });
     res.status(200).json(getSuccessView(newUser));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -58,7 +69,7 @@ export async function updateUser(req, res) {
 
 export async function removeUser(req, res) {
   try {
-    await serviceProvider.removeUser(req.params.id);
+    await loggedServiceProvider.removeUser(req, res)(req.params.id);
     res.sendStatus(204);
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -69,7 +80,7 @@ export async function removeUser(req, res) {
 export async function createGroup(req, res) {
   const { name } = req.body;
   try {
-    const newGroup = await serviceProvider.createGroup(name);
+    const newGroup = await loggedServiceProvider.createGroup(req, res)(name);
     res.status(201).json(getSuccessView(newGroup));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -79,7 +90,7 @@ export async function createGroup(req, res) {
 
 export async function deleteGroup(req, res) {
   try {
-    await serviceProvider.deleteGroup(req.params.id);
+    await loggedServiceProvider.deleteGroup(req, res)(req.params.id);
     res.sendStatus(204);
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -89,7 +100,7 @@ export async function deleteGroup(req, res) {
 
 export async function getGroupById(req, res) {
   try {
-    const group = await serviceProvider.getGroupById(req.params.id);
+    const group = await loggedServiceProvider.getGroupById(req, res)(req.params.id);
     res.status(200).json(getSuccessView(group));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -99,7 +110,7 @@ export async function getGroupById(req, res) {
 
 export async function getAllGroups(req, res) {
   try {
-    const groups = await serviceProvider.getAllGroups();
+    const groups = await loggedServiceProvider.getAllGroups(req, res)();
     res.status(200).json(getSuccessView(groups));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -110,7 +121,7 @@ export async function getAllGroups(req, res) {
 export async function createPermission(req, res) {
   const { name } = req.body;
   try {
-    const newPermission = await serviceProvider.createPermission(name);
+    const newPermission = await loggedServiceProvider.createPermission(req, res)(name);
     res.status(201).json(getSuccessView(newPermission));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -120,7 +131,7 @@ export async function createPermission(req, res) {
 
 export async function deletePermission(req, res) {
   try {
-    await serviceProvider.deletePermission(req.params.id);
+    await loggedServiceProvider.deletePermission(req, res)(req.params.id);
     res.sendStatus(204);
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -130,7 +141,7 @@ export async function deletePermission(req, res) {
 
 export async function getPermissionById(req, res) {
   try {
-    const permission = await serviceProvider.getPermissionById(req.params.id);
+    const permission = await loggedServiceProvider.getPermissionById(req, res)(req.params.id);
     res.status(200).json(getSuccessView(permission));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -140,7 +151,7 @@ export async function getPermissionById(req, res) {
 
 export async function getAllPermissions(req, res) {
   try {
-    const permissions = await serviceProvider.getAllPermissions();
+    const permissions = await loggedServiceProvider.getAllPermissions(req, res)();
     res.status(200).json(getSuccessView(permissions));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -151,7 +162,7 @@ export async function getAllPermissions(req, res) {
 export async function addUsersToGroup(req, res) {
   const { groupId, userIds } = req.body;
   try {
-    const newUser = await serviceProvider.addUsersToGroup(groupId, userIds);
+    const newUser = await loggedServiceProvider.addUsersToGroup(req, res)(groupId, userIds);
     res.status(200).json(getSuccessView(newUser));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -162,7 +173,7 @@ export async function addUsersToGroup(req, res) {
 export async function deleteUsersFromGroup(req, res) {
   const { groupId, userIds } = req.body;
   try {
-    const deletedUserIds = await serviceProvider.deleteUsersFromGroup(groupId, userIds);
+    const deletedUserIds = await loggedServiceProvider.deleteUsersFromGroup(req, res)(groupId, userIds);
     res.status(200).json(getSuccessView(deletedUserIds));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -173,7 +184,7 @@ export async function deleteUsersFromGroup(req, res) {
 export async function addPermissionsToGroup(req, res) {
   const { groupId, permissionIds } = req.body;
   try {
-    const addedPermissionIds = await serviceProvider.addPermissionsToGroup(groupId, permissionIds);
+    const addedPermissionIds = await loggedServiceProvider.addPermissionsToGroup(req, res)(groupId, permissionIds);
     res.status(200).json(getSuccessView(addedPermissionIds));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -184,7 +195,8 @@ export async function addPermissionsToGroup(req, res) {
 export async function deletePermissionsFromGroup(req, res) {
   const { groupId, permissionIds } = req.body;
   try {
-    const deletedPermissionIds = await serviceProvider.deletePermissionsFromGroup(groupId, permissionIds);
+    const deletedPermissionIds =
+      await loggedServiceProvider.deletePermissionsFromGroup(req, res)(groupId, permissionIds);
     res.status(200).json(getSuccessView(deletedPermissionIds));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -194,7 +206,7 @@ export async function deletePermissionsFromGroup(req, res) {
 
 export async function getUserPermissions(req, res) {
   try {
-    const permissions = await serviceProvider.getUserPermissions(req.params.id);
+    const permissions = await loggedServiceProvider.getUserPermissions(req, res)(req.params.id);
     res.status(200).json(getSuccessView(permissions));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -204,7 +216,7 @@ export async function getUserPermissions(req, res) {
 
 export async function getUserGroups(req, res) {
   try {
-    const groups = await serviceProvider.getUserGroups(req.params.id);
+    const groups = await loggedServiceProvider.getUserGroups(req, res)(req.params.id);
     res.status(200).json(getSuccessView(groups));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
@@ -214,10 +226,22 @@ export async function getUserGroups(req, res) {
 
 export async function getGroupUsers(req, res) {
   try {
-    const users = await serviceProvider.getGroupUsers(req.params.id);
+    const users = await loggedServiceProvider.getGroupUsers(req, res)(req.params.id);
     res.status(200).json(getSuccessView(users));
   } catch (error) {
     if (LOG_ERRORS) console.log(error);
     res.status(404).json(getErrorView(error.message));
   }
+}
+
+export function getUncaughtException() {
+  throw Error('Error handled by Express.js error handler.');
+}
+
+export async function getUnhandledRejection() {
+  await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(Error('Error handled by Node.js environment.'));
+    }, 1000);
+  });
 }

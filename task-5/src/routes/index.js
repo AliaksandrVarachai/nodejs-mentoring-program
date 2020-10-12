@@ -30,4 +30,7 @@ router.get('/user-permissions/:id', controller.getUserPermissions);
 router.get('/user-groups/:id', controller.getUserGroups);
 router.get('/group-users/:id', controller.getGroupUsers);
 
+router.get('/uncaught-exception', controller.getUncaughtException);
+router.get('/unhandled-rejection', controller.getUnhandledRejection);
+
 export default router;

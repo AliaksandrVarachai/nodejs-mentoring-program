@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } from '../../../config';
+import { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } from '../../../config/config';
 
 export default new Pool({
   host: DB_HOST,

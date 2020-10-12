@@ -1,7 +1,7 @@
 import Ajv from 'ajv';
 import ajvErrors from 'ajv-errors';
-import { LOG_ERRORS } from '../../config';
-import { getErrorView } from '../views/users';
+import { LOG_ERRORS } from '../../config/config';
+import { getErrorView } from '../views';
 import userDefinition from './schema-definitions/user';
 import groupDefinition from './schema-definitions/group';
 import permissionDefinition from './schema-definitions/permission';
