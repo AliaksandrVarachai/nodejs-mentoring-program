@@ -5,7 +5,7 @@
   "main": "lib/server.js",
   "scripts": {
     "build": "rimraf lib/* && babel src --out-dir lib",
-    "start": "node lib/server.js",
+    "start": "NODE_ENV=production node lib/server.js",
     "dev": "nodemon --exec babel-node src/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
