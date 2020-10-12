@@ -1,38 +1,34 @@
-# Task 4
+# Task 5
 
 ## Requirements
 
-### Task 4.1
+The task is a continuation of Homework 4 and should be done in the same repo.
 
-Add Groupentity to already existing RESTservice with CRUDoperations.
-* TheGroup entity should have the following properties (you can use UUID as Group id):
-    ```
-    type Permissions = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_FILES';
-    type Group = {
-        id: string;
-        name: string;
-        permissions: Array<Permissions>
-    }
-    ```
-* The service should provide the following CRUD operations for Group:
-    - get group by id;
-    - get all groups;
-    − create and update a group;
-    − remove group (hard delete–group data is fully removed from the DB).
-* Storing of groups data should be done in PostgreSQL in Groups table.
-* The service should follow the principles of 3-layer architecture.
+### Task 5.1
 
-### Task 4.2
+Add express middleware which will log which service method has been invoked and which arguments have been passed to it.
+
+### Task 5.2
+
+* Add express middleware which will log all unhandled errors and return a standard message with HTTP code `500` 
+  (Internal Server Error). 
+  
+  **Remark:** Do not modify the status code and the message for other errors like validation errors 
+  from the previous task.
+* Add error handling to `process.on(‘uncaughtException’,...)`.
+* Add Unhandled promise rejection listener to log errors.
 
 * Link User records in one table with Group records in another table.
 * Add a UserGroup table("many-to-many" relationship) which will store the data describing which users are assigned 
-to which group.
+  to which group.
 * If any record gets removed from the DB, then all linked records should be removed from UserGroup as well.
 
-### Task 4.3
+### Task 5.3
 
-Add `addUsersToGroup(groupId, userIds)` method which will allow adding users to a certain group.
-Use *transactions* to save records in DB.
+* Every method in the controllers should log the errors which should include the following information:
+  + method name;
+  + arguments which have been passed to the method;
+  + error message.
 
 ## Implementation
 
@@ -41,12 +37,14 @@ Tested on `Node v12`.
 ### Configuration
 
 The project is configured to work with a remote database in ElephantSQL (PostgreSQL as a Service).
-For other available options see `server.js` file.
+For other available options see `config/server.js` file.
+
+Winston logger is configured in `config/logger.js` and `config/logger-fields.js` files. 
 
 ### Run script on prod
 
 ```
-cd task-4
+cd task-5
 npm install
 npm start
 ```
@@ -56,18 +54,22 @@ npm start
 #### Remote PostgreSQL on elephantSQL (configured by default)
 
 ```
-cd task-4
+cd task-5
 npm install
 npm run dev
 ```
 See https://www.elephantsql.com for details 
+
+
+
+
 
 #### Running PostgreSQL on a local machine
 
 To work with local PostgreSQL database it needed to be installed from https://www.postgresql.org/download and run 
 
 
-Go to `server.js` and change:
+Go to `config/server.js` and change:
 ```
 const server = {
     ...
@@ -118,190 +120,112 @@ This option can be changed in `server.js` to the next ones:
 
 ### REST API description 
 
-| Method  | Path                            | Description*      |
-| ------- | ------------------------------- | ---------------- |
-| GET     | /users/all                      | Provides list of all users |
-| GET     | /users/auto-suggest             | Provides list of users by part of their name |
-| GET     | /users/:id                      | Provides user object |
-| PUT     | /users/create                   | Creates a new user |
-| PATCH   | /users/update                   | Updates the user |
-| DELETE  | /users/remove/:id               | Removes the user (soft) |
-| GET     | /groups/all                     | Provides list of all groups |
-| GET     | /groups/:id                     | Provides a group object |
-| PUT     | /groups/create                  | Creates a new group |
-| DELETE  | /groups/delete/:id              | Deletes the group (hard) |
-| GET     | /permissions/all                | Provides list of all permissions |
-| GET     | /permissions/:id                | Provides a permission object |
-| PUT     | /permissions/create             | Creates a new permission |
-| DELETE  | /permissions/delete/:id         | Deletes the permission (hard) |
-| POST    | /add-users-to-group             | Adds list of users to the group |
-| DELETE  | /delete-users-from-group        | Deletes list of users from the group |
-| POST    | /add-permissions-to-group       | Adds list of permissions to the group |
-| DELETE  | /delete-permissions-from-group  | Deletes the permission list from the group |
-| GET     | /user-permissions/:id           | Provides list of permissions for the user |
-| GET     | /user-groups/:id                | Provides list of groups for the user |
-| GET     | /group-users/:id                | Provides list of users for the group |
+| Method  | Path                                | Description*     |
+| ------- | ----------------------------------- | ---------------- |
+| GET     | **/api/handled-error**              | Generates an error which is processed by the express app |
+| GET     | **/api/unhandled-error**            | Generate an error unhandled by the app (just logging is provided |
+| GET     | /api/users/all                      | Provides list of all users |
+| GET     | /api/users/auto-suggest             | Provides list of users by part of their name |
+| GET     | /api/users/:id                      | Provides user object |
+| PUT     | /api/users/create                   | Creates a new user |
+| PATCH   | /api/users/update                   | Updates the user |
+| DELETE  | /api/users/remove/:id               | Removes the user (soft) |
+| GET     | /api/groups/all                     | Provides list of all groups |
+| GET     | /api/groups/:id                     | Provides a group object |
+| PUT     | /api/groups/create                  | Creates a new group |
+| DELETE  | /api/groups/delete/:id              | Deletes the group (hard) |
+| GET     | /api/permissions/all                | Provides list of all permissions |
+| GET     | /api/permissions/:id                | Provides a permission object |
+| PUT     | /api/permissions/create             | Creates a new permission |
+| DELETE  | /api/permissions/delete/:id         | Deletes the permission (hard) |
+| POST    | /api/add-users-to-group             | Adds list of users to the group |
+| DELETE  | /api/delete-users-from-group        | Deletes list of users from the group |
+| POST    | /api/add-permissions-to-group       | Adds list of permissions to the group |
+| DELETE  | /api/delete-permissions-from-group  | Deletes the permission list from the group |
+| GET     | /api/user-permissions/:id           | Provides list of permissions for the user |
+| GET     | /api/user-groups/:id                | Provides list of groups for the user |
+| GET     | /api/group-users/:id                | Provides list of users for the group |
 
-\*See the detailed description below.
+\*See the detailed description in the **task #4**.
 
-#### Get all users
+#### Handled error
 
 **Request example:**
 ```
-GET http://localhost:3000/users/all
+GET http://localhost:3000/api/handled-error
 ```
 
 **Response example:**
 ```
-Status: 200
+Status: 500
 Body:
     {
-        "data": [
-            {
-                "userId": "00000000-0000-4000-0000-000000000017",
-                "isDeleted": false,
-                "login": "admin-1",
-                "password": "admin-1",
-                "age": 30
-            },
-            {
-                "userId": "00000000-0000-4000-0000-000000000018",
-                "isDeleted": false,
-                "login": "admin-2",
-                "password": "admin-2",
-                "age": 35
-            },
-            ...
-        ]
-    }
-```
-
-#### Get auto-suggested users
-
-**Request example:**
-```
-GET http://localhost:3000/users/auto-suggest?login-substring=admin&limit=5
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            {
-                "userId": "00000000-0000-4000-0000-000000000017",
-                "isDeleted": false,
-                "login": "admin-1",
-                "password": "admin-1",
-                "age": 30
-            },
-            {
-                "userId": "00000000-0000-4000-0000-000000000018",
-                "isDeleted": false,
-                "login": "admin-2",
-                "password": "admin-2",
-                "age": 35
-            }
-        ]
-    }
-```
-
-#### Get user by ID
-
-**Request example:**
-```
-GET http://localhost:3000/users/00000000-0000-4000-0000-000000000017
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": {
-            "userId": "00000000-0000-4000-0000-000000000017",
-            "isDeleted": false,
-            "login": "admin-1",
-            "password": "admin-1",
-            "age": 30
+        "error": {
+            "message": "Error handled by Express.js error handler."
         }
     }
 ```
+Generated logs: 
+1) `logs/combined.log`:
+```
+{"dateTime":"2020-10-12T19:42:16.945Z","message":"Error handled by Express.js error handler.","stack":"Error: Error handled by Express.js error handler........","level":"error","service":"expressjs-service"}
+{"message":{"startDateTime":"2020-10-12T19:42:16.944Z","request":{"method":"GET","url":"/api/handled-error"},"response":{"statusCode":500,"statusMessage":"Internal Server Error"},"responseTime":21,"trackingInfo":{}},"level":"info","service":"expressjs-service"}
+```
+2) `log/errors.log`:
+```
+{"dateTime":"2020-10-12T19:42:16.945Z","message":"Error handled by Express.js error handler.","stack":"Error: Error handled by Express.js error handler........","level":"error","service":"expressjs-service"}
+```
+3) `console output` (only in development mode):
+```
+{
+  dateTime: '2020-10-12T19:42:16.945Z',
+  message: 'Error handled by Express.js error handler.',
+  code: undefined,
+  stack: 'Error: Error handled by Express.js error handler.......',
+  level: 'error',
+  service: 'expressjs-service'
+}
+{
+  message: {
+    startDateTime: '2020-10-12T19:42:16.944Z',
+    request: { method: 'GET', url: '/api/handled-error' },
+    response: { statusCode: 500, statusMessage: 'Internal Server Error' },
+    responseTime: 21,
+    trackingInfo: {}
+  },
+  level: 'info',
+  service: 'expressjs-service'
+}
+```
 
-#### Create a new user
+
+#### Unhandled error
 
 **Request example:**
 ```
-PUT http://localhost:3000/users/create
-Body:
-    {
-       "login": "new-user-1",
-       "password": "new-user-1",
-       "age": 44
-    }
+GET http://localhost:3000/api/unhandled-error
 ```
 
 **Response example:**
 ```
-Status: 201
-Body:
-    {
-        "data": {
-            "userId": "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
-            "isDeleted": false,
-            "login": "test-user-1",
-            "password": "test-user-1",
-            "age": 44
-        }
-    }
+No response
+```
+Generated logs: 
+1) `logs/combined.log`:
+```
+{"origin":"unhandledRejection","dateTime":"2020-10-12T19:49:28.822Z","message":"Error handled by Node.js environment.","stack":"Error: Error handled by Node.js environment.......","level":"error","service":"expressjs-service"}
+```
+2) `log/errors.log`:
+```
+{"origin":"unhandledRejection","dateTime":"2020-10-12T19:49:28.822Z","message":"Error handled by Node.js environment.","stack":"Error: Error handled by Node.js environment.......","level":"error","service":"expressjs-service"}
 ```
 
-#### Update a user
 
-**Request example:**
-```
-PATCH http://localhost:3000/users/update
-Body:
-    {
-        "id": "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
-        "password": "changed-password-1",
-        "age": 99
-    }
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": {
-            "userId": "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
-            "isDeleted": false,
-            "login": "test-user-1",
-            "password": "changed-password-1",
-            "age": 99
-        }
-    }
-```
-
-#### Remove a user
+#### Info message
 
 **Request example:**
 ```
-DELETE http://localhost:3000/users/remove/ebc02386-35a2-425f-84a2-c8ed70bc0d7d
-```
-
-**Response example:**
-```
-Status: 204
-```
-
-#### Get all groups
-
-**Request example:**
-```
-GET http://localhost:3000/groups/all
+GET http://localhost:3000/api/users/all
 ```
 
 **Response example:**
@@ -309,357 +233,26 @@ GET http://localhost:3000/groups/all
 Status: 200
 Body:
     {
-        "data": [
-            "00000000-0000-4000-0002-000000000000",
-            "00000000-0000-4000-0002-000000000001",
-            "00000000-0000-4000-0002-000000000002",
-            "00000000-0000-4000-0002-000000000003"
-        ]
+        "data": { ... }
     }
 ```
-
-#### Get group by ID
-
-**Request example:**
+Generated logs: 
+1) `logs/combined.log`:
 ```
-GET http://localhost:3000/groups/00000000-0000-4000-0002-000000000000
+{"message":{"startDateTime":"2020-10-12T20:03:37.854Z","request":{"method":"GET","url":"/api/users/all"},"response":{"statusCode":200,"statusMessage":"OK"},"responseTime":766,"trackingInfo":{"method":"getAllUsers"}},"level":"info","service":"expressjs-service"}
 ```
 
-**Response example:**
+2) `console output` (only in development mode):
 ```
-Status: 200
-Body:
-    {
-        "data": {
-            "groupId": "00000000-0000-4000-0002-000000000000",
-            "name": "admins",
-            "permissionIds": [
-                "00000000-0000-4000-0001-000000000000",
-                "00000000-0000-4000-0001-000000000001",
-                "00000000-0000-4000-0001-000000000002",
-                "00000000-0000-4000-0001-000000000003",
-                "00000000-0000-4000-0001-000000000004"
-            ]
-        }
-    }
-```
-
-#### Create a new group
-
-**Request example:**
-```
-PUT http://localhost:3000/groups/create
-Body:
-    {
-        "name": "test_group"    
-    }
-```
-
-**Response example:**
-```
-Status: 201
-Body:
-    {
-        "data": {
-            "id": "a5f0d492-e0c7-4e11-991d-910973cb27e1",
-            "name": "test_group"
-        }
-    }
-```
-
-#### Delete group
-
-**Request example:**
-```
-DELETE http://localhost:3000/groups/delete/a5f0d492-e0c7-4e11-991d-910973cb27e1
-```
-
-**Response example:**
-```
-Status: 204
-```
-
-#### Get all permissions
-
-**Request example:**
-```
-GET http://localhost:3000/permissions/all
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            {
-                "permission_id": "00000000-0000-4000-0001-000000000000",
-                "name": "READ"
-            },
-            {
-                "permission_id": "00000000-0000-4000-0001-000000000001",
-                "name": "WRITE"
-            },
-            {
-                "permission_id": "00000000-0000-4000-0001-000000000002",
-                "name": "DELETE"
-            },
-            {
-                "permission_id": "00000000-0000-4000-0001-000000000003",
-                "name": "SHARE"
-            },
-            {
-                "permission_id": "00000000-0000-4000-0001-000000000004",
-                "name": "UPLOAD_FILES"
-            }
-        ]
-    }
-```
-
-#### Get permission by ID
-
-**Request example:**
-```
-GET http://localhost:3000/permissions/00000000-0000-4000-0001-000000000001
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            {
-                "permissionId": "00000000-0000-4000-0001-000000000001",
-                "name": "WRITE"
-            }
-        ]
-    }
-```
-
-#### Create a new permission
-
-**Request example:**
-```
-PUT http://localhost:3000/permissions/create
-Body:
-    {
-        "name": "TEST_PERMISSION"
-    }
-```
-
-**Response example:**
-```
-Status: 201
-Body:
-    {
-        "data": {
-            "permissionId": "e6c37a96-cba7-4fbb-ada2-7c94722d2531",
-            "name": "TEST_PERMISSION"
-        }
-    }
-```
-
-#### Delete permission
-
-**Request example:**
-```
-DELETE http://localhost:3000/permissions/delete/e6c37a96-cba7-4fbb-ada2-7c94722d2531
-```
-
-**Response example:**
-```
-Status: 204
-```
-
-#### Adds list of users to the group
-
-**Request example:**
-```
-POST http://localhost:3000/add-users-to-group
-Body:
-    {
-        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
-        "userIds": ["ebc02386-35a2-425f-84a2-c8ed70bc0d7d", "4d5615d8-3454-487a-97e1-b3e114293dba"]
-    }
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
-            "4d5615d8-3454-487a-97e1-b3e114293dba"
-        ]
-    }
-```
-**Important:** If a user is already in the group they are omitted in the returned array. 
-For example, sending the same request the second time will return an empty array:
-```
-Status: 200
-Body:
-    {
-        "data": []
-    }
-```
-
-#### Deletes list of users from the group
-
-**Request example:**
-```
-POST http://localhost:3000/delete-users-from-group
-Body:
-    {
-        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
-        "userIds": ["ebc02386-35a2-425f-84a2-c8ed70bc0d7d", "4d5615d8-3454-487a-97e1-b3e114293dba"]
-    }
-```
-
-**Response example:**
-
-```
-Status: 200
-Body:
-    {
-        "data": [
-            "4d5615d8-3454-487a-97e1-b3e114293dba",
-            "ebc02386-35a2-425f-84a2-c8ed70bc0d7d"
-        ]
-    }
-```
-**Important:** If a user is NOT in the group they are omitted in the returned array. 
-For example, sending the same request the second time will return an empty array:
-```
-Status: 200
-Body:
-    {
-        "data": []
-    }
-```
-
-#### Adds list of permissions to the group
-
-**Request example:**
-```
-POST http://localhost:3000/add-permissions-to-group
-Body:
-    {
-        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
-        "permissionIds": ["00000000-0000-4000-0001-000000000000", "00000000-0000-4000-0001-000000000001", "00000000-0000-4000-0001-000000000002"]
-    }
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            "00000000-0000-4000-0001-000000000000",
-            "00000000-0000-4000-0001-000000000001",
-            "00000000-0000-4000-0001-000000000002"
-        ]
-    }
-```
-**Important:** If permission already belongs to the group they are omitted in the returned array. 
-For example, sending the same request the second time will return an empty array:
-```
-Status: 200
-Body:
-    {
-        "data": []
-    }
-```
-
-#### Deletes the permission list from the group
-
-**Request example:**
-```
-POST http://localhost:3000/delete-permissions-from-group
-Body:
-    {
-        "groupId": "6e513a06-bf35-4e2b-9342-04667cf3f692",
-        "permissionIds": ["00000000-0000-4000-0001-000000000000", "00000000-0000-4000-0001-000000000001", "00000000-0000-4000-0001-000000000002"]
-    }
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            "00000000-0000-4000-0001-000000000000",
-            "00000000-0000-4000-0001-000000000001",
-            "00000000-0000-4000-0001-000000000002"
-        ]
-    }
-```
-**Important:** If permission DOES NOT belong to the group they are omitted in the returned array. 
-For example, sending the same request the second time will return an empty array:
-```
-Status: 200
-Body:
-    {
-        "data": []
-    }
-```
-
-#### Provides list of permissions for the user
-
-**Request example:**
-```
-GET http://localhost:3000/user-permissions/ebc02386-35a2-425f-84a2-c8ed70bc0d7d
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            "00000000-0000-4000-0001-000000000002",
-            "00000000-0000-4000-0001-000000000000",
-            "00000000-0000-4000-0001-000000000001"
-        ]
-    }
-```
-
-#### Provides list of groups for the user
-
-**Request example:**
-```
-GET http://localhost:3000/user-groups/ebc02386-35a2-425f-84a2-c8ed70bc0d7d
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            "6e513a06-bf35-4e2b-9342-04667cf3f692"
-        ]
-    }
-```
-
-#### Provides list of users for the group
-
-**Request example:**
-```
-GET http://localhost:3000/group-users/6e513a06-bf35-4e2b-9342-04667cf3f692
-```
-
-**Response example:**
-```
-Status: 200
-Body:
-    {
-        "data": [
-            "ebc02386-35a2-425f-84a2-c8ed70bc0d7d",
-            "4d5615d8-3454-487a-97e1-b3e114293dba"
-        ]
-    }
+{
+  message: {
+    startDateTime: '2020-10-12T20:03:37.854Z',
+    request: { method: 'GET', url: '/api/users/all' },
+    response: { statusCode: 200, statusMessage: 'OK' },
+    responseTime: 766,
+    trackingInfo: { method: 'getAllUsers', args: undefined }
+  },
+  level: 'info',
+  service: 'expressjs-service'
+}
 ```
