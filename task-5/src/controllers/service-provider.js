@@ -1,4 +1,4 @@
-import { DATA_SOURCE, AVAILABLE_DATA_SOURCES } from '../../config/config';
+import { DATA_SOURCE, AVAILABLE_DATA_SOURCES } from '../../config/server';
 import * as pgService from '../services/pg';
 import * as knexService from '../services/knex';
 

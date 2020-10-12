@@ -27,18 +27,29 @@ exports.deletePermissionsFromGroup = deletePermissionsFromGroup;
 exports.getUserPermissions = getUserPermissions;
 exports.getUserGroups = getUserGroups;
 exports.getGroupUsers = getGroupUsers;
+exports.getHandledError = getHandledError;
+exports.getUnhandledError = getUnhandledError;
 
-var _config = require("../../config");
+var _server = require("../../config/server");
 
-var _users = require("../views/users");
+var _views = require("../views");
 
 var _serviceProvider = _interopRequireDefault(require("./service-provider"));
+
+var _wrapImportedMethods = _interopRequireDefault(require("../middlewares/utils/wrap-imported-methods"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var loggedServiceProvider = (0, _wrapImportedMethods.default)(_serviceProvider.default, (req, res, methodName, args) => {
+  res.trackingInfo = {
+    method: methodName,
+    args
+  };
+}, () => {});
 
 function getAllUsers(_x, _x2) {
   return _getAllUsers.apply(this, arguments);
@@ -47,11 +58,11 @@ function getAllUsers(_x, _x2) {
 function _getAllUsers() {
   _getAllUsers = _asyncToGenerator(function* (req, res) {
     try {
-      var users = yield _serviceProvider.default.getAllUsers();
-      res.status(200).json((0, _users.getSuccessView)(users));
+      var users = yield loggedServiceProvider.getAllUsers(req, res)();
+      res.status(200).json((0, _views.getSuccessView)(users));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getAllUsers.apply(this, arguments);
@@ -64,11 +75,11 @@ function getUserById(_x3, _x4) {
 function _getUserById() {
   _getUserById = _asyncToGenerator(function* (req, res) {
     try {
-      var user = yield _serviceProvider.default.getUserById(req.params.id);
-      res.status(200).json((0, _users.getSuccessView)(user));
+      var user = yield loggedServiceProvider.getUserById(req, res)(req.params.id);
+      res.status(200).json((0, _views.getSuccessView)(user));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getUserById.apply(this, arguments);
@@ -84,11 +95,11 @@ function _getAutoSuggestUsers() {
     var limit = Number(req.query.limit);
 
     try {
-      var users = yield _serviceProvider.default.getAutoSuggestUsers(loginSubstring, limit);
-      res.status(200).json((0, _users.getSuccessView)(users));
+      var users = yield loggedServiceProvider.getAutoSuggestUsers(req, res)(loginSubstring, limit);
+      res.status(200).json((0, _views.getSuccessView)(users));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getAutoSuggestUsers.apply(this, arguments);
@@ -107,15 +118,15 @@ function _createUser() {
     } = req.body;
 
     try {
-      var newUser = yield _serviceProvider.default.createUser({
+      var newUser = yield loggedServiceProvider.createUser(req, res)({
         login,
         password,
         age
       });
-      res.status(201).json((0, _users.getSuccessView)(newUser));
+      res.status(201).json((0, _views.getSuccessView)(newUser));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(400).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(400).json((0, _views.getErrorView)(error.message));
     }
   });
   return _createUser.apply(this, arguments);
@@ -135,16 +146,16 @@ function _updateUser() {
     } = req.body;
 
     try {
-      var newUser = yield _serviceProvider.default.updateUser({
+      var newUser = yield loggedServiceProvider.updateUser(req, res)({
         id,
         password,
         age,
         isDeleted
       });
-      res.status(200).json((0, _users.getSuccessView)(newUser));
+      res.status(200).json((0, _views.getSuccessView)(newUser));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _updateUser.apply(this, arguments);
@@ -157,11 +168,11 @@ function removeUser(_x11, _x12) {
 function _removeUser() {
   _removeUser = _asyncToGenerator(function* (req, res) {
     try {
-      yield _serviceProvider.default.removeUser(req.params.id);
+      yield loggedServiceProvider.removeUser(req, res)(req.params.id);
       res.sendStatus(204);
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _removeUser.apply(this, arguments);
@@ -178,11 +189,11 @@ function _createGroup() {
     } = req.body;
 
     try {
-      var newGroup = yield _serviceProvider.default.createGroup(name);
-      res.status(201).json((0, _users.getSuccessView)(newGroup));
+      var newGroup = yield loggedServiceProvider.createGroup(req, res)(name);
+      res.status(201).json((0, _views.getSuccessView)(newGroup));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(400).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(400).json((0, _views.getErrorView)(error.message));
     }
   });
   return _createGroup.apply(this, arguments);
@@ -195,11 +206,11 @@ function deleteGroup(_x15, _x16) {
 function _deleteGroup() {
   _deleteGroup = _asyncToGenerator(function* (req, res) {
     try {
-      yield _serviceProvider.default.deleteGroup(req.params.id);
+      yield loggedServiceProvider.deleteGroup(req, res)(req.params.id);
       res.sendStatus(204);
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _deleteGroup.apply(this, arguments);
@@ -212,11 +223,11 @@ function getGroupById(_x17, _x18) {
 function _getGroupById() {
   _getGroupById = _asyncToGenerator(function* (req, res) {
     try {
-      var group = yield _serviceProvider.default.getGroupById(req.params.id);
-      res.status(200).json((0, _users.getSuccessView)(group));
+      var group = yield loggedServiceProvider.getGroupById(req, res)(req.params.id);
+      res.status(200).json((0, _views.getSuccessView)(group));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getGroupById.apply(this, arguments);
@@ -229,11 +240,11 @@ function getAllGroups(_x19, _x20) {
 function _getAllGroups() {
   _getAllGroups = _asyncToGenerator(function* (req, res) {
     try {
-      var groups = yield _serviceProvider.default.getAllGroups();
-      res.status(200).json((0, _users.getSuccessView)(groups));
+      var groups = yield loggedServiceProvider.getAllGroups(req, res)();
+      res.status(200).json((0, _views.getSuccessView)(groups));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getAllGroups.apply(this, arguments);
@@ -250,11 +261,11 @@ function _createPermission() {
     } = req.body;
 
     try {
-      var newPermission = yield _serviceProvider.default.createPermission(name);
-      res.status(201).json((0, _users.getSuccessView)(newPermission));
+      var newPermission = yield loggedServiceProvider.createPermission(req, res)(name);
+      res.status(201).json((0, _views.getSuccessView)(newPermission));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(400).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(400).json((0, _views.getErrorView)(error.message));
     }
   });
   return _createPermission.apply(this, arguments);
@@ -267,11 +278,11 @@ function deletePermission(_x23, _x24) {
 function _deletePermission() {
   _deletePermission = _asyncToGenerator(function* (req, res) {
     try {
-      yield _serviceProvider.default.deletePermission(req.params.id);
+      yield loggedServiceProvider.deletePermission(req, res)(req.params.id);
       res.sendStatus(204);
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _deletePermission.apply(this, arguments);
@@ -284,11 +295,11 @@ function getPermissionById(_x25, _x26) {
 function _getPermissionById() {
   _getPermissionById = _asyncToGenerator(function* (req, res) {
     try {
-      var permission = yield _serviceProvider.default.getPermissionById(req.params.id);
-      res.status(200).json((0, _users.getSuccessView)(permission));
+      var permission = yield loggedServiceProvider.getPermissionById(req, res)(req.params.id);
+      res.status(200).json((0, _views.getSuccessView)(permission));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getPermissionById.apply(this, arguments);
@@ -301,11 +312,11 @@ function getAllPermissions(_x27, _x28) {
 function _getAllPermissions() {
   _getAllPermissions = _asyncToGenerator(function* (req, res) {
     try {
-      var permissions = yield _serviceProvider.default.getAllPermissions();
-      res.status(200).json((0, _users.getSuccessView)(permissions));
+      var permissions = yield loggedServiceProvider.getAllPermissions(req, res)();
+      res.status(200).json((0, _views.getSuccessView)(permissions));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getAllPermissions.apply(this, arguments);
@@ -323,11 +334,11 @@ function _addUsersToGroup() {
     } = req.body;
 
     try {
-      var newUser = yield _serviceProvider.default.addUsersToGroup(groupId, userIds);
-      res.status(200).json((0, _users.getSuccessView)(newUser));
+      var newUser = yield loggedServiceProvider.addUsersToGroup(req, res)(groupId, userIds);
+      res.status(200).json((0, _views.getSuccessView)(newUser));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _addUsersToGroup.apply(this, arguments);
@@ -345,11 +356,11 @@ function _deleteUsersFromGroup() {
     } = req.body;
 
     try {
-      var deletedUserIds = yield _serviceProvider.default.deleteUsersFromGroup(groupId, userIds);
-      res.status(200).json((0, _users.getSuccessView)(deletedUserIds));
+      var deletedUserIds = yield loggedServiceProvider.deleteUsersFromGroup(req, res)(groupId, userIds);
+      res.status(200).json((0, _views.getSuccessView)(deletedUserIds));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _deleteUsersFromGroup.apply(this, arguments);
@@ -367,11 +378,11 @@ function _addPermissionsToGroup() {
     } = req.body;
 
     try {
-      var addedPermissionIds = yield _serviceProvider.default.addPermissionsToGroup(groupId, permissionIds);
-      res.status(200).json((0, _users.getSuccessView)(addedPermissionIds));
+      var addedPermissionIds = yield loggedServiceProvider.addPermissionsToGroup(req, res)(groupId, permissionIds);
+      res.status(200).json((0, _views.getSuccessView)(addedPermissionIds));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _addPermissionsToGroup.apply(this, arguments);
@@ -389,11 +400,11 @@ function _deletePermissionsFromGroup() {
     } = req.body;
 
     try {
-      var deletedPermissionIds = yield _serviceProvider.default.deletePermissionsFromGroup(groupId, permissionIds);
-      res.status(200).json((0, _users.getSuccessView)(deletedPermissionIds));
+      var deletedPermissionIds = yield loggedServiceProvider.deletePermissionsFromGroup(req, res)(groupId, permissionIds);
+      res.status(200).json((0, _views.getSuccessView)(deletedPermissionIds));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _deletePermissionsFromGroup.apply(this, arguments);
@@ -406,11 +417,11 @@ function getUserPermissions(_x37, _x38) {
 function _getUserPermissions() {
   _getUserPermissions = _asyncToGenerator(function* (req, res) {
     try {
-      var permissions = yield _serviceProvider.default.getUserPermissions(req.params.id);
-      res.status(200).json((0, _users.getSuccessView)(permissions));
+      var permissions = yield loggedServiceProvider.getUserPermissions(req, res)(req.params.id);
+      res.status(200).json((0, _views.getSuccessView)(permissions));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getUserPermissions.apply(this, arguments);
@@ -423,11 +434,11 @@ function getUserGroups(_x39, _x40) {
 function _getUserGroups() {
   _getUserGroups = _asyncToGenerator(function* (req, res) {
     try {
-      var groups = yield _serviceProvider.default.getUserGroups(req.params.id);
-      res.status(200).json((0, _users.getSuccessView)(groups));
+      var groups = yield loggedServiceProvider.getUserGroups(req, res)(req.params.id);
+      res.status(200).json((0, _views.getSuccessView)(groups));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getUserGroups.apply(this, arguments);
@@ -440,12 +451,31 @@ function getGroupUsers(_x41, _x42) {
 function _getGroupUsers() {
   _getGroupUsers = _asyncToGenerator(function* (req, res) {
     try {
-      var users = yield _serviceProvider.default.getGroupUsers(req.params.id);
-      res.status(200).json((0, _users.getSuccessView)(users));
+      var users = yield loggedServiceProvider.getGroupUsers(req, res)(req.params.id);
+      res.status(200).json((0, _views.getSuccessView)(users));
     } catch (error) {
-      if (_config.LOG_ERRORS) console.log(error);
-      res.status(404).json((0, _users.getErrorView)(error.message));
+      if (_server.LOG_ERRORS) console.log(error);
+      res.status(404).json((0, _views.getErrorView)(error.message));
     }
   });
   return _getGroupUsers.apply(this, arguments);
+}
+
+function getHandledError() {
+  throw Error('Error handled by Express.js error handler.');
+}
+
+function getUnhandledError() {
+  return _getUnhandledError.apply(this, arguments);
+}
+
+function _getUnhandledError() {
+  _getUnhandledError = _asyncToGenerator(function* () {
+    yield new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject(Error('Error handled by Node.js environment.'));
+      }, 1000);
+    });
+  });
+  return _getUnhandledError.apply(this, arguments);
 }

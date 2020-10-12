@@ -1,10 +1,10 @@
 import express from 'express';
-import { API_PORT } from '../config/config';
+import { API_PORT } from '../config/server';
 import router from './routes';
 import middlewareLogger from './middlewares/logger';
 import logger from '../config/logger';
 import errorHandler from './middlewares/errorHandler';
-import { getErrorLoggedFields } from '../config/log-formats';
+import { getErrorLoggedFields } from '../config/logged-fields';
 
 const app = express();
 

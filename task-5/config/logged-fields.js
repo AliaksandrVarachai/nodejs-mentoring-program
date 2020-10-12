@@ -3,7 +3,7 @@
  * @param {Error} error
  * @returns {{message: string, code: string, stack: string?}}
  */
-export function getErrorLoggedFields(error) {
+function getErrorLoggedFields(error) {
   const result = {
     dateTime: new Date().toISOString(),
     message: error.message,
@@ -31,7 +31,7 @@ export function getErrorLoggedFields(error) {
  *    responseTime: string
  * }}
  */
-export function getInfoLoggedFields({ startDateTime, method, url, statusCode, statusMessage, trackingInfo }) {
+function getInfoLoggedFields({ startDateTime, method, url, statusCode, statusMessage, trackingInfo }) {
   return {
     startDateTime: startDateTime.toISOString(),
     request: { method, url },
@@ -44,3 +44,8 @@ export function getInfoLoggedFields({ startDateTime, method, url, statusCode, st
 function getPassedMilliSeconds(startDateTime) {
   return Date.now() - startDateTime.getTime();
 }
+
+module.exports = {
+  getErrorLoggedFields,
+  getInfoLoggedFields
+};

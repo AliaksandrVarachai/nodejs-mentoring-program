@@ -10,18 +10,18 @@ exports.default = void 0;
 
 var _knex = _interopRequireDefault(require("knex"));
 
-var _config = require("../../../config");
+var _server = require("../../../config/server");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _default = (0, _knex.default)({
   client: 'pg',
   connection: {
-    host: _config.DB_HOST,
-    port: _config.DB_PORT,
-    database: _config.DB_NAME,
-    user: _config.DB_USER,
-    password: _config.DB_PASSWORD
+    host: _server.DB_HOST,
+    port: _server.DB_PORT,
+    database: _server.DB_NAME,
+    user: _server.DB_USER,
+    password: _server.DB_PASSWORD
   },
   debug: false
 });

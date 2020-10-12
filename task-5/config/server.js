@@ -11,7 +11,7 @@ const AVAILABLE_DB_CONNECTIONS = {
   ELEPHANT_SQL: 'elephantsql'
 };
 
-const config = {
+const server = {
   API_PORT: 3000,
   LOG_ERRORS: true,
   AVAILABLE_DATA_SOURCES,
@@ -22,7 +22,7 @@ const config = {
 };
 
 let dbConnectionConfig;
-switch (config.DB_CONNECTION) {
+switch (server.DB_CONNECTION) {
   case AVAILABLE_DB_CONNECTIONS.LOCALHOST:
     dbConnectionConfig = {
       DB_HOST: 'localhost',
@@ -47,7 +47,7 @@ switch (config.DB_CONNECTION) {
 
 /* eslint-disable-next-line prefer-arrow-callback, func-names */
 Object.keys(dbConnectionConfig).forEach(function (key) {
-  config[key] = dbConnectionConfig[key];
+  server[key] = dbConnectionConfig[key];
 });
 
-module.exports = config;
+module.exports = server;

@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _config = require("../../config");
+var _server = require("../../config/server");
 
 var pgService = _interopRequireWildcard(require("../services/pg"));
 
@@ -19,15 +19,15 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 var serviceProvider = (() => {
-  switch (_config.DATA_SOURCE) {
-    case _config.AVAILABLE_DATA_SOURCES.PG:
+  switch (_server.DATA_SOURCE) {
+    case _server.AVAILABLE_DATA_SOURCES.PG:
       return pgService;
 
-    case _config.AVAILABLE_DATA_SOURCES.KNEX:
+    case _server.AVAILABLE_DATA_SOURCES.KNEX:
       return knexService;
 
     default:
-      throw Error("Data source \"".concat(_config.DATA_SOURCE, "\" is unknown."));
+      throw Error("Data source \"".concat(_server.DATA_SOURCE, "\" is unknown."));
   }
 })();
 

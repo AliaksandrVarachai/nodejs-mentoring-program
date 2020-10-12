@@ -1,4 +1,4 @@
-import { LOG_ERRORS } from '../../config/config';
+import { LOG_ERRORS } from '../../config/server';
 import { getSuccessView, getErrorView } from '../views';
 import serviceProvider from './service-provider';
 import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods';
@@ -6,11 +6,9 @@ import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods';
 const loggedServiceProvider = wrapImportedMethods(
   serviceProvider,
   (req, res, methodName, args) => {
-    res.trackingInfo = { method: methodName, args, success: false };
+    res.trackingInfo = { method: methodName, args };
   },
-  (req, res) => {
-    res.trackingInfo.success = true;
-  }
+  () => {}
 );
 
 export async function getAllUsers(req, res) {
@@ -234,11 +232,11 @@ export async function getGroupUsers(req, res) {
   }
 }
 
-export function getUncaughtException() {
+export function getHandledError() {
   throw Error('Error handled by Express.js error handler.');
 }
 
-export async function getUnhandledRejection() {
+export async function getUnhandledError() {
   await new Promise((resolve, reject) => {
     setTimeout(() => {
       reject(Error('Error handled by Node.js environment.'));

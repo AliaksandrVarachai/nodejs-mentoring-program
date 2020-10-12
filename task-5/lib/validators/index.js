@@ -19,9 +19,9 @@ var _ajv = _interopRequireDefault(require("ajv"));
 
 var _ajvErrors = _interopRequireDefault(require("ajv-errors"));
 
-var _config = require("../../config");
+var _server = require("../../config/server");
 
-var _users = require("../views/users");
+var _views = require("../views");
 
 var _user = _interopRequireDefault(require("./schema-definitions/user"));
 
@@ -89,8 +89,8 @@ function validateCreateUser(req, res, next) {
     age
   })) {
     var message = ajv.errorsText(_validateCreateUser.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();
@@ -111,8 +111,8 @@ function validateUpdateUser(req, res, next) {
     isDeleted
   })) {
     var message = ajv.errorsText(_validateUpdateUser.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();
@@ -127,8 +127,8 @@ function validateCreateGroup(req, res, next) {
     name
   })) {
     var message = ajv.errorsText(_validateCreateGroup.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();
@@ -143,8 +143,8 @@ function validateCreatePermission(req, res, next) {
     name
   })) {
     var message = ajv.errorsText(_validateCreatePermission.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();
@@ -161,8 +161,8 @@ function validateAddUsersToGroup(req, res, next) {
     userIds
   })) {
     var message = ajv.errorsText(_validateAddUsersToGroup.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();
@@ -179,8 +179,8 @@ function validateDeleteUsersFromGroup(req, res, next) {
     userIds
   })) {
     var message = ajv.errorText(_validateDeleteUsersFromGroup.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();
@@ -197,8 +197,8 @@ function validateAddPermissionsToGroup(req, res, next) {
     permissionIds
   })) {
     var message = ajv.errorsText(_validateAddPermissionsToGroup.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();
@@ -215,8 +215,8 @@ function validateDeletePermissionsFromGroup(req, res, next) {
     permissionIds
   })) {
     var message = ajv.errorsText(_validateDeletePermissionsFromGroup.errors);
-    if (_config.LOG_ERRORS) console.log(message);
-    return res.status(400).json((0, _users.getErrorView)(message));
+    if (_server.LOG_ERRORS) console.log(message);
+    return res.status(400).json((0, _views.getErrorView)(message));
   }
 
   return next();

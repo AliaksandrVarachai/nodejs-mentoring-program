@@ -1,6 +1,6 @@
 import Ajv from 'ajv';
 import ajvErrors from 'ajv-errors';
-import { LOG_ERRORS } from '../../config/config';
+import { LOG_ERRORS } from '../../config/server';
 import { getErrorView } from '../views';
 import userDefinition from './schema-definitions/user';
 import groupDefinition from './schema-definitions/group';

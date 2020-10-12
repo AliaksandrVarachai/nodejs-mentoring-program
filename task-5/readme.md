@@ -41,7 +41,7 @@ Tested on `Node v12`.
 ### Configuration
 
 The project is configured to work with a remote database in ElephantSQL (PostgreSQL as a Service).
-For other available options see `config.js` file.
+For other available options see `server.js` file.
 
 ### Run script on prod
 
@@ -67,9 +67,9 @@ See https://www.elephantsql.com for details
 To work with local PostgreSQL database it needed to be installed from https://www.postgresql.org/download and run 
 
 
-Go to `config.js` and change:
+Go to `server.js` and change:
 ```
-const config = {
+const server = {
     ...
     DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.LOCALHOST
     ...
@@ -105,11 +105,11 @@ psql -d task4_db -U task4_user -f seeds-revert.sql
 
 **By default** the Express.js service is configured for using **Knex.js** query builder.
 
-This option can be changed in `config.js` to the next ones:
+This option can be changed in `server.js` to the next ones:
 
 * to use `pg` database driver: 
     ```
-    const config = {
+    const server = {
         ...
         DATA_SOURCE: AVAILABLE_DATA_SOURCES.PG
         ...

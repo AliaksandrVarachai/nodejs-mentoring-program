@@ -40,5 +40,7 @@ router.delete('/delete-permissions-from-group', validators.validateDeletePermiss
 router.get('/user-permissions/:id', controller.getUserPermissions);
 router.get('/user-groups/:id', controller.getUserGroups);
 router.get('/group-users/:id', controller.getGroupUsers);
+router.get('/handled-error', controller.getHandledError);
+router.get('/unhandled-error', controller.getUnhandledError);
 var _default = router;
 exports.default = _default;
