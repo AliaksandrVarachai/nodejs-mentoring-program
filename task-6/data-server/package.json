@@ -4,7 +4,7 @@
   "description": "Simple REST service with CRUD operations",
   "main": "lib/server.js",
   "scripts": {
-    "build": "rimraf lib/* && babel src --out-dir lib",
+    "build": "rimraf data-server/lib/* && babel src --out-dir lib",
     "start": "NODE_ENV=production node --unhandled-rejections=strict lib/server.js",
     "dev": "nodemon --exec babel-node --unhandled-rejections=strict src/server.js",
     "lint": "eslint .",

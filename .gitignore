@@ -1,5 +1,6 @@
-*/node_modules/
-*/dist/
+**/node_modules/
+**/dist/
+**/lib/
 *.log
 
 # generated csv files are ignored except of examples
