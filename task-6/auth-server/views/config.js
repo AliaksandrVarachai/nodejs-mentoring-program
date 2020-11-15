@@ -1,6 +1,6 @@
 const protocol = 'http';
 const host = 'localhost';
-const port = 3001;
+const port = 3000;
 
 export const origin = `${protocol}://${host}:${port}`;
 

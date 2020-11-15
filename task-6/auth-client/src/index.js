@@ -49,7 +49,7 @@ import configUrl from './config.json';
   while (refreshAttemptNumber < maxRefreshAttemptNumber) {
     let response, json;
     try {
-      response = await fetch(`${apiUrl}/data`, {
+      response = await fetch(`${apiUrl}/users/all`, {
         method: 'GET',
         headers: {
           ...baseHeaders,
@@ -64,7 +64,7 @@ import configUrl from './config.json';
 
     if (response.ok) {
       const { data } = json;
-      dataNode.innerText = JSON.stringify(data);
+      dataNode.innerText = JSON.stringify(data, null, 4);
       return;
     }
 

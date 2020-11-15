@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-const port = 3002;
+const port = 3001;
 
 const srcPath = path.join(__dirname, 'src');
 const distPath = path.join(__dirname, 'dist');
