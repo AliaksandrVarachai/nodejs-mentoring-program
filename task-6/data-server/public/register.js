@@ -7,6 +7,7 @@ formNode.onsubmit = async function (event) {
   event.preventDefault();
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
+  const age = +document.getElementById('password').value;
   const confirmPassword = document.getElementById('confirm-password').value.trim();
 
   if (password !== confirmPassword) {
@@ -20,7 +21,7 @@ formNode.onsubmit = async function (event) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password, age })
     });
     if (response.ok) {
       alert('Registration is successful!\n\nYou will be redirected to login.');

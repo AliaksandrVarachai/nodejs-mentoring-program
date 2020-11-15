@@ -18,7 +18,10 @@ const server = {
   AVAILABLE_DB_CONNECTIONS,
   DATA_SOURCE: AVAILABLE_DATA_SOURCES.KNEX,
   DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL,
-  LOG_DIR_PATH: path.resolve(__dirname, '../logs')
+  LOG_DIR_PATH: path.resolve(__dirname, '../logs'),
+  SECRET: 'secret',
+  ACCESS_TOKEN_TTL: 10,   // sec
+  REFRESH_TOKEN_TTL: 30   // sec
 };
 
 let dbConnectionConfig;

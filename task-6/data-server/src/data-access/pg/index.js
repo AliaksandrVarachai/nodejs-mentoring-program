@@ -48,6 +48,30 @@ export async function getUserById(id) {
 }
 
 /**
+ * Gets user by username.
+ * @param {string} username
+ * @returns {Promise<object|null>}
+ */
+export async function getUserByName(username) {
+  const client = await pool.connect();
+  const result = await client.query(
+    `
+      SELECT
+        user_id,
+        login,
+        password,
+        age,
+        is_deleted
+      FROM public.users
+      WHERE login=$1
+    `,
+    [username]
+  );
+  client.release();
+  return result.rowCount === 1 ? result.rows[0] : null;
+}
+
+/**
  * Gets array of users which login matches the passed substring. Output is sorted by login.
  * @param {string} loginSubstring - substring to match the users login ('' to disable the matching).
  * @param {number} limit - upper bound for found users (0 to disable the upper bound).

@@ -53,7 +53,7 @@ import configUrl from './config.json';
         method: 'GET',
         headers: {
           ...baseHeaders,
-          'X-Access-Token': accessToken
+          'X-Access-Token': accessToken || ''
         }
       });
       json = await response.json();

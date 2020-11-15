@@ -18,6 +18,16 @@ export async function getUserById(id) {
 }
 
 /**
+ * Gets user by username.
+ * @param {string} username
+ * @returns {Promise<object|null>}
+ */
+export async function getUserByName(username) {
+  const rows = await dataProvider.getUserByName(username);
+  return rows[0] || null;
+}
+
+/**
  * Gets array of users which login matches the passed substring. Output is sorted by login.
  * @param {string} loginSubstring - substring to match the users login ('' to disable the matching).
  * @param {number=10} limit - upper bound for found users (0 to disable the upper bound).

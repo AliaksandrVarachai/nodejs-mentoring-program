@@ -24,6 +24,18 @@ export async function getUserById(id) {
 }
 
 /**
+ * Gets user by username.
+ * @param {string} username
+ * @returns {Promise<Array>} - Array with length = 1 if the user is found, empty array otherwise.
+ */
+export async function getUserByName(username) {
+  return knex
+    .select('user_id', 'login', 'password', 'age', 'is_deleted')
+    .from('users')
+    .where({ login: username });
+}
+
+/**
  * Gets array of users which login matches the passed substring. Output is sorted by login.
  * @param {string} loginSubstring - substring to match the users login ('' to disable the matching).
  * @param {number} limit - upper bound for found users (0 to disable the upper bound).
