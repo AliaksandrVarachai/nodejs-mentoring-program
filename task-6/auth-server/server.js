@@ -96,26 +96,6 @@ const controller = {
       message: 'Access token is not provided',
       refreshUrl: apiRefreshUrl
     }));
-
-
-
-    // console.log(11111);
-    // if (!refreshToken) {
-    //   return res.status(403).json(createErrorResponse({
-    //     message: 'Access token is not provided',
-    //     redirectUrl: pageLoginUrl
-    //   }));
-    // }
-    // console.log(refreshToken);
-    // const { exp: refreshExp } = jwt.decode(refreshToken, secret);
-    // if (accessExp && +refreshExp > Date.now()) {
-    //   return res.status(200).json({ data });
-    // }
-    //
-    // return res.status(403).json(createErrorResponse({
-    //   message: 'Access token is expired',
-    //   refreshUrl: apiRefreshUrl
-    // }));
   }
 };
 

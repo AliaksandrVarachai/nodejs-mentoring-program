@@ -4,6 +4,18 @@ import * as validators from '../validators';
 
 const router = Router();
 
+// TODO: move to /auth/ URL
+router.get('/login', (req, res, next) => {
+  res.sendStatus(204);
+});
+router.get('/register', (req, res, next) => {
+  console.log('888888888888888888888')
+  res.sendStatus(204);
+});
+router.get('/refresh', (req, res, next) => {
+  res.sendStatus(204);
+});
+
 router.get('/users/all', controller.getAllUsers);
 router.get('/users/auto-suggest', controller.getAutoSuggestUsers);
 router.get('/users/:id', controller.getUserById);
