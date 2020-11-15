@@ -1,11 +1,11 @@
-import { apiLoginUrl, pageRegisterPathname } from './config.js'
+import { apiLoginUrl, pageRegisterPathname } from './config.js';
 
 const formNode = document.getElementById('form');
 const errorSectionNode = document.getElementById('error-section');
 const redirectUrlString = (new URL(document.location)).searchParams.get('redirect');
 const redirectUrl = new URL(redirectUrlString);
 
-formNode.onsubmit = function(event) {
+formNode.onsubmit = function (event) {
   event.preventDefault();
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
@@ -13,7 +13,7 @@ formNode.onsubmit = function(event) {
   fetch(apiLoginUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({ username, password })
   })
@@ -28,13 +28,13 @@ formNode.onsubmit = function(event) {
       redirectUrl.hash = params.toString();
       document.location = redirectUrl.href;
     })
-    .catch (error => {
+    .catch(error => {
       errorSectionNode.innerText = error.message;
     });
-}
+};
 
 const registerLink = document.getElementById('register-link');
-registerLink.onclick = function(event) {
+registerLink.onclick = function (event) {
   event.preventDefault();
   location.pathname = pageRegisterPathname;
-}
+};

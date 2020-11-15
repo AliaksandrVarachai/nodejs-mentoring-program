@@ -3,7 +3,7 @@ import { pageLoginPathname, apiRegisterUrl } from './config.js';
 const formNode = document.getElementById('form');
 const errorSectionNode = document.getElementById('error-section');
 
-formNode.onsubmit = async function(event) {
+formNode.onsubmit = async function (event) {
   event.preventDefault();
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
@@ -18,7 +18,7 @@ formNode.onsubmit = async function(event) {
     const response = await fetch(apiRegisterUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ username, password })
     });
@@ -27,15 +27,15 @@ formNode.onsubmit = async function(event) {
       location.pathname = pageLoginPathname;
       return;
     }
-    const { error: { message }} = await response.json();
+    const { error: { message } } = await response.json();
     errorSectionNode.innerText = message;
   } catch (error) {
     errorSectionNode.innerText = error.message;
   }
-}
+};
 
 const loginLink = document.getElementById('login-link');
-loginLink.onclick = function(event) {
+loginLink.onclick = function (event) {
   event.preventDefault();
   location.pathname = pageLoginPathname;
-}
+};

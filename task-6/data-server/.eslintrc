@@ -3,7 +3,8 @@
     "plugins": [],
     "env": {
         "node": true,
-        "es6": true,
+        "browser": true,
+        "es6": true
     },
     "parserOptions": {
         "ecmaVersion": 11,
