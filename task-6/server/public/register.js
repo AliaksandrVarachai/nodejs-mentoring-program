@@ -7,7 +7,7 @@ formNode.onsubmit = async function (event) {
   event.preventDefault();
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
-  const age = +document.getElementById('password').value;
+  const age = +document.getElementById('age').value;
   const confirmPassword = document.getElementById('confirm-password').value.trim();
 
   if (password !== confirmPassword) {

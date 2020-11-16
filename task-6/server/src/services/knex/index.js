@@ -24,7 +24,7 @@ export async function getUserById(id) {
  */
 export async function getUserByName(username) {
   const rows = await dataProvider.getUserByName(username);
-  return rows[0] || null;
+  return rows[0] ? toUser(rows[0]) : null;
 }
 
 /**
