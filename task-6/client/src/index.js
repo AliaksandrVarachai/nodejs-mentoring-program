@@ -1,114 +1,77 @@
+import fetchAuthorized from './fetch-authorized.js';
 import configUrl from './config.json';
+import './styles.css';
+
+const dataNode = document.getElementById('data-section');
+const errorNode = document.getElementById('error-section');
+const usersInfoBt = document.getElementById('users-info-bt');
+const groupsInfoBt = document.getElementById('groups-info-bt');
+const permissionsInfoBt = document.getElementById('permissions-info-bt');
+
+function showError(message) {
+  errorNode.innerText = message;
+}
+
+function clearError() {
+  errorNode.innerText = '';
+}
+
+/**
+ * Forms a list of array elements.
+ * @param {{id: string, value:string}[]} array
+ * @param {function?} clickHandler - function with param (value: string) which process click action.
+ */
+function generateList(array, clickHandler) {
+  dataNode.innerText = '';
+  const select = document.createElement('select');
+  if (clickHandler) {
+    select.onclick = function(event) {
+      clickHandler(event.target.value);
+    }
+  }
+  array.forEach(({ id, text }) => {
+    const option = document.createElement('option');
+    option.value = id;
+    option.innerText = text;
+    select.appendChild(option);
+  });
+  select.appendChild(dataNode);
+}
 
 (async () => {
-  let apiUrl, maxRefreshAttemptNumber;
+  const fetchConfig = await fetch(configUrl);
+
+  let apiUrl;
   try {
-    const config = await fetch(configUrl);
+    const config = await fetchConfig;
     if (!config.ok) {
-      console.error(`Config file is not downloaded`);
+      showError('Config file is not downloaded');
       return;
     }
     const json = await config.json();
     apiUrl = json.apiUrl;
-    maxRefreshAttemptNumber = json.maxRefreshAttemptNumber;
   } catch(e) {
-    console.error(e.message);
+    showError(e.message);
     return;
   }
 
-  const dataNode = document.getElementById('data-section');
-  const errorNode = document.getElementById('error-section');
-
-  const hashParams = new URLSearchParams(location.hash.substring(1));
-
-  let accessToken = hashParams.get('access_token')
-  if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
-    hashParams.delete('access_token');
-  } else {
-    accessToken = localStorage.getItem('accessToken');
-  }
-
-  let refreshToken = hashParams.get('refresh_token');
-  if (refreshToken) {
-    localStorage.setItem('refreshToken', refreshToken);
-    hashParams.delete('refresh_token');
-  } else {
-    refreshToken = localStorage.getItem('refreshToken');
-  }
-
-  location.hash = hashParams.toString();
-
-  const baseHeaders = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  };
-
-  let refreshAttemptNumber = 0; // to avoid infinite loop with wrong access
-
-  while (refreshAttemptNumber < maxRefreshAttemptNumber) {
-    let response, json;
+  usersInfoBt.onclick = async function() {
+    clearError()
+    const request = new Request(`${apiUrl}/users/all`, { method: 'GET' });
+    let json;
     try {
-      response = await fetch(`${apiUrl}/users/all`, {
-        method: 'GET',
-        headers: {
-          ...baseHeaders,
-          'X-Access-Token': accessToken || ''
-        }
-      });
-      json = await response.json();
-    } catch(e) {
-      console.error('Failed to fetch data or parse the response')
+      json = await fetchAuthorized(request);
+    } catch(error) {
+      showError(error.message);
       return;
     }
-
-    if (response.ok) {
-      const { data } = json;
-      dataNode.innerText = JSON.stringify(data, null, 4);
-      return;
-    }
-
-    const { redirectUrl, refreshUrl } = json;
-
-    if (redirectUrl) {
-      redirectToLoginPage(redirectUrl);
-      return
-    }
-
-    if (refreshUrl) {
-      const refreshResponse = await fetch(refreshUrl, {
-        method: 'GET',
-        headers: {
-          ...baseHeaders,
-          'X-Refresh-Token': refreshToken
-        }
-      });
-
-      if (!refreshResponse.ok) {
-        const { redirectUrl } = await refreshResponse.json();
-        if (!redirectUrl) {
-          errorNode.innerText = `${Error.message}. Neither refresh nor redirect URL provided by refresh service.`
-          return;
-        }
-        redirectToLoginPage(redirectUrl);
-        return
-      }
-
-      // New access-token is successfully provided -> next attempt to get data
-      const refreshJson = await refreshResponse.json();
-      accessToken = refreshJson.accessToken;
-      localStorage.setItem('accessToken', accessToken);
-      ++refreshAttemptNumber;
-    }
+    const { data } = json;
+    dataNode.innerText = JSON.stringify(data, null, 4);
   }
 
-  errorNode.innerText = `Max allowed attempts to refresh access token (${maxRefreshAttemptNumber}) is exceeded`;
-})();
+  groupsInfoBt.onclick = async function() {
+  }
 
-function redirectToLoginPage(redirectUrl) {
-  const url = new URL(redirectUrl)
-  const searchParams = new URLSearchParams(url.search);
-  searchParams.set('redirect', location.href);
-  url.search = searchParams.toString();
-  location.href = url.href;
-}
+  permissionsInfoBt.onclick = async function() {
+  }
+})()

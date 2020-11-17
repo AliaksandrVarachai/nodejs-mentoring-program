@@ -1,4 +1,3 @@
 {
-  "apiUrl": "http://localhost:3000/api",
-  "maxRefreshAttemptNumber": 3
+  "apiUrl": "http://localhost:3000/api"
 }
