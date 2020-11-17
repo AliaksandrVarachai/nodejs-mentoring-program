@@ -5,40 +5,16 @@
     <title>Data</title>
 </head>
 <body>
-    <button id="users-info-bt">Users</button>
-    <button id="groups-info-bt">Groups</button>
-    <button id="permissions-info-bt">Permissions</button>
-<!--    <div class="container">-->
-<!--        <label for="get-user-info">Get user info</label>-->
-<!--        <input type="radio" name="menu" id="get-user-info" value="get-user-info">-->
-
-<!--        <label for="get-group-info">Get group info</label>-->
-<!--        <input type="radio" name="menu" id="get-group-info" value="get-user-info">-->
-
-<!--        <label for="get-permission-info">Get permission info</label>-->
-<!--        <input type="radio" name="menu" id="get-permission-info" value="get-user-info">-->
-
-<!--        <div id="user-info-tab" class="tab-container">-->
-<!--            <select name="users" id="select-all-users" size="10"></select>-->
-<!--            <select name="groups" id="select-user-groups" size="10"></select>-->
-<!--            <select name="permissions" id="select-user-permissions" size="10"></select>-->
-<!--        </div>-->
-
-
-<!--        <div id="group-info-tab" class="tab-container">-->
-<!--            <select name="users" id="select-all-groups" size="10"></select>-->
-<!--            <select name="groups" id="select-group-users" size="10"></select>-->
-<!--            <select name="permissions" id="select-group-permissions" size="10"></select>-->
-<!--        </div>-->
-
-
-<!--        <div id="permission-info-tab" class="tab-container">-->
-<!--            <select name="users" id="select-all-permission" size="10"></select>-->
-<!--            <select name="groups" id="select-permission-groups" size="10"></select>-->
-<!--            <select name="permissions" id="select-permission-users" size="10"></select>-->
-<!--        </div>-->
-<!--    </div>-->
-    <pre id="data-section"></pre>
+    <div class="menu">
+        <button id="users-info-bt">Users</button>
+        <button id="groups-info-bt">Groups</button>
+        <button id="permissions-info-bt">Permissions</button>
+    </div>
+    <div class="data-container">
+        <span id="data-section-1" class="col"></span>
+        <span id="data-section-2" class="col"></span>
+        <span id="data-section-3" class="col"></span>
+    </div>
     <p id="error-section" style="color: red;"></p>
 </body>
 </html>

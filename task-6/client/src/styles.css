@@ -1,0 +1,16 @@
+.menu {
+    padding: 10px 30px;
+}
+
+.data-container {
+    padding-left: 30px;
+    padding-rignt: 30px;
+}
+
+.col {
+    vertical-align: top;
+}
+
+.col+.col {
+    padding-left: 50px;
+}

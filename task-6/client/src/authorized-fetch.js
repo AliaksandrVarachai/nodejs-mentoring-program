@@ -34,7 +34,7 @@ const baseHeaders = {
  * @returns {Promise<object>} - parsed json payload of the response, if it is successful
  * @throws error - if response is not successful and does not contain redirectUrl or refreshUrl
  */
-export default async function fetchAuthorized(request, maxRefreshAttemptNumber = 3) {
+export default async function authorizedFetch(request, maxRefreshAttemptNumber = 3) {
   let refreshAttemptNumber = 0;
 
   while (refreshAttemptNumber < maxRefreshAttemptNumber) {
