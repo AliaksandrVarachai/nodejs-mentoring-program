@@ -228,21 +228,21 @@ export async function deletePermissionsFromGroup(groupId, permissionIds) {
 
 /**
  * Gets a permission list for the user.
- * @returns {Promise<string[]>} - list of user permissions.
+ * @returns {Promise<{id: string, name: string}[]>} - list of user permissions.
  */
 export async function getUserPermissions(userId) {
   const rows = await dataProvider.getUserPermissions(userId);
-  return rows.map(row => row.permission_id);
+  return rows.map(({ permission_id, name }) => ({ id: permission_id, name }));
 }
 
 /**
  * Gets user groups.
  * @param {string} userId
- * @returns {Promise<string[]>} - list of groups.
+ * @returns {Promise<{id, name}[]>} - list of groups.
  */
 export async function getUserGroups(userId) {
   const rows = await dataProvider.getUserGroups(userId);
-  return rows.map(row => row.group_id);
+  return rows.map(({ group_id, name }) => ({ id: group_id, name }));
 }
 
 /**

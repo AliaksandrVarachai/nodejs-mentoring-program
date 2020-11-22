@@ -292,17 +292,24 @@ export async function deletePermissionsFromGroup(groupId, permissionIds) {
 
 /**
  * Gets a permission list for the user.
- * @returns {Promise<{permission_id: string}[]>} - list of user permissions.
+ * @returns {Promise<{permission_id: string, name: string}[]>} - list of user permissions.
  */
 export async function getUserPermissions(userId) {
   const result = await knex.raw(
     `
-      WITH found_groups AS (
-        SELECT ug.group_id FROM public.users_groups AS ug
+      WITH found_group_ids AS (
+        SELECT group_id 
+        FROM users_groups AS ug
         WHERE ug.user_id = :userId
+      ), 
+      permission_ids AS (
+        SELECT permission_id
+        FROM found_group_ids, groups_permissions AS gp
+        WHERE found_group_ids.group_id = gp.group_id
       )
-      SELECT DISTINCT permission_id FROM public.groups_permissions AS gp
-      WHERE gp.group_id IN (SELECT group_id FROM found_groups);
+      SELECT permission_ids.permission_id, name 
+      FROM permission_ids, permissions AS p
+      WHERE permission_ids.permission_id = p.permission_id;
     `,
     { userId }
   );
@@ -312,12 +319,23 @@ export async function getUserPermissions(userId) {
 /**
  * Gets user groups.
  * @param {string} userId
- * @returns {Promise<{group_id: string}[]>}
+ * @returns {Promise<{group_id: string, name: string}[]>}
  */
 export async function getUserGroups(userId) {
-  return knex('users_groups')
-    .select('group_id')
-    .where('user_id', userId);
+  const result = await knex.raw(
+    `
+      WITH found_group_ids AS (
+        SELECT ug.group_id
+        FROM users_groups as ug
+        WHERE ug.user_id = :userId
+      )
+      SELECT g.group_id, g.name 
+      FROM groups AS g, found_group_ids AS fgid
+      WHERE fgid.group_id = g.group_id;
+    `,
+    { userId }
+  );
+  return result.rows;
 }
 
 /**

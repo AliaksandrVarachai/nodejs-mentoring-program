@@ -2,7 +2,7 @@ import authorizedFetch from './authorized-fetch.js';
 import configUrl from './config.json';
 import './styles.css';
 
-const selectOutputRows = 30;
+const selectMaxOutputRows = 30;
 
 const dataNode1 = document.getElementById('data-section-1');
 const dataNode2 = document.getElementById('data-section-2');
@@ -33,7 +33,7 @@ function showListInNode(node, array, clickHandler) {
     return;
   }
   const select = document.createElement('select');
-  select.size = selectOutputRows;
+  select.size = array.length < selectMaxOutputRows ? array.length : selectMaxOutputRows;
   if (clickHandler) {
     select.onclick = function(event) {
       clickHandler(event.target.value);
@@ -93,16 +93,16 @@ function showListInNode(node, array, clickHandler) {
         showError(error.message);
       }
       const [ groupsJson, permissionsJson ] = array;
-      const groups = groupsJson.data.map(id => ({
+      const groups = groupsJson.data.map(({ id, name }) => ({
         id,
-        text: id
+        text: name
       }));
-      const permissions = permissionsJson.data.map(id => ({
+      const permissions = permissionsJson.data.map(({ id, name }) => ({
         id,
-        text: id
+        text: name
       }));
-      showListInNode(dataNode2, groups)
-      showListInNode(dataNode3, permissions)
+      showListInNode(dataNode2, groups);
+      showListInNode(dataNode3, permissions);
     });
   }
 
