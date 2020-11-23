@@ -6,14 +6,30 @@
 </head>
 <body>
     <div class="menu">
-        <button id="users-info-bt">All users</button>
-        <button id="groups-info-bt">All groups</button>
-        <button id="permissions-info-bt">All permissions</button>
+        <div>To see info about user/groups/permissions click any button:</div>
+        <div>
+            <button id="users-info-bt">All users</button>
+            <button id="groups-info-bt">All groups</button>
+            <button id="permissions-info-bt">All permissions</button>
+        </div>
+        <br><br>
+        <div id="instructions"></div>
     </div>
+
+
     <div class="data-container">
-        <span id="data-section-1" class="col"></span>
-        <span id="data-section-2" class="col"></span>
-        <span id="data-section-3" class="col"></span>
+        <div id="data-section-1" class="col">
+            <div class="data-header"></div>
+            <div class="data"></div>
+        </div>
+        <div id="data-section-2" class="col">
+            <div class="data-header"></div>
+            <div class="data"></div>
+        </div>
+        <div id="data-section-3" class="col">
+            <div class="data-header"></div>
+            <div class="data"></div>
+        </div>
     </div>
     <p id="error-section" style="color: red;"></p>
 </body>

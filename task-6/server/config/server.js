@@ -20,8 +20,8 @@ const server = {
   DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL,
   LOG_DIR_PATH: path.resolve(__dirname, '../logs'),
   SECRET: 'secret',
-  ACCESS_TOKEN_TTL: 60,    // sec
-  REFRESH_TOKEN_TTL: 600   // sec
+  ACCESS_TOKEN_TTL: 600,    // sec
+  REFRESH_TOKEN_TTL: 6000   // sec
 };
 
 let dbConnectionConfig;

@@ -5,9 +5,12 @@
 .data-container {
     padding-left: 30px;
     padding-rignt: 30px;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .col {
+    width: 20%;
     vertical-align: top;
 }
 
