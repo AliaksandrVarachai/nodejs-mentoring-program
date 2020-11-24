@@ -7,9 +7,6 @@ const selectMaxOutputRows = 30;
 const dataNode1 = document.getElementById('data-section-1');
 const dataNode2 = document.getElementById('data-section-2');
 const dataNode3 = document.getElementById('data-section-3');
-const dataHeaderNode1 = document.getElementById('data-header-section-1');
-const dataHeaderNode2 = document.getElementById('data-header-section-2');
-const dataHeaderNode3 = document.getElementById('data-header-section-3');
 const errorNode = document.getElementById('error-section');
 const usersInfoBt = document.getElementById('users-info-bt');
 const groupsInfoBt = document.getElementById('groups-info-bt');
@@ -61,6 +58,14 @@ function showListInNode(node, title, array, clickHandler) {
   dataNode.appendChild(select);
 }
 
+function clearNode(node) {
+  const dataHeaderNode = node.querySelector('.data-header');
+  const dataNode = node.querySelector('.data');
+
+  dataHeaderNode.innerText = '';
+  dataNode.innerText = '';
+}
+
 (async () => {
   const fetchConfig = await fetch(configUrl.toString());
 
@@ -80,6 +85,8 @@ function showListInNode(node, title, array, clickHandler) {
 
   usersInfoBt.onclick = async function() {
     clearError();
+    clearNode(dataNode2);
+    clearNode(dataNode3);
     const request = new Request(`${apiUrl}/users/all`, { method: 'GET' });
     let json;
     try {
@@ -122,6 +129,8 @@ function showListInNode(node, title, array, clickHandler) {
 
   groupsInfoBt.onclick = async function() {
     clearError();
+    clearNode(dataNode2);
+    clearNode(dataNode3);
     const request = new Request(`${apiUrl}/groups/all`, { method: 'GET' });
     let json;
     try {
@@ -136,7 +145,7 @@ function showListInNode(node, title, array, clickHandler) {
       text: name
     }));
     updateInstructions('Click any user for users / permission details:')
-    showListInNode(dataNode1, 'Users list', groups, async (id) => {
+    showListInNode(dataNode1, 'Groups list', groups, async (id) => {
       const groupUsersRequest = new Request(`${apiUrl}/group-users/${id}`);
       const groupPermissionsRequest = new Request(`${apiUrl}/group-permissions/${id}`);
       let array;
@@ -164,6 +173,8 @@ function showListInNode(node, title, array, clickHandler) {
 
   permissionsInfoBt.onclick = async function() {
     clearError();
+    clearNode(dataNode2);
+    clearNode(dataNode3);
     const request = new Request(`${apiUrl}/permissions/all`, { method: 'GET' });
     let json;
     try {
