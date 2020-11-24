@@ -34,7 +34,7 @@ For other available options see in the files:
 cd <task-6>
 
 # install dependencies:
-cd server && npm install && cd ../client && npm install && npm run build
+cd server && npm install && cd ../client && npm install
 
 # run a server part (on 3000 port by default):
 cd ../server
@@ -71,7 +71,7 @@ Use credentials:
 ```
 or register your own ones.
 
-**Note:** Client side implements just reading info about users, groups and permission. 
+**Note:** Client side implements just reading info about users, groups, and permissions. 
 
 All other requests are not available from the client side, but they can be achieved using Postman (see Task 5 for 
 the full list of implemented method). In that case JWT tokens must be provided via headers (examples):
