@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import * as controller from '../controllers';
 import * as validators from '../validators';
-import authChecker from '../middlewares/auth-checker';
 
 const router = Router();
 
-router.get('/users/all', authChecker, controller.getAllUsers);
+router.get('/users/all', controller.getAllUsers);
 router.get('/users/auto-suggest', controller.getAutoSuggestUsers);
 router.get('/users/:id', controller.getUserById);
 router.put('/users/create', validators.validateCreateUser, controller.createUser);
