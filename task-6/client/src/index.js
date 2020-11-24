@@ -11,7 +11,6 @@ const errorNode = document.getElementById('error-section');
 const usersInfoBt = document.getElementById('users-info-bt');
 const groupsInfoBt = document.getElementById('groups-info-bt');
 const permissionsInfoBt = document.getElementById('permissions-info-bt');
-const dataInstructionsNode = document.getElementById('data-instructions');
 
 function showError(message) {
   errorNode.innerText = message;
@@ -21,13 +20,10 @@ function clearError() {
   errorNode.innerText = '';
 }
 
-function updateInstructions(text) {
-  dataInstructionsNode.innerText = text;
-}
-
 /**
  * Forms a list of array elements.
  * @param {HTMLElement} node - node where the data should be added to.
+ * @param {HTMLElement|string} title - data column title.
  * @param {{id: string, value:string}[]} array
  * @param {function?} clickHandler - function with param (value: string) which process click action.
  */
@@ -35,7 +31,7 @@ function showListInNode(node, title, array, clickHandler) {
   const dataHeaderNode = node.querySelector('.data-header');
   const dataNode = node.querySelector('.data');
 
-  dataHeaderNode.innerText = title;
+  dataHeaderNode.innerHTML = title;
   if (array.length < 1) {
     dataNode.innerText = 'No data';
     return;
@@ -100,8 +96,7 @@ function clearNode(node) {
       id: userId,
       text: `${login}, ${age} y/o`
     }));
-    updateInstructions('Click any user for group / permission details:')
-    showListInNode(dataNode1, 'Users list', users, async (id) => {
+    showListInNode(dataNode1, 'Users list <span class="data-instructions">click a user</span>', users, async (id) => {
       const userGroupsRequest = new Request(`${apiUrl}/user-groups/${id}`);
       const userPermissionsRequest = new Request(`${apiUrl}/user-permissions/${id}`);
       let array;
@@ -144,8 +139,7 @@ function clearNode(node) {
       id: groupId,
       text: name
     }));
-    updateInstructions('Click any user for users / permission details:')
-    showListInNode(dataNode1, 'Groups list', groups, async (id) => {
+    showListInNode(dataNode1, 'Groups list <span class="data-instructions">click a group</span>', groups, async (id) => {
       const groupUsersRequest = new Request(`${apiUrl}/group-users/${id}`);
       const groupPermissionsRequest = new Request(`${apiUrl}/group-permissions/${id}`);
       let array;
@@ -188,8 +182,7 @@ function clearNode(node) {
       id: permissionId,
       text: name
     }));
-    updateInstructions('Click any user for group / users details:')
-    showListInNode(dataNode1, 'Permissions list', permissions, async (id) => {
+    showListInNode(dataNode1, 'Permissions list <span class="data-instructions">click a permission</span>', permissions, async (id) => {
       const permissionGroupsRequest = new Request(`${apiUrl}/permission-groups/${id}`);
       const permissionsUsersRequest = new Request(`${apiUrl}/permission-users/${id}`);
       let array;

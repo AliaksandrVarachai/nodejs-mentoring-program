@@ -46,7 +46,9 @@ button {
 }
 
 .data-instructions {
-    padding-bottom: 10px;
+    font-size: 14px;
+    text-transform: none;
+    color: gray;
     font-weight: bold;
 }
 
