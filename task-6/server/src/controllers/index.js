@@ -278,6 +278,33 @@ export async function getGroupUsers(req, res) {
   }
 }
 
+export async function getGroupPermissions(req, res) {
+  try {
+    const permissions = await loggedServiceProvider.getGroupPermissions(req, res)(req.params.id);
+    res.status(200).json(getSuccessView(permissions));
+  } catch (error) {
+    res.status(404).json(getErrorView(error.message));
+  }
+}
+
+export async function getPermissionGroups(req, res) {
+  try {
+    const groups = await loggedServiceProvider.getPermissionGroups(req, res)(req.params.id);
+    res.status(200).json(getSuccessView(groups));
+  } catch (error) {
+    res.status(404).json(getErrorView(error.message));
+  }
+}
+
+export async function getPermissionUsers(req, res) {
+  try {
+    const users = await loggedServiceProvider.getPermissionUsers(req, res)(req.params.id);
+    res.status(200).json(getSuccessView(users));
+  } catch (error) {
+    res.status(404).json(getErrorView(error.message));
+  }
+}
+
 export function getHandledError() {
   throw Error('Error handled by Express.js error handler.');
 }

@@ -341,10 +341,80 @@ export async function getUserGroups(userId) {
 /**
  * Gets group users.
  * @param {string} groupId
- * @returns {Promise<{group_id: string}[]>}
+ * @returns {Promise<{user_id: string, login: string}[]>}
  */
 export async function getGroupUsers(groupId) {
-  return knex('users_groups')
-    .select('user_id')
-    .where('group_id', groupId);
+  const result = await knex.raw(
+    `
+      WITH found_users_ids AS (
+        SELECT user_id
+        FROM users_groups AS ug
+        WHERE group_id = :groupId
+      )
+      SELECT u.user_id, u.login
+      FROM users as u, found_users_ids AS fuid
+      WHERE u.user_id = fuid.user_id;
+    `,
+    { groupId }
+  );
+  return result.rows;
+}
+
+/**
+ * Gets group permissions list.
+ * @param {string} groupId
+ * @returns {Promise<{permission_id: string, name: string}[]>}
+ */
+export async function getGroupPermissions(groupId) {
+  const result = await knex.raw(
+    `
+      SELECT gp.permission_id, p.name 
+      FROM groups_permissions as gp
+      JOIN permissions AS p ON gp.permission_id = p.permission_id
+      WHERE gp.group_id = :groupId
+      ORDER BY p.name;
+    `,
+    { groupId }
+  );
+  return result.rows;
+}
+
+/**
+ * Gets groups with the permission.
+ * @param {string} permissionId
+ * @returns {Promise<{group_id: string, name: string}[]>}
+ */
+export async function getPermissionGroups(permissionId) {
+  return await knex.queryBuilder()
+    .select('gp.group_id', 'g.name')
+    .from('groups_permissions as gp')
+    .join('groups as g', 'gp.group_id', 'g.group_id')
+    .where('gp.permission_id', permissionId)
+    .orderBy('g.name');
+}
+
+/**
+ * Gets list of users with the given permission.
+ * @param {string} permissionId
+ * @returns {Promise<{user_id: string, login: string}[]>}
+ */
+export async function getPermissionUsers(permissionId) {
+  const result = await knex.raw(
+    `
+      WITH found_group_ids AS (
+        SELECT gp.group_id
+        FROM groups_permissions AS gp
+        WHERE gp.permission_id = :permissionId
+      ), found_user_ids AS (
+        SELECT ug.user_id
+        FROM users_groups AS ug, found_group_ids AS fgid  
+        WHERE fgid.group_id = ug.group_id
+      )
+      SELECT u.user_id, u.login
+      FROM found_user_ids AS fuid, users AS u
+      WHERE fuid.user_id = u.user_id;
+    `,
+    { permissionId }
+  );
+  return result.rows;
 }

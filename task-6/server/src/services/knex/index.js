@@ -129,11 +129,11 @@ export async function getGroupById(groupId) {
 
 /**
  * Gets a list of available groups.
- * @returns {Promise<string[]>}
+ * @returns {Promise<{groupId: string, name: string}[]>}
  */
 export async function getAllGroups() {
   const rows = await dataProvider.getAllGroups();
-  return rows.map(row => row.group_id);
+  return rows.map(({ group_id, name }) => ({ groupId: group_id, name }));
 }
 
 /**
@@ -175,11 +175,11 @@ export async function getPermissionById(permissionId) {
 
 /**
  * Gets all available permissions.
- * @returns {Promise<{permission_id: string, name: string}[]>}
+ * @returns {Promise<{permissionId: string, name: string}[]>}
  */
 export async function getAllPermissions() {
-  return knex('permissions')
-    .select('permission_id', 'name');
+  const rows = await dataProvider.getAllPermissions();
+  return rows.map(({ permission_id, name }) => ({ permissionId: permission_id, name }));
 }
 
 /**
@@ -228,29 +228,60 @@ export async function deletePermissionsFromGroup(groupId, permissionIds) {
 
 /**
  * Gets a permission list for the user.
- * @returns {Promise<{id: string, name: string}[]>} - list of user permissions.
+ * @returns {Promise<{permissionId: string, name: string}[]>} - list of user permissions.
  */
 export async function getUserPermissions(userId) {
   const rows = await dataProvider.getUserPermissions(userId);
-  return rows.map(({ permission_id, name }) => ({ id: permission_id, name }));
+  return rows.map(({ permission_id, name }) => ({ permissionId: permission_id, name }));
 }
 
 /**
  * Gets user groups.
  * @param {string} userId
- * @returns {Promise<{id, name}[]>} - list of groups.
+ * @returns {Promise<{groupId, name}[]>} - list of groups.
  */
 export async function getUserGroups(userId) {
   const rows = await dataProvider.getUserGroups(userId);
-  return rows.map(({ group_id, name }) => ({ id: group_id, name }));
+  return rows.map(({ group_id, name }) => ({ groupId: group_id, name }));
 }
 
 /**
  * Gets group users.
  * @param {string} groupId
- * @returns {Promise<string[]>} - list of users.
+ * @returns {Promise<{userId: string, login: string}[]>} - list of users.
  */
 export async function getGroupUsers(groupId) {
   const rows = await dataProvider.getGroupUsers(groupId);
-  return rows.map(row => row.user_id);
+  return rows.map(({ user_id, login }) => ({ userId: user_id, login }));
+}
+
+/**
+ * Gets group permissions list.
+ * @param {string} groupId
+ * @returns {Promise<{permissionId: string, name: string}[]>}
+ */
+export async function getGroupPermissions(groupId) {
+  const rows = await dataProvider.getGroupPermissions(groupId);
+  return rows.map(({ permission_id, name }) => ({ permissionId: permission_id, name }));
+}
+
+
+/**
+ * Gets groups with the permission.
+ * @param {string} permissionId
+ * @returns {Promise<{groupId: string, name: string}[]>}
+ */
+export async function getPermissionGroups(permissionId) {
+  const rows = await dataProvider.getPermissionGroups(permissionId);
+  return rows.map(({ group_id, name }) => ({ groupId: group_id, name }));
+}
+
+/**
+ * Gets list of users with the given permission.
+ * @param {string} permissionId
+ * @returns {Promise<{userId: string, login: string}[]>}
+ */
+export async function getPermissionUsers(permissionId) {
+  const rows = await dataProvider.getPermissionUsers(permissionId);
+  return rows.map(({ user_id, login }) => ({ userId: user_id, login }));
 }

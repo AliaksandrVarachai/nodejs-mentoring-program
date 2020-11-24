@@ -91,11 +91,10 @@ function showListInNode(node, title, array, clickHandler) {
     const { data } = json;
     const users = data.map(({ userId, isDeleted, login, age }) => ({
       id: userId,
-      text: `${login}, ${age}`
+      text: `${login}, ${age} y/o`
     }));
     updateInstructions('Click any user for group / permission details:')
     showListInNode(dataNode1, 'Users list', users, async (id) => {
-
       const userGroupsRequest = new Request(`${apiUrl}/user-groups/${id}`);
       const userPermissionsRequest = new Request(`${apiUrl}/user-permissions/${id}`);
       let array;
@@ -108,12 +107,12 @@ function showListInNode(node, title, array, clickHandler) {
         showError(error.message);
       }
       const [ groupsJson, permissionsJson ] = array;
-      const groups = groupsJson.data.map(({ id, name }) => ({
-        id,
+      const groups = groupsJson.data.map(({ groupId, name }) => ({
+        id: groupId,
         text: name
       }));
-      const permissions = permissionsJson.data.map(({ id, name }) => ({
-        id,
+      const permissions = permissionsJson.data.map(({ permissionId, name }) => ({
+        id: permissionId,
         text: name
       }));
       showListInNode(dataNode2, 'Groups list', groups);
@@ -122,8 +121,86 @@ function showListInNode(node, title, array, clickHandler) {
   }
 
   groupsInfoBt.onclick = async function() {
+    clearError();
+    const request = new Request(`${apiUrl}/groups/all`, { method: 'GET' });
+    let json;
+    try {
+      json = await authorizedFetch(request);
+    } catch(error) {
+      showError(error.message);
+      return;
+    }
+    const { data } = json;
+    const groups = data.map(({ groupId, name }) => ({
+      id: groupId,
+      text: name
+    }));
+    updateInstructions('Click any user for users / permission details:')
+    showListInNode(dataNode1, 'Users list', groups, async (id) => {
+      const groupUsersRequest = new Request(`${apiUrl}/group-users/${id}`);
+      const groupPermissionsRequest = new Request(`${apiUrl}/group-permissions/${id}`);
+      let array;
+      try {
+        array = await Promise.all([
+          authorizedFetch(groupUsersRequest),
+          authorizedFetch(groupPermissionsRequest)
+        ]);
+      } catch (error) {
+        showError(error.message);
+      }
+      const [ usersJson, permissionsJson ] = array;
+      const users = usersJson.data.map(({ userId, login }) => ({
+        id: userId,
+        text: login
+      }));
+      const permissions = permissionsJson.data.map(({ permissionId, name }) => ({
+        id: permissionId,
+        text: name
+      }));
+      showListInNode(dataNode2, 'Users list', users);
+      showListInNode(dataNode3, 'Permissions list', permissions);
+    });
   }
 
   permissionsInfoBt.onclick = async function() {
+    clearError();
+    const request = new Request(`${apiUrl}/permissions/all`, { method: 'GET' });
+    let json;
+    try {
+      json = await authorizedFetch(request);
+    } catch(error) {
+      showError(error.message);
+      return;
+    }
+    const { data } = json;
+    const permissions = data.map(({ permissionId, name }) => ({
+      id: permissionId,
+      text: name
+    }));
+    updateInstructions('Click any user for group / users details:')
+    showListInNode(dataNode1, 'Permissions list', permissions, async (id) => {
+      const permissionGroupsRequest = new Request(`${apiUrl}/permission-groups/${id}`);
+      const permissionsUsersRequest = new Request(`${apiUrl}/permission-users/${id}`);
+      let array;
+      try {
+        array = await Promise.all([
+          authorizedFetch(permissionGroupsRequest),
+          authorizedFetch(permissionsUsersRequest)
+        ]);
+      } catch (error) {
+        showError(error.message);
+      }
+      const [ groupsJson, usersJson ] = array;
+      const groups = groupsJson.data.map(({ groupId, name }) => ({
+        id: groupId,
+        text: name
+      }));
+      const users = usersJson.data.map(({ userId, login }) => ({
+        id: userId,
+        text: login
+      }));
+      showListInNode(dataNode2, 'Groups list', groups);
+      showListInNode(dataNode3, 'Users list', users);
+    });
   }
 })()
