@@ -11,7 +11,7 @@ const errorNode = document.getElementById('error-section');
 const usersInfoBt = document.getElementById('users-info-bt');
 const groupsInfoBt = document.getElementById('groups-info-bt');
 const permissionsInfoBt = document.getElementById('permissions-info-bt');
-const instructionsNode = document.getElementById('instructions');
+const dataInstructionsNode = document.getElementById('data-instructions');
 
 function showError(message) {
   errorNode.innerText = message;
@@ -22,7 +22,7 @@ function clearError() {
 }
 
 function updateInstructions(text) {
-  instructionsNode.innerText = text;
+  dataInstructionsNode.innerText = text;
 }
 
 /**
