@@ -24,7 +24,6 @@ formNode.onsubmit = async function (event) {
       body: JSON.stringify({ username, password, age })
     });
     if (response.ok) {
-      alert('Registration is successful!\n\nYou will be redirected to login.');
       location.pathname = pageLoginPathname;
       return;
     }

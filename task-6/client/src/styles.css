@@ -54,3 +54,7 @@ button {
     color: darkgray;
     text-transform: uppercase;
 }
+
+#error-section {
+    padding: 0 30px;
+}

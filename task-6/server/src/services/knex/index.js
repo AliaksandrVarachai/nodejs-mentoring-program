@@ -1,5 +1,4 @@
 import * as dataProvider from '../../data-access/knex';
-import knex from '../../data-access/knex/knex';
 
 export async function getAllUsers() {
   const rows = await dataProvider.getAllUsers();
