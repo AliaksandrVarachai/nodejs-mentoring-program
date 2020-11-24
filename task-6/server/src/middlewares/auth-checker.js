@@ -1,4 +1,4 @@
-import { apiRefreshUrl, pageLoginUrl } from '../../public/config';
+import { authRefreshUrl, pageLoginUrl } from '../../public/config';
 import { getLoginUrlErrorView, getRefreshUrlErrorView } from '../views';
 import { getTokenPayload } from '../auth/token-utils';
 
@@ -20,6 +20,6 @@ export default async function authChecker(req, res, next) {
   }
 
   // accessToken is expired -> response refresh token flag
-  return res.status(401).json(getRefreshUrlErrorView('Access token is not provided', apiRefreshUrl));
+  return res.status(401).json(getRefreshUrlErrorView('Access token is not provided', authRefreshUrl));
 }
 

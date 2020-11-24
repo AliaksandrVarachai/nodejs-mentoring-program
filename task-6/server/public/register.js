@@ -1,4 +1,4 @@
-import { pageLoginPathname, apiRegisterUrl } from './config.js';
+import { pageLoginPathname, authRegisterUrl } from './config.js';
 
 const formNode = document.getElementById('form');
 const errorSectionNode = document.getElementById('error-section');
@@ -16,7 +16,7 @@ formNode.onsubmit = async function (event) {
   }
 
   try {
-    const response = await fetch(apiRegisterUrl, {
+    const response = await fetch(authRegisterUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

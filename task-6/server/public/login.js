@@ -1,4 +1,4 @@
-import { apiLoginUrl, pageRegisterPathname } from './config.js';
+import { authLoginUrl, pageRegisterPathname } from './config.js';
 
 const formNode = document.getElementById('form');
 const errorSectionNode = document.getElementById('error-section');
@@ -10,7 +10,7 @@ formNode.onsubmit = function (event) {
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
 
-  fetch(apiLoginUrl, {
+  fetch(authLoginUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -6,12 +6,14 @@ export const origin = `${protocol}://${host}:${port}`;
 
 export const pageLoginPathname = '/static/login.html';
 export const pageRegisterPathname = '/static/register.html';
-export const apiLoginPathname = '/api/login';
-export const apiRegisterPathname = '/api/register';
-export const apiRefreshPathname = '/api/refresh';
 
 export const pageLoginUrl = new URL(pageLoginPathname, origin).href;
 export const pageRegisterUrl = new URL(pageRegisterPathname, origin).href;
-export const apiLoginUrl = new URL(apiLoginPathname, origin);
-export const apiRegisterUrl = new URL(apiRegisterPathname, origin);
-export const apiRefreshUrl = new URL(apiRefreshPathname, origin);
+
+export const authLoginPathname = '/auth/login';
+export const authRegisterPathname = '/auth/register';
+export const authRefreshPathname = '/auth/refresh';
+
+export const authLoginUrl = new URL(authLoginPathname, origin);
+export const authRegisterUrl = new URL(authRegisterPathname, origin);
+export const authRefreshUrl = new URL(authRefreshPathname, origin);

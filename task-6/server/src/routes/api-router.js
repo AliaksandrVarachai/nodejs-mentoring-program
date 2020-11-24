@@ -5,11 +5,6 @@ import authChecker from '../middlewares/auth-checker';
 
 const router = Router();
 
-// TODO: move to /auth/ URL
-router.post('/login', controller.logIn);
-router.post('/register', controller.register);
-router.get('/refresh', controller.refresh);
-
 router.get('/users/all', authChecker, controller.getAllUsers);
 router.get('/users/auto-suggest', controller.getAutoSuggestUsers);
 router.get('/users/:id', controller.getUserById);
