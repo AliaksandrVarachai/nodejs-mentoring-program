@@ -1,14 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import { API_PORT } from '../config/server';
-import apiRouter from './routes/api-router';
-import staticRouter from './routes/static-router';
-import authRouter from './routes/auth-router';
-import middlewareLogger from './middlewares/logger';
-import logger from '../config/logger';
-import errorHandler from './middlewares/errorHandler';
-import { getErrorLoggedFields } from '../config/logged-fields';
-import authChecker from './middlewares/auth-checker';
+import { API_PORT } from '../config/server.js';
+import apiRouter from './routes/api-router.js';
+import staticRouter from './routes/static-router.js';
+import authRouter from './routes/auth-router.js';
+import middlewareLogger from './middlewares/logger.js';
+import logger from '../config/logger.js';
+import errorHandler from './middlewares/errorHandler.js';
+import { getErrorLoggedFields } from '../config/logged-fields.js';
+import authChecker from './middlewares/auth-checker.js';
 
 const app = express();
 

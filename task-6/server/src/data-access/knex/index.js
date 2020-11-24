@@ -1,4 +1,4 @@
-import knex from './knex';
+import knex from './knex.js';
 
 /**
  * Gets full list of users (for test purpose).

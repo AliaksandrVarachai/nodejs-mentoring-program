@@ -1,4 +1,4 @@
-import pool from './pool';
+import pool from './pool.js';
 
 /**
  * Gets full list of users (for test purpose).

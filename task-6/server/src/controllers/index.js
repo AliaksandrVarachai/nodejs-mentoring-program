@@ -1,18 +1,18 @@
-import { pageLoginUrl } from '../../public/config';
-import serviceProvider from './service-provider';
-import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods';
+import { pageLoginUrl } from '../../public/config.js';
+import serviceProvider from './service-provider.js';
+import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods.js';
 import {
   getSuccessView,
   getSuccessLoginView,
   getSuccessRefreshView,
   getErrorView,
   getLoginUrlErrorView
-} from '../views';
+} from '../views/index.js';
 import {
   generateAccessToken,
   generateAccessAndRefreshTokens,
   getTokenPayload
-} from '../auth/token-utils';
+} from '../auth/token-utils.js';
 
 
 const loggedServiceProvider = wrapImportedMethods(

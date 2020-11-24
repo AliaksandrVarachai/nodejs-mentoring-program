@@ -1,5 +1,5 @@
-import logger from '../../config/logger';
-import { getInfoLoggedFields } from '../../config/logged-fields';
+import logger from '../../config/logger.js';
+import { getInfoLoggedFields } from '../../config/logged-fields.js';
 
 export default function middlewareLogger(req, res, next) {
   const startDateTime = new Date();

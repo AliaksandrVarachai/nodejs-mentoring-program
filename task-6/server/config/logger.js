@@ -1,6 +1,6 @@
-const path = require('path');
-const winston = require('winston');
-const LOG_DIR_PATH = require('./server').LOG_DIR_PATH;
+import path from 'path';
+import winston from 'winston';
+import { LOG_DIR_PATH } from './server.js';
 
 const logger  = new winston.createLogger({
   level: 'info',
@@ -23,4 +23,4 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
-module.exports = logger;
+export default logger;

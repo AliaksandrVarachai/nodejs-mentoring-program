@@ -1,31 +1,31 @@
-const path = require('path');
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // List of available data sources
-const AVAILABLE_DATA_SOURCES = {
+export const AVAILABLE_DATA_SOURCES = {
   PG: 'pg',
   KNEX: 'knex'
 };
 
-const AVAILABLE_DB_CONNECTIONS = {
+export const AVAILABLE_DB_CONNECTIONS = {
   LOCALHOST: 'localhost',
   ELEPHANT_SQL: 'elephantsql'
 };
 
-const server = {
-  API_PORT: 3000,
-  LOG_ERRORS: true,
-  AVAILABLE_DATA_SOURCES,
-  AVAILABLE_DB_CONNECTIONS,
-  DATA_SOURCE: AVAILABLE_DATA_SOURCES.KNEX,
-  DB_CONNECTION: AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL,
-  LOG_DIR_PATH: path.resolve(__dirname, '../logs'),
-  SECRET: 'secret',
-  ACCESS_TOKEN_TTL: 600,    // sec
-  REFRESH_TOKEN_TTL: 6000   // sec
-};
+export const API_PORT = 3000;
+export const LOG_ERRORS = true;
+export const DATA_SOURCE = AVAILABLE_DATA_SOURCES.KNEX;
+export const DB_CONNECTION = AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL;
+export const LOG_DIR_PATH = path.resolve(__dirname, '../logs');
+export const SECRET = 'secret';
+export const ACCESS_TOKEN_TTL = 600;    // sec
+export const REFRESH_TOKEN_TTL = 6000;   // sec
 
 let dbConnectionConfig;
-switch (server.DB_CONNECTION) {
+switch (DB_CONNECTION) {
   case AVAILABLE_DB_CONNECTIONS.LOCALHOST:
     dbConnectionConfig = {
       DB_HOST: 'localhost',
@@ -48,9 +48,8 @@ switch (server.DB_CONNECTION) {
     throw Error('Wrong db connection. See AVAILABLE_DB_CONNECTIONS.');
 }
 
-/* eslint-disable-next-line prefer-arrow-callback, func-names */
-Object.keys(dbConnectionConfig).forEach(function (key) {
-  server[key] = dbConnectionConfig[key];
-});
-
-module.exports = server;
+export const DB_HOST = dbConnectionConfig.DB_HOST;
+export const DB_PORT = dbConnectionConfig.DB_PORT;
+export const DB_USER = dbConnectionConfig.DB_USER;
+export const DB_NAME = dbConnectionConfig.DB_NAME;
+export const DB_PASSWORD = dbConnectionConfig.DB_PASSWORD;

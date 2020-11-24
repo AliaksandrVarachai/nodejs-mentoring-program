@@ -4,9 +4,8 @@
   "description": "Simple REST service with CRUD operations",
   "main": "lib/server.js",
   "scripts": {
-    "build": "rimraf data-server/lib/* && babel src --out-dir lib",
-    "start": "NODE_ENV=production node --unhandled-rejections=strict lib/server.js",
-    "dev": "nodemon --exec babel-node --unhandled-rejections=strict src/server.js",
+    "start": "NODE_ENV=production node --unhandled-rejections=strict --experimental-modules src/server.js",
+    "dev": "nodemon --exec node --unhandled-rejections=strict --experimental-modules src/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -19,6 +18,7 @@
   "engines": {
     "node": ">=12"
   },
+  "type": "module",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.10.5",

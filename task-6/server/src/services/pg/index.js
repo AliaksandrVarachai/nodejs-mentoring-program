@@ -1,4 +1,4 @@
-import * as dataProvider from '../../data-access/pg';
+import * as dataProvider from '../../data-access/pg/index.js';
 
 export async function getAllUsers() {
   const rows = await dataProvider.getAllUsers();

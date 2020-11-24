@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import * as controller from '../controllers';
-import * as validators from '../validators';
+import express from 'express';
+import * as controller from '../controllers/index.js';
+import * as validators from '../validators/index.js';
 
-const router = Router();
+const router = express.Router();
 
 router.get('/users/all', controller.getAllUsers);
 router.get('/users/auto-suggest', controller.getAutoSuggestUsers);

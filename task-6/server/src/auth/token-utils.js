@@ -1,5 +1,5 @@
 import jwt from 'jwt-simple';
-import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL, SECRET } from '../../config/server';
+import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL, SECRET } from '../../config/server.js';
 
 /**
  * Generates access token.

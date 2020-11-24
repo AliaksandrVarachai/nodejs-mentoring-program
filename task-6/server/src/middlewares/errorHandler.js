@@ -1,6 +1,6 @@
-import logger from '../../config/logger';
-import { getErrorView } from '../views';
-import { getErrorLoggedFields } from '../../config/logged-fields';
+import logger from '../../config/logger.js';
+import { getErrorView } from '../views/index.js';
+import { getErrorLoggedFields } from '../../config/logged-fields.js';
 
 // Express.js exception handler.
 export default function errorHandler(error, req, res, next) {

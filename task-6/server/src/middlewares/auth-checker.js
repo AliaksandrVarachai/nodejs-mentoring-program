@@ -1,6 +1,6 @@
-import { authRefreshUrl, pageLoginUrl } from '../../public/config';
-import { getLoginUrlErrorView, getRefreshUrlErrorView } from '../views';
-import { getTokenPayload } from '../auth/token-utils';
+import { authRefreshUrl, pageLoginUrl } from '../../public/config.js';
+import { getLoginUrlErrorView, getRefreshUrlErrorView } from '../views/index.js';
+import { getTokenPayload } from '../auth/token-utils.js';
 
 export default async function authChecker(req, res, next) {
   const { 'x-access-token': accessToken } = req.headers;

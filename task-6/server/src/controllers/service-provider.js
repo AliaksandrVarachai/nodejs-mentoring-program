@@ -1,6 +1,6 @@
-import { DATA_SOURCE, AVAILABLE_DATA_SOURCES } from '../../config/server';
-import * as pgService from '../services/pg';
-import * as knexService from '../services/knex';
+import { DATA_SOURCE, AVAILABLE_DATA_SOURCES } from '../../config/server.js';
+import * as pgService from '../services/pg/index.js';
+import * as knexService from '../services/knex/index.js';
 
 const serviceProvider = (() => {
   switch (DATA_SOURCE) {
