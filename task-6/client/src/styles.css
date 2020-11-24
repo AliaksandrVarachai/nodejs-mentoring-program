@@ -29,15 +29,11 @@ button {
     padding-left: 30px;
     padding-right: 30px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
 }
 
 .col {
     vertical-align: top;
-}
-
-.col+.col {
-    padding-left: 50px;
 }
 
 .menu-instructions {
