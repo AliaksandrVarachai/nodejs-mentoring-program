@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <script type="module" src="register.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h3>Register</h3>
+    <form id="form">
+        <p>
+            <label>
+                New username:
+                <input type="text" name="username" id="username">
+            </label>
+        </p>
+        <p>
+            <label>
+                Age:
+                <input type="number" name="age" id="age" min="4" max="130" value="30">
+            </label>
+        </p>
+        <p>
+            <label>
+                Password:
+                <input type="password" name="password" id="password">
+            </label>
+        </p>
+        <p>
+            <label>
+                Confirm password:
+                <input type="password" name="confirm-password" id="confirm-password">
+            </label>
+        </p>
+        <input type="submit" value="Send">
+        <input type="reset" value="Reset">
+    </form>
+    <p id="error-section" style="color: red"></p>
+    <p>
+        If your are already registered, please, <a href="#0" id="login-link">login</a>
+    </p>
+</div>
+</body>
+</html>
