@@ -1,7 +1,10 @@
 **/node_modules/
 **/dist/
 **/lib/
-*.log
+**/*.log
+**/.nyc_output/
+**/test-coverage/
+
 
 # generated csv files are ignored except of examples
 */csv/*

@@ -1,10 +1,9 @@
 {
-    "parser": "@babel/eslint-parser",
-    "plugins": [],
     "env": {
         "node": true,
         "browser": true,
-        "es6": true
+        "es6": true,
+        "mocha": true
     },
     "parserOptions": {
         "ecmaVersion": 11,
@@ -294,6 +293,12 @@
             }
         ],
 
+        // module must be imported explicitly: import app from '../app/index.js'
+//        "import/no-internal-modules": 2,
+//        "import/extensions": 2,
+//        "no-dynamic-require": 2,
+//        "no-unresolved": 2,
+
         // Legacy
         "max-depth": [
             0,
@@ -305,5 +310,13 @@
         ],
         "no-bitwise": 2
     },
-    "globals": {}
+    "overrides": [
+        {
+            "files": ["**/*.spec.js"],
+            "rules": {
+                "no-unused-expressions": 0,
+                "prefer-arrow-callback": 0
+            }
+        }
+    ]
 }

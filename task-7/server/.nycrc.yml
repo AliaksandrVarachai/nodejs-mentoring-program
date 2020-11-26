@@ -1,0 +1,5 @@
+report-dir: ./test-coverage
+include:
+  - ./src
+reporter:
+  - html
