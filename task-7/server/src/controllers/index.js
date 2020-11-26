@@ -1,6 +1,5 @@
 import { pageLoginUrl } from '../../public/config.js';
-import serviceProvider from './service-provider.js';
-import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods.js';
+import loggedServiceProvider from './logged-service-provider.js';
 import {
   getSuccessView,
   getSuccessLoginView,
@@ -13,15 +12,6 @@ import {
   generateAccessAndRefreshTokens,
   getTokenPayload
 } from '../auth/token-utils.js';
-
-
-const loggedServiceProvider = wrapImportedMethods(
-  serviceProvider,
-  (req, res, methodName, args) => {
-    res.trackingInfo = { method: methodName, args };
-  },
-  () => {}
-);
 
 export async function logIn(req, res) {
   const { username, password } = req.body;

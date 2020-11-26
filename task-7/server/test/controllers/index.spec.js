@@ -1,6 +1,6 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import '../../src/controllers/index.js';
+import * as controllers from '../../src/controllers/index.js';
 
 const { expect } = chai;
 

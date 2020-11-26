@@ -1,6 +1,7 @@
 import { DATA_SOURCE, AVAILABLE_DATA_SOURCES } from '../../config/server.js';
 import * as pgService from '../services/pg/index.js';
 import * as knexService from '../services/knex/index.js';
+import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods.js';
 
 const serviceProvider = (() => {
   switch (DATA_SOURCE) {
@@ -13,4 +14,12 @@ const serviceProvider = (() => {
   }
 })();
 
-export default serviceProvider;
+const loggedServiceProvider = wrapImportedMethods(
+  serviceProvider,
+  (req, res, methodName, args) => {
+    res.trackingInfo = { method: methodName, args };
+  },
+  () => {}
+);
+
+export default loggedServiceProvider;
