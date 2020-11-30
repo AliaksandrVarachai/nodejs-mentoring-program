@@ -1,7 +1,7 @@
 {
-  "name": "task-6",
+  "name": "task-7",
   "version": "1.0.0",
-  "description": "Simple REST service with CRUD operations",
+  "description": "Tests of DB controllers",
   "main": "lib/server.js",
   "scripts": {
     "start": "NODE_ENV=production node --unhandled-rejections=strict --experimental-modules --require=dotenv/config src/server.js",

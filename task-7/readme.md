@@ -1,20 +1,21 @@
-# Task 6
+# Task 7
 
-### Task 6.1
+## Prerequisites
+
+The task is a continuation of **Homework 6** and should be done in the same repo.
+
+## Task 7.1
 
 Add authorization to the already existing REST service:
-- Add `login(username, password)` method which should return `JWTtoken`.
-- Add a middleware which will proxy all the requests (except login) and check that HTTP `Authorizationheader` 
-  has the correct value of `JWTtoken`.
-- In case of the HTTP `Authorizationheader` is absent in the request, the middleware should stop 
-  further controller method execution and return HTTP `401` code (`Unauthorized Error`) and standard error message.
-- In case of HTTP `Authorization` header has invalid `JWTtoken` in the request, the middleware should return 
-  HTTP code `403` (`Forbidden Error` ) and standard error message.
+- Add unit tests for User entity controller methods using Jest library (https://jestjs.io/).
+- Add unit tests for Group entity controller methods using Jest.
 
-### Task 6.2
+## Task 7.2
 
-Add `CORS middlewareto` access service methods from WEB applications hosted on another domains 
-(https://github.com/expressjs/cors).
+The information on DB connection (`connection string`) should be stored in `.env` file and should be passed 
+to the application using environment variables with the help of `dotenv` package (https://www.npmjs.com/package/dotenv).
+
+As an alternative package you can also use `config` (https://www.npmjs.com/package/config).
 
 ## Implementation
 
@@ -27,55 +28,48 @@ For other available options see in the files:
 - `server/config/server.js` - for the server part
 - `client/src/config.json` - for the client part
 
-### Run the app in dev mode
-
+DB config has to be in `.env` file (just **copy it**):
 ```
-# go to the app repo:
-cd <task-6>
+API_PORT = 3000
+LOG_DIR_NAME = logs
 
-# install dependencies:
-cd server && npm install && cd ../client && npm install
+# available options: knex | pg
+DATA_SOURCE = knex
 
-# run a server part (on 3000 port by default):
-cd ../server
-npm run dev
+# available options: elephantsql | localhost
+DB_CONNECTION = elephantsql
 
-# run a client part (on 3001 port by default):
-cd ../client
-npm run dev
+# Authurization secret
+SECRET = secret
+
+# Time to live for tokens (sec):
+ACCESS_TOKEN_TTL = 600
+REFRESH_TOKEN_TTL = 6000
+
+# Cloud DB config
+DB_HOST = lallah.db.elephantsql.com
+DB_PORT = 5432
+DB_USER = eyitbcuz
+DB_NAME = eyitbcuz
+DB_PASSWORD = l0s94pXG_P63mKfrIWwfLMApeSt3eoq8
+
+# Local config example
+# DB_HOST = localhost
+# DB_PORT = 5432
+# DB_USER = task4_user
+# DB_NAME = task4_db
+# DB_PASSWORD = 111
 ```
 
-### Run the app in prod mode
+**Note:** If it is necessary to run the app read run instructions for `Task 6` please. 
 
+
+### Run tests
 ```
-# go to the app repo:
-cd <task-6>
-
-# install dependencies:
-cd server && npm install && cd ../client && npm install && npm run build
-
-# install a process manager:
-npm install -g pm2
-
-# start server and client parts (on ports 3000 and 3001 by default):
-pm2 start npm --name server -- start --prefix ./server/ && pm2 serve ./client/dist --name client --port 3001
+# go to the app server repo:
+cd task-7/server
+npm install
+npm test
 ```
 
-### Instructions for testing
-
-Open http://localhost:3001 and follow the login instructions.
-Use credentials:
-```
-    login: admin-1
-    password: admin-1
-```
-or register your own ones.
-
-**Note:** Client side implements just reading info about users, groups, and permissions. 
-
-All other requests are not available from the client side, but they can be achieved using Postman (see Task 5 for 
-the full list of implemented method). In that case JWT tokens must be provided via headers (examples):
-```
-X-Access-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0LTIiLCJleHAiOjE2MDYyNTcxNDIyODF9.RznqF9_fKLlS6oQepyyMJm9OFqBGfzom8TL_hnbh42Y
-X-Refresh-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0LTIiLCJleHAiOjE2MDYyNTk5NDQzMjV9.KGYV_ZZpvUG-Bbe3waKSyj0VVIx4c0vxNGA5ZtDGJEk
-```
+The generated test coverage will be placed in `test-coverage` folder.
