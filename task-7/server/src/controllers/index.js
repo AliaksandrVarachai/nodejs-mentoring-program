@@ -1,17 +1,50 @@
-import { pageLoginUrl } from '../../public/config.js';
-import loggedServiceProvider from './logged-service-provider.js';
-import {
+import * as config from '../../public/config.js';
+import * as origLoggedServiceProvider from './logged-service-provider.js';
+import * as views from '../views/index.js';
+import * as authTokenUtils from '../auth/token-utils.js';
+
+// START mock dependency injections (alternative for Babel transpiling)
+let { pageLoginUrl } = config;
+let loggedServiceProvider = origLoggedServiceProvider.default;
+let {
   getSuccessView,
   getSuccessLoginView,
   getSuccessRefreshView,
   getErrorView,
   getLoginUrlErrorView
-} from '../views/index.js';
-import {
+} = views;
+let {
   generateAccessToken,
   generateAccessAndRefreshTokens,
   getTokenPayload
-} from '../auth/token-utils.js';
+} = authTokenUtils;
+
+export function mockConfig(mockedConfig) {
+  ({ pageLoginUrl } = mockedConfig || config);
+}
+
+export function mockLoggedServiceProvider(mockedLoggedServiceProvider) {
+  loggedServiceProvider = mockedLoggedServiceProvider || origLoggedServiceProvider;
+}
+
+export function mockViews(mockedViews) {
+  ({
+    getSuccessView,
+    getSuccessLoginView,
+    getSuccessRefreshView,
+    getErrorView,
+    getLoginUrlErrorView
+  } = mockedViews || views);
+}
+
+export function mockAuthTokenUtils(mockedAuthTokenUtils) {
+  ({
+    generateAccessToken,
+    generateAccessAndRefreshTokens,
+    getTokenPayload
+  } = mockedAuthTokenUtils || authTokenUtils);
+}
+// END mock dependency injections
 
 export async function logIn(req, res) {
   const { username, password } = req.body;
