@@ -8,8 +8,8 @@
     "dev": "nodemon --exec node --unhandled-rejections=strict --experimental-modules --require=dotenv/config src/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "NODE_V8_COVERAGE=test-coverage c8 --include src/controllers mocha",
-    "test:coverage-does-not-work": "nyc mocha"
+    "test": "NODE_V8_COVERAGE=test-coverage c8 --include src/controllers mocha --require=dotenv/config",
+    "test:coverage-does-not-work": "nyc mocha --require=dotenv/config"
   },
   "repository": {
     "type": "git",
