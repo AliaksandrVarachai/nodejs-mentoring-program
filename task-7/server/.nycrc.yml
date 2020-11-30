@@ -1,5 +1,9 @@
+all: true
+cache: false
 report-dir: ./test-coverage
 include:
-  - ./src
+  - 'src/controllers/**/*.js'
 reporter:
   - html
+  - text
+  - text-summary
