@@ -4,6 +4,7 @@
 **/*.log
 **/.nyc_output/
 **/test-coverage/
+**/.env
 
 
 # generated csv files are ignored except of examples
