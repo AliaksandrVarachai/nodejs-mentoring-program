@@ -165,7 +165,10 @@
         "newline-after-var": 0,
         "brace-style": [
             2,
-            "1tbs"
+            "1tbs",
+            {
+                "allowSingleLine": true
+            }
         ],
         "comma-spacing": [
             2,
