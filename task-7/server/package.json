@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "cross-env NODE_V8_COVERAGE=test-coverage c8 --include src/controllers mocha --require=dotenv/config",
-    "test:coverage-does-not-work": "nyc mocha --require=dotenv/config"
+    "test:coverage-does-not-work-due-to-bug": "nyc mocha --require=dotenv/config"
   },
   "repository": {
     "type": "git",

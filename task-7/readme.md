@@ -28,7 +28,13 @@ For other available options see in the files:
 - `server/config/server.js` - for the server part
 - `client/src/config.json` - for the client part
 
-DB config has to be in `.env` file (just **copy it**):
+Go to `server` folder and create `.env` file like this:
+```
+cd task-7/server
+touch .env
+```
+
+Copy to the created `.env` file the content:
 ```
 API_PORT = 3000
 LOG_DIR_NAME = logs
