@@ -16,7 +16,6 @@ export const AVAILABLE_DB_CONNECTIONS = {
 };
 
 export const API_PORT = 3000;
-export const LOG_ERRORS = true;
 export const DATA_SOURCE = AVAILABLE_DATA_SOURCES.KNEX;
 export const DB_CONNECTION = AVAILABLE_DB_CONNECTIONS.ELEPHANT_SQL;
 export const LOG_DIR_PATH = path.resolve(__dirname, '../logs');

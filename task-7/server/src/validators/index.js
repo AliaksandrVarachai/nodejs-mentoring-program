@@ -1,6 +1,5 @@
 import Ajv from 'ajv';
 import ajvErrors from 'ajv-errors';
-import { LOG_ERRORS } from '../../config/server.js';
 import { getErrorView } from '../views/index.js';
 import userDefinition from './schema-definitions/user.js';
 import groupDefinition from './schema-definitions/group.js';
@@ -41,7 +40,6 @@ export function validateCreateUser(req, res, next) {
   const { login, password, age } = req.body;
   if (!_validateCreateUser({ login, password, age })) {
     const message = ajv.errorsText(_validateCreateUser.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
@@ -51,7 +49,6 @@ export function validateUpdateUser(req, res, next) {
   const { id, password, age, isDeleted } = req.body;
   if (!_validateUpdateUser({ id, password, age, isDeleted })) {
     const message = ajv.errorsText(_validateUpdateUser.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
@@ -61,7 +58,6 @@ export function validateCreateGroup(req, res, next) {
   const { name } = req.body;
   if (!_validateCreateGroup({ name })) {
     const message = ajv.errorsText(_validateCreateGroup.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
@@ -71,7 +67,6 @@ export function validateCreatePermission(req, res, next) {
   const { name } = req.body;
   if (!_validateCreatePermission({ name })) {
     const message = ajv.errorsText(_validateCreatePermission.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
@@ -81,7 +76,6 @@ export function validateAddUsersToGroup(req, res, next) {
   const { groupId, userIds } = req.body;
   if (!_validateAddUsersToGroup({ groupId, userIds })) {
     const message = ajv.errorsText(_validateAddUsersToGroup.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
@@ -91,7 +85,6 @@ export function validateDeleteUsersFromGroup(req, res, next) {
   const { groupId, userIds } = req.body;
   if (!_validateDeleteUsersFromGroup({ groupId, userIds })) {
     const message = ajv.errorText(_validateDeleteUsersFromGroup.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
@@ -101,7 +94,6 @@ export function validateAddPermissionsToGroup(req, res, next) {
   const { groupId, permissionIds } = req.body;
   if (!_validateAddPermissionsToGroup({ groupId, permissionIds })) {
     const message = ajv.errorsText(_validateAddPermissionsToGroup.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
@@ -111,7 +103,6 @@ export function validateDeletePermissionsFromGroup(req, res, next) {
   const { groupId, permissionIds } = req.body;
   if (!_validateDeletePermissionsFromGroup({ groupId, permissionIds })) {
     const message = ajv.errorsText(_validateDeletePermissionsFromGroup.errors);
-    if (LOG_ERRORS) console.log(message);
     return res.status(400).json(getErrorView(message));
   }
   return next();
