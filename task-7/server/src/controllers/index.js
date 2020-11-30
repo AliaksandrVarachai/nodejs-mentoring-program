@@ -27,7 +27,6 @@ export async function logIn(req, res) {
   }
 
   // TODO: use bcrypt here
-  console.log(password, user, password !== user.password);
   if (password !== user.password) {
     return res.status(403).json(getErrorView('Incorrect password'));
   }
@@ -203,8 +202,8 @@ export async function getAllPermissions(req, res) {
 export async function addUsersToGroup(req, res) {
   const { groupId, userIds } = req.body;
   try {
-    const newUser = await loggedServiceProvider.addUsersToGroup(req, res)(groupId, userIds);
-    res.status(200).json(getSuccessView(newUser));
+    const newUserIds = await loggedServiceProvider.addUsersToGroup(req, res)(groupId, userIds);
+    res.status(200).json(getSuccessView(newUserIds));
   } catch (error) {
     res.status(404).json(getErrorView(error.message));
   }
