@@ -8,7 +8,7 @@
     "dev": "nodemon --exec node --unhandled-rejections=strict --experimental-modules src/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "c8 --include src/controllers mocha",
+    "test": "NODE_V8_COVERAGE=test-coverage c8 --include src/controllers mocha",
     "test:coverage-does-not-work": "nyc mocha"
   },
   "repository": {
