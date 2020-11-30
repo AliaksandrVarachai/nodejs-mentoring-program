@@ -1,5 +1,5 @@
 import jwt from 'jwt-simple';
-import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL, SECRET } from '../../config/server.js';
+const { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL, SECRET } = process.env;
 
 /**
  * Generates access token.

@@ -4,8 +4,8 @@
   "description": "Simple REST service with CRUD operations",
   "main": "lib/server.js",
   "scripts": {
-    "start": "NODE_ENV=production node --unhandled-rejections=strict --experimental-modules src/server.js",
-    "dev": "nodemon --exec node --unhandled-rejections=strict --experimental-modules src/server.js",
+    "start": "NODE_ENV=production node --unhandled-rejections=strict --experimental-modules --require=dotenv/config src/server.js",
+    "dev": "nodemon --exec node --unhandled-rejections=strict --experimental-modules --require=dotenv/config src/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "NODE_V8_COVERAGE=test-coverage c8 --include src/controllers mocha",

@@ -1,6 +1,9 @@
-import path from 'path';
+import path, { dirname } from 'path';
 import winston from 'winston';
-import { LOG_DIR_PATH } from './server.js';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const logDirPath = path.resolve(__dirname, '..', process.env.LOG_DIR_NAME);
 
 const logger  = new winston.createLogger({
   level: 'info',
@@ -8,11 +11,11 @@ const logger  = new winston.createLogger({
   defaultMeta: { service: 'expressjs-service' },
   transports: [
     new winston.transports.File({
-      filename: path.join(LOG_DIR_PATH, 'error.log'),
+      filename: path.join(logDirPath, 'error.log'),
       level: 'error'
     }),
     new winston.transports.File({
-      filename: path.join(LOG_DIR_PATH, 'combined.log')
+      filename: path.join(logDirPath, 'combined.log')
     })
   ]
 });

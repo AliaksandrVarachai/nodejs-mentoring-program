@@ -1,7 +1,9 @@
-import { DATA_SOURCE, AVAILABLE_DATA_SOURCES } from '../../config/server.js';
+import { AVAILABLE_DATA_SOURCES } from '../../config/server.js';
 import * as pgService from '../services/pg/index.js';
 import * as knexService from '../services/knex/index.js';
 import wrapImportedMethods from '../middlewares/utils/wrap-imported-methods.js';
+
+const { DATA_SOURCE } = process.env;
 
 const serviceProvider = (() => {
   switch (DATA_SOURCE) {

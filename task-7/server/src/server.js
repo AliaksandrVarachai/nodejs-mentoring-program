@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import { API_PORT } from '../config/server.js';
 import apiRouter from './routes/api-router.js';
 import staticRouter from './routes/static-router.js';
 import authRouter from './routes/auth-router.js';
@@ -9,6 +8,8 @@ import logger from '../config/logger.js';
 import errorHandler from './middlewares/errorHandler.js';
 import { getErrorLoggedFields } from '../config/logged-fields.js';
 import authChecker from './middlewares/auth-checker.js';
+
+const { API_PORT } = process.env;
 
 const app = express();
 
