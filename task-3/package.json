@@ -46,7 +46,7 @@
   "dependencies": {
     "ajv": "^6.12.4",
     "ajv-errors": "^1.0.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "knex": "^0.21.5",
     "pg": "^8.3.3",
     "uuid": "^8.3.0"
